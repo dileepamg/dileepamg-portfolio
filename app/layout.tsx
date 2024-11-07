@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Hotjar from '@hotjar/browser';
+
+const siteId = 5198945;
+const hotjarVersion = 6;
+
+Hotjar.init(siteId, hotjarVersion);
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
