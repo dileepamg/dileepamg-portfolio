@@ -2,22 +2,19 @@ import { Button } from "@/components/ui/button"
 
 export default function Home() {
   return (
-    
-    <div className="h-screen flex items-center justify-center text-3xl">
-      <div className="flex-col leading-8">
-        <div className="my-8">
-          <Button variant="ghost" size="lg">Hello</Button>
-          <Button variant="ghost" size="lg">It&apos;s</Button>
-          <Button variant="ghost" size="lg">Me</Button>
-          <Button variant="ghost" size="lg">Dileepa</Button> 
-        </div>
-        <div className="text-center text-indigo-300 text-sm">
-          dileepa@elements.lk
-        </div>
+
+    <div className="h-screen flex flex-col items-center justify-center text-3xl bg-neutral-900">
+
+      <div className="my-8">
+        <Button variant="ghost" size="lg" className="bg-gradient-to-r from-green-200 to-blue-500 text-transparent bg-clip-text hover:text-white transition duration-500 hover:scale-125">Hello!</Button>
       </div>
-     
-         
+      <div className="text-center text-slate-300 text-md">
+        <p className="text-xl mb-2">Reach Me</p>
+        <a href="mailto:dileepa@elements.lk">dileepa@elements.lk</a>
+      </div>
+
+
     </div>
-    
+
   );
 }
