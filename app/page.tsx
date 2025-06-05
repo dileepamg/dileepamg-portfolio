@@ -7,12 +7,12 @@ export default function Home() {
       <p className="mt-2 text-2xl">UI/UX Designer</p>
       <div className="mt-8 text-sm sm:text-lg">
         <p>
-          I'm an enthusiastic creative designer with a passion for everything
-          that involves Digital Marketing, Graphic Design, Video Editing and
-          UI/UX Design. I have worked with leading Digital Media Agencies and as
-          a freelancer interacting directly with clients executing digital
-          marketing campaigns, designing social media graphics, logos, banners,
-          flyers and UI/UX design work.
+          I&apos;m an enthusiastic creative designer with a passion for
+          everything that involves Digital Marketing, Graphic Design, Video
+          Editing and UI/UX Design. I have worked with leading Digital Media
+          Agencies and as a freelancer interacting directly with clients
+          executing digital marketing campaigns, designing social media
+          graphics, logos, banners, flyers and UI/UX design work.
         </p>
       </div>
 
