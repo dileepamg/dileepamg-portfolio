@@ -4,12 +4,11 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-space-grotesk: "Space Grotesk", sans-serif;
-  --background: oklch(93.46% 0.0305 255.11);
-  --secondary-background: oklch(100% 0 0);
+  --background: oklch(0.9499 0.0305 57.92);
+  --secondary-background: oklch(0.7159 0.0884 201.03);
   --foreground: oklch(0% 0 0);
   --main-foreground: oklch(0% 0 0);
-  --main: oklch(67.47% 0.1726 259.49);
+  --main: oklch(0.783 0.1312 40.28);
   --border: oklch(0% 0 0);
   --ring: oklch(0% 0 0);
   --overlay: oklch(0% 0 0 / 0.8);
