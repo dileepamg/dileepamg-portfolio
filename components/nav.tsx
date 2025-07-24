@@ -19,7 +19,7 @@ export default function Nav() {
       text: "About",
     },
     {
-      path: "/work",
+      path: "/#work",
       text: "Work",
     },
   ];
