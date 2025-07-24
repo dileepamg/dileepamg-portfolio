@@ -74,24 +74,25 @@ export default function Home() {
             <div id="work" className="flex flex-wrap gap-4">
               <iframe
                 src="https://www.behance.net/embed/project/191408751?ilo0=1"
-                height="300"
-                width="320"
-                allowfullscreen
-                lazyload
+                width={320}
+                height={300}
                 allow="clipboard-write"
-                refererPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
                 scrolling="no"
+                frameBorder={0}
               ></iframe>
               <iframe
                 src="https://www.behance.net/embed/project/191566199?ilo0=1"
-                height="300"
-                width="320"
-                allowfullscreen
-                lazyload
-                frameborder="0"
+                width={320}
+                height={300}
                 allow="clipboard-write"
-                refererPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
                 scrolling="no"
+                frameBorder={0}
               ></iframe>
             </div>
           </div>
