@@ -1,7 +1,7 @@
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Pixelify_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
@@ -27,9 +27,23 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${spaceGrotesk.variable} ${pixelifySans.variable} antialiased`}
+        className={cn(
+          `${spaceGrotesk.variable} ${pixelifySans.variable} antialiased`,
+          "relative min-h-screen bg-white",
+          "[background-size:20px_20px]",
+          "[background-image:linear-gradient(to_right,#efeff2_1px,transparent_1px),linear-gradient(to_bottom,#efeff2_1px,transparent_1px)]",
+          "dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]",
+        )}
       >
-        <div className="bg-[--background]] mx-auto flex min-h-screen w-[80%] items-center justify-center sm:max-w-[70%] md:max-w-[60%] xl:max-w-[50%]">
+        {/* <div
+          className={cn(
+            "absolute inset-0",
+            "[background-size:20px_20px]",
+            "[background-image:linear-gradient(to_right,#efeff2_1px,transparent_1px),linear-gradient(to_bottom,#efeff2_1px,transparent_1px)]",
+            "dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]",
+          )}
+        /> */}
+        <div className="mx-auto flex min-h-screen w-[80%] items-center justify-center sm:max-w-[70%] md:max-w-[60%] xl:max-w-[50%] dark:bg-black">
           {children}
         </div>
       </body>
