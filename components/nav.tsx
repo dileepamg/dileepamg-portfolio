@@ -4,11 +4,30 @@ import clsx from "clsx";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Nav() {
   const path = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+
+  // Watch scroll direction to show/hide nav
+  useEffect(() => {
+    let lastScrollY = window.pageYOffset;
+    const handleScroll = () => {
+      const currentScrollY = window.pageYOffset;
+      if (currentScrollY < lastScrollY) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const links = [
     {
       path: "/",
@@ -31,16 +50,24 @@ export default function Nav() {
     setIsOpen(false);
   };
   return (
-    <div className="fixed top-5 left-5 z-50 w-full">
+    <div
+      className={clsx(
+        "fixed top-10 z-50 w-[80%] transition-transform duration-300 ease-in-out sm:max-w-[70%] md:max-w-[60%] xl:max-w-[50%]",
+        {
+          "-translate-y-[calc(100%+3rem)]": !isVisible,
+          "translate-y-0": isVisible,
+        },
+      )}
+    >
       {/* Desktop Navigation */}
-      <nav className="text-main-foreground border-border shadow-shadow rounded-base bg-secondary-background font-base mx-auto hidden w-max gap-5 border-2 p-2.5 px-5 text-sm sm:flex sm:text-base">
+      <nav className="text-main-foreground border-border bg-main font-base shadow-shadow mx-auto hidden gap-5 border-2 p-2.5 px-5 text-sm sm:flex sm:text-base">
         {links.map((link) => {
           return (
             <Link
               key={link.path}
               className={clsx(
-                "hover:border-border rounded-base border-2 px-2 py-1 transition-colors",
-                path === link.path ? "border-border" : "border-transparent",
+                "px-2 py-1 transition-transform duration-300 hover:rotate-5",
+                path === link.path,
               )}
               href={link.path}
             >

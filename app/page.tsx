@@ -27,7 +27,7 @@ export default function Home() {
         >
           <Star34 color="#ff9a76" size={300} stroke="black" strokeWidth={2} />
         </div>
-        <div className="relative z-10 space-y-20 pt-20 pb-20 align-top">
+        <div className="relative z-10 space-y-20 pt-30 pb-20 align-top">
           <div>
             <Avatar className="mb-8 h-32 w-32">
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
