@@ -30,8 +30,8 @@ export default function RootLayout({
         className={cn(
           `${spaceGrotesk.variable} ${pixelifySans.variable} antialiased`,
           "relative min-h-screen bg-white",
-          "[background-size:20px_20px]",
-          "[background-image:linear-gradient(to_right,#efeff2_1px,transparent_1px),linear-gradient(to_bottom,#efeff2_1px,transparent_1px)]",
+          "[background-size:10px_10px]",
+          "[background-image:linear-gradient(to_right,#F7F7FA_1px,transparent_1px),linear-gradient(to_bottom,#F7F7FA_1px,transparent_1px)]",
           "dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]",
         )}
       >
