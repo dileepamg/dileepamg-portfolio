@@ -18,7 +18,7 @@ const projects = [
     title: "Tracified Consumer App",
     description:
       "Tracified Consumer App was designed to provide users with a seamless way to explore a product's journey. By scanning a QR code or barcode, users can intuitively access transparent, traceable information about the product's lifecycle.",
-    tools: ["Figma", "Adobe Photoshop"],
+    tools: ["Figma"],
     figma: "#",
     behance: "https://github.com/ronitjadhav/digipin-openlayers",
     live: "https://digipin.maplabs.tech",
@@ -173,11 +173,7 @@ export default function Home() {
                       href={project.figma}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex w-full transform items-center gap-2 bg-[#ff7237] px-4 py-2 font-bold text-black transition-transform hover:-translate-y-1 hover:shadow-lg dark:text-black"
-                      style={{
-                        border: "2px solid black",
-                        boxShadow: "4px 4px 0px 0px #000000",
-                      }}
+                      className="shadow-shadow flex w-full transform items-center gap-2 border-2 bg-[#ff7237] px-2 py-2 text-black transition-transform hover:-translate-y-1 dark:text-black"
                     >
                       <IconBrandFigma />
                       Figma
@@ -186,11 +182,7 @@ export default function Home() {
                       href={project.behance}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex w-full transform items-center gap-2 bg-blue-400 px-4 py-2 font-bold text-black transition-transform hover:-translate-y-1 hover:shadow-lg dark:text-black"
-                      style={{
-                        border: "2px solid black",
-                        boxShadow: "4px 4px 0px 0px #000000",
-                      }}
+                      className="shadow-shadow flex w-full transform items-center gap-2 border-2 bg-blue-400 px-2 py-2 text-black transition-transform hover:-translate-y-1 dark:text-black"
                     >
                       <IconBrandBehance />
                       Behance
@@ -201,11 +193,7 @@ export default function Home() {
                       href={project.live}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex w-full transform items-center gap-2 px-4 py-2 font-bold text-black transition-transform hover:-translate-y-1 hover:shadow-lg dark:text-black"
-                      style={{
-                        border: "2px solid black",
-                        boxShadow: "4px 4px 0px 0px #000000",
-                      }}
+                      className="shadow-shadow flex w-full transform items-center gap-2 border-2 px-2 py-2 text-black transition-transform hover:-translate-y-1 dark:text-black"
                     >
                       <ExternalLink size={20} />
                       Live Demo
