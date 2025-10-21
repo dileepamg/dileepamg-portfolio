@@ -31,12 +31,12 @@ export default function Nav() {
   const links = [
     {
       path: "/",
-      text: "Home",
-    },
-    {
-      path: "/about",
       text: "About",
     },
+    // {
+    //   path: "/about",
+    //   text: "About",
+    // },
     {
       path: "/#work",
       text: "Work",
@@ -60,7 +60,10 @@ export default function Nav() {
       )}
     >
       {/* Desktop Navigation */}
-      <nav className="text-main-foreground border-border bg-main font-base shadow-shadow mx-auto hidden gap-5 border-2 p-2.5 px-5 text-sm sm:flex sm:text-base">
+      <nav className="text-main-foreground border-border bg-secondary-background font-base shadow-shadow mx-auto hidden gap-5 rounded-lg border-2 p-2.5 px-5 text-sm sm:flex sm:text-base">
+        <p className="w-full [font-family:var(--font-sedgewickAve)] text-3xl">
+          Dileepa·G
+        </p>
         {links.map((link) => {
           return (
             <Link
@@ -82,7 +85,7 @@ export default function Nav() {
         {/* Hamburger Button */}
         <button
           onClick={toggleMenu}
-          className="text-main-foreground border-border shadow-shadow rounded-base bg-main ml-5 flex items-center justify-center border-2 p-2.5"
+          className="text-main-foreground border-border shadow-shadow rounded-base bg-secondary-background flex items-center justify-center border-2 p-2.5"
           aria-label="Toggle menu"
         >
           {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -92,14 +95,14 @@ export default function Nav() {
         {isOpen && (
           <>
             {/* Backdrop */}
-            <div
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm"
-              onClick={closeMenu}
-            />
+            <div className="fixed inset-0" onClick={closeMenu} />
 
             {/* Menu Content */}
-            <div className="text-main-foreground border-border shadow-shadow rounded-base bg-main absolute top-16 right-5 left-5 border-2 p-4">
+            <div className="text-main-foreground border-border shadow-shadow rounded-base bg-secondary-background absolute top-16 w-full border-2 p-4">
               <div className="flex flex-col gap-2">
+                <p className="w-full pb-4 text-center [font-family:var(--font-sedgewickAve)] text-3xl">
+                  Dileepa·G
+                </p>
                 {links.map((link) => {
                   return (
                     <Link

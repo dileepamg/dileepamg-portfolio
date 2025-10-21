@@ -1,6 +1,10 @@
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Pixelify_Sans, Space_Grotesk } from "next/font/google";
+import {
+  Pixelify_Sans,
+  Sedgwick_Ave_Display,
+  Space_Grotesk,
+} from "next/font/google";
 import "./globals.css";
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -10,6 +14,12 @@ const spaceGrotesk = Space_Grotesk({
 
 const pixelifySans = Pixelify_Sans({
   variable: "--font-pixelifysans",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+const sedgewickAve = Sedgwick_Ave_Display({
+  variable: "--font-sedgewickAve",
   subsets: ["latin"],
   weight: ["400"],
 });
@@ -28,7 +38,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body
         className={cn(
-          `${spaceGrotesk.variable} ${pixelifySans.variable} antialiased`,
+          `${spaceGrotesk.variable} ${pixelifySans.variable} ${sedgewickAve.variable} antialiased`,
           "relative min-h-screen bg-white",
           "[background-size:10px_10px]",
           "[background-image:linear-gradient(to_right,#F7F7FA_1px,transparent_1px),linear-gradient(to_bottom,#F7F7FA_1px,transparent_1px)]",
