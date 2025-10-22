@@ -33,10 +33,10 @@ export default function Nav() {
       path: "/",
       text: "About",
     },
-    // {
-    //   path: "/about",
-    //   text: "About",
-    // },
+    {
+      path: "/#career",
+      text: "Career",
+    },
     {
       path: "/#work",
       text: "Work",
