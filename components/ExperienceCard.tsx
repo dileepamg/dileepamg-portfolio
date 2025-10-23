@@ -24,31 +24,31 @@ export default function ExperienceCard({
     <div className="p-5">
       <div className="flex flex-col md:flex-row md:justify-between">
         <div className="w-full">
-          <div className="flex flex-col gap-1 pb-2 md:flex-row md:items-center md:justify-between">
-            <a
-              href={link}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`${company} (opens in new tab)`}
-            >
-              <h2 className="flex items-center text-xl font-bold hover:underline">
-                {company}
-                <span className="ml-1" aria-hidden="true">
-                  <LuArrowUpRight />
-                </span>
-              </h2>
-            </a>
-
-            <div className="flex justify-between text-sm md:justify-end md:gap-4">
-              <code>{role}</code>
-              <span className="hidden md:inline">|</span>
+          <div className="flex flex-col gap-1 pb-2 align-top md:flex-row md:justify-between">
+            <div className="flex flex-col">
+              <a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${company} (opens in new tab)`}
+              >
+                <h2 className="flex items-center text-base font-bold hover:underline">
+                  {company}
+                  <span className="ml-1" aria-hidden="true">
+                    <LuArrowUpRight />
+                  </span>
+                </h2>
+              </a>
+              <p className="text-[#ff4d50]">{role}</p>
+            </div>
+            <div className="flex justify-between text-xs font-semibold text-gray-500 md:justify-end md:gap-4">
               <code>{year}</code>
             </div>
           </div>
 
           <div className="space-y-1 pt-2">
             {responsibility.map((item) => (
-              <p key={item} className="text-sm md:text-base">
+              <p key={item} className="text-sm md:text-sm">
                 • {item}
               </p>
             ))}

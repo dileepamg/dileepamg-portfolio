@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ThemeSwitcher } from "./theme-switcher";
 
 export default function Nav() {
   const path = usePathname();
@@ -60,7 +61,7 @@ export default function Nav() {
       )}
     >
       {/* Desktop Navigation */}
-      <nav className="text-main-foreground border-border bg-secondary-background font-base shadow-shadow mx-auto hidden gap-5 rounded-lg border-2 p-2.5 px-5 text-sm sm:flex sm:text-base">
+      <nav className="border-border bg-secondary-background font-base shadow-shadow mx-auto hidden gap-5 rounded-lg border-2 p-2.5 px-5 text-sm sm:flex sm:text-base">
         <p className="w-full [font-family:var(--font-sedgewickAve)] text-3xl">
           Dileepa·G
         </p>
@@ -69,7 +70,7 @@ export default function Nav() {
             <Link
               key={link.path}
               className={clsx(
-                "px-2 py-1 transition-transform duration-300 hover:rotate-5",
+                "px-2 py-2 transition-transform duration-300 hover:rotate-5",
                 path === link.path,
               )}
               href={link.path}
@@ -78,6 +79,7 @@ export default function Nav() {
             </Link>
           );
         })}
+        <ThemeSwitcher />
       </nav>
 
       {/* Mobile Navigation */}
@@ -108,10 +110,8 @@ export default function Nav() {
                     <Link
                       key={link.path}
                       className={clsx(
-                        "hover:border-border rounded-base border-2 px-3 py-2 text-center transition-colors",
-                        path === link.path
-                          ? "border-border"
-                          : "border-transparent",
+                        "rounded-base border-2 px-3 py-2 text-center",
+                        path === link.path,
                       )}
                       href={link.path}
                       onClick={closeMenu}

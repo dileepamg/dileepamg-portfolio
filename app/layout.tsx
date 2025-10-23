@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import {
@@ -39,10 +40,10 @@ export default function RootLayout({
       <body
         className={cn(
           `${spaceGrotesk.variable} ${pixelifySans.variable} ${sedgewickAve.variable} antialiased`,
-          "relative min-h-screen bg-white",
+          "relative min-h-screen bg-white dark:bg-black",
           "[background-size:10px_10px]",
           "[background-image:linear-gradient(to_right,#F7F7FA_1px,transparent_1px),linear-gradient(to_bottom,#F7F7FA_1px,transparent_1px)]",
-          "dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]",
+          "dark:[background-image:linear-gradient(to_right,#121212_1px,transparent_1px),linear-gradient(to_bottom,#121212_1px,transparent_1px)]",
         )}
       >
         {/* <div
@@ -53,9 +54,16 @@ export default function RootLayout({
             "dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]",
           )}
         /> */}
-        <div className="mx-auto flex min-h-screen w-[80%] items-center justify-center sm:max-w-[70%] md:max-w-[60%] xl:max-w-[50%] dark:bg-black">
-          {children}
-        </div>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <div className="mx-auto flex min-h-screen w-[80%] items-center justify-center sm:max-w-[70%] md:max-w-[60%] xl:max-w-[50%]">
+            {children}
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
