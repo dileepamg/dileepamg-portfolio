@@ -16,18 +16,18 @@ const projects = [
       "Tracified Consumer App was designed to provide users with a seamless way to explore a product's journey. By scanning a QR code or barcode, users can intuitively access transparent, traceable information about the product's lifecycle.",
     tools: ["Figma"],
     figma: "#",
-    behance: "https://github.com/ronitjadhav/digipin-openlayers",
-    live: "https://digipin.maplabs.tech",
-    image: tracifiedConsumerAppImage, // Ensure this path is correct
+    behance: "#",
+    live: "#",
+    image: tracifiedConsumerAppImage,
   },
   {
     title: "QGIS Hub Plugin",
     description:
-      "Developed at Camptocamp with help from Ismail Sunni, this plugin allows QGIS users to easily browse and add resources from the QGIS Hub directly into their projects. It supports grid and list views, search, and filtering by resource type.",
+      "Developed at Camptocamp with hedesignedlp from Ismail Sunni, this plugin allows QGIS users to easily browse and add resources from the QGIS Hub directly into their projects. It supports grid and list views, search, and filtering by resource type.",
     tools: ["Figma", "Adobe Photoshop"],
     figma: "#",
-    behance: "https://github.com/qgis/QGIS-Hub-Plugin",
-    live: "https://plugins.qgis.org/plugins/qgis_hub_plugin/",
+    behance: "#",
+    live: "#",
     image: tracifiedConsumerAppImage,
   },
 ];
@@ -41,7 +41,7 @@ export default function WorkSection() {
             <h1 className="mb-2 text-3xl md:text-4xl">My Work</h1>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-8 p-4 md:grid-cols-2">
               {projects.map((project) => (
                 <div
                   key={project.title}

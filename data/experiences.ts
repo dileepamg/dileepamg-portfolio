@@ -2,6 +2,7 @@
 export const experiences = [
   {
     role: "Senior UI/UX Designer",
+    companylogo: "/company-logos/villvay.png",
     company: "Villvay Systems (Pvt) Ltd.",
     link: "https://villvay.com",
     year: "April 2024 - Present",

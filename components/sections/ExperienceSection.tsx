@@ -18,10 +18,12 @@ export default function ExperienceSection() {
             </h1>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="shadow-shadow bg-whit mx-1 rounded-lg border-2 dark:bg-black">
-              {experiences.map((exp) => (
-                <ExperienceCard key={exp.company} {...exp} />
-              ))}
+            <div className="px-4 pb-4">
+              <div className="shadow-shadow rounded-lg border-2 bg-white dark:bg-black">
+                {experiences.map((exp) => (
+                  <ExperienceCard key={exp.company} {...exp} />
+                ))}
+              </div>
             </div>
           </AccordionContent>
         </AccordionItem>
