@@ -36,7 +36,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html
+      lang="en"
+      className="scroll-smooth"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+    >
       <body
         className={cn(
           `${spaceGrotesk.variable} ${pixelifySans.variable} ${sedgewickAve.variable} antialiased`,
