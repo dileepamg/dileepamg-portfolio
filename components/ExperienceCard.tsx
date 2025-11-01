@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 import { LuArrowUpRight } from "react-icons/lu";
 
 type ExperienceCardProps = {
@@ -28,6 +29,14 @@ export default function ExperienceCard({
         <div className="w-full">
           <div className="flex flex-col gap-1 pb-2 align-top md:flex-row md:justify-between">
             <div className="flex flex-col gap-3 md:flex-row">
+              <div className="relative h-[50px] w-[50px]">
+                <Image
+                  src={companylogo}
+                  fill
+                  alt="Company Logo"
+                  className="object-contain"
+                />
+              </div>
               <div className="flex flex-col">
                 <a
                   href={link}

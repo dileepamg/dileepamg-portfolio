@@ -2,6 +2,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import {
+  Noto_Sans_Sinhala,
   Pixelify_Sans,
   Sedgwick_Ave_Display,
   Space_Grotesk,
@@ -25,6 +26,11 @@ const sedgewickAve = Sedgwick_Ave_Display({
   weight: ["400"],
 });
 
+const notoSansSinhala = Noto_Sans_Sinhala({
+  variable: "--font-notoSansSinhala",
+  weight: ["500"],
+});
+
 export const metadata: Metadata = {
   title: "DileepaMG Portfolio",
   description: "Portfolio of Dileepa Mahanama Galmangoda",
@@ -44,7 +50,7 @@ export default function RootLayout({
     >
       <body
         className={cn(
-          `${spaceGrotesk.variable} ${pixelifySans.variable} ${sedgewickAve.variable} antialiased`,
+          `${spaceGrotesk.variable} ${pixelifySans.variable} ${sedgewickAve.variable} ${notoSansSinhala.variable} antialiased`,
           "relative min-h-screen bg-white dark:bg-black",
           "[background-size:10px_10px]",
           "[background-image:linear-gradient(to_right,#F7F7FA_1px,transparent_1px),linear-gradient(to_bottom,#F7F7FA_1px,transparent_1px)]",
@@ -65,7 +71,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <div className="mx-auto flex min-h-screen w-[80%] items-center justify-center sm:max-w-[70%] md:max-w-[60%] lg:max-w-[50%] xl:max-w-[40%]">
+          <div className="mx-auto flex min-h-screen w-[90%] items-center justify-center sm:max-w-[70%] md:max-w-[60%] lg:max-w-[50%] 2xl:max-w-[40%]">
             {children}
           </div>
         </ThemeProvider>

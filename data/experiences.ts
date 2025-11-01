@@ -15,6 +15,7 @@ export const experiences = [
   },
   {
     role: "Multimedia Engineer",
+    companylogo: "/company-logos/tracified.png",
     company: "Tracified (Pvt) Ltd.",
     link: "https://tracified.com",
     year: "March 2022 - February 2024",
@@ -27,6 +28,7 @@ export const experiences = [
   },
   {
     role: "Designer - Remote",
+    companylogo: "/company-logos/kimp.png",
     company: "Kimp.io (Doto Media Inc.)",
     link: "https://www.kimp.io",
     year: "June 2020 - March 2022",
@@ -44,6 +46,7 @@ export const experiences = [
   },
   {
     role: "Digital Designer",
+    companylogo: "/company-logos/zmessenger.png",
     company: "zMessenger (Pvt) Ltd.",
     link: "https://www.zmessenger.com/",
     year: "November 2019 - June 2020",
@@ -62,6 +65,7 @@ export const experiences = [
   },
   {
     role: "Freelance Digital Strategist/Designer",
+    companylogo: "/company-logos/elements.png",
     company: "Elements Sri Lanka",
     link: "http://elements.lk",
     year: "January 2018 - September 2019",

@@ -53,7 +53,7 @@ export default function Nav() {
   return (
     <div
       className={clsx(
-        "fixed top-10 z-50 w-[80%] transition-transform duration-300 ease-in-out sm:max-w-[70%] md:max-w-[60%] lg:max-w-[50%] xl:max-w-[40%]",
+        "fixed top-10 z-50 w-[80%] transition-transform duration-300 ease-in-out sm:max-w-[70%] md:max-w-[60%] lg:max-w-[50%] 2xl:max-w-[40%]",
         {
           "-translate-y-[calc(100%+3rem)]": !isVisible,
           "translate-y-0": isVisible,
@@ -83,7 +83,7 @@ export default function Nav() {
       </nav>
 
       {/* Mobile Navigation */}
-      <div className="sm:hidden">
+      <div className="mx-5 sm:hidden">
         {/* Hamburger Button */}
         <button
           onClick={toggleMenu}
