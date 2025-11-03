@@ -4,19 +4,39 @@ import clsx from "clsx";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ThemeSwitcher } from "./theme-switcher";
 
 export default function Nav() {
   const path = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+
+  // Watch scroll direction to show/hide nav
+  useEffect(() => {
+    let lastScrollY = window.pageYOffset;
+    const handleScroll = () => {
+      const currentScrollY = window.pageYOffset;
+      if (currentScrollY < lastScrollY) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const links = [
     {
-      path: "/",
-      text: "Home",
+      path: "/#about",
+      text: "About",
     },
     {
-      path: "/about",
-      text: "About",
+      path: "/#experience",
+      text: "Experience",
     },
     {
       path: "/#work",
@@ -31,16 +51,31 @@ export default function Nav() {
     setIsOpen(false);
   };
   return (
-    <div className="fixed top-5 left-5 z-50 w-full">
+    <div
+      className={clsx(
+        "fixed top-10 z-50 w-[80%] transition-transform duration-300 ease-in-out sm:max-w-[70%] md:max-w-[60%] lg:max-w-[50%] 2xl:max-w-[40%]",
+        {
+          "-translate-y-[calc(100%+3rem)]": !isVisible,
+          "translate-y-0": isVisible,
+        },
+      )}
+    >
       {/* Desktop Navigation */}
-      <nav className="text-main-foreground border-border shadow-shadow rounded-base bg-secondary-background font-base mx-auto hidden w-max gap-5 border-2 p-2.5 px-5 text-sm sm:flex sm:text-base">
+      <nav className="border-border bg-secondary-background font-base shadow-shadow mx-auto hidden items-center gap-2 rounded-lg border-2 p-2.5 px-5 text-sm sm:flex sm:text-base lg:gap-5">
+        <a
+          href="/"
+          className="w-full [font-family:var(--font-sedgewickAve)] text-3xl sm:text-2xl"
+        >
+          Dileepa·G
+        </a>
+
         {links.map((link) => {
           return (
             <Link
               key={link.path}
               className={clsx(
-                "hover:border-border rounded-base border-2 px-2 py-1 transition-colors",
-                path === link.path ? "border-border" : "border-transparent",
+                "px-2 py-2 transition-transform duration-300 hover:rotate-5",
+                path === link.path,
               )}
               href={link.path}
             >
@@ -48,14 +83,15 @@ export default function Nav() {
             </Link>
           );
         })}
+        <ThemeSwitcher />
       </nav>
 
       {/* Mobile Navigation */}
-      <div className="sm:hidden">
+      <div className="mx-5 sm:hidden">
         {/* Hamburger Button */}
         <button
           onClick={toggleMenu}
-          className="text-main-foreground border-border shadow-shadow rounded-base bg-main ml-5 flex items-center justify-center border-2 p-2.5"
+          className="text-main-foreground border-border shadow-shadow rounded-base bg-secondary-background flex items-center justify-center border-2 p-2.5"
           aria-label="Toggle menu"
         >
           {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -65,23 +101,21 @@ export default function Nav() {
         {isOpen && (
           <>
             {/* Backdrop */}
-            <div
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm"
-              onClick={closeMenu}
-            />
+            <div className="fixed inset-0" onClick={closeMenu} />
 
             {/* Menu Content */}
-            <div className="text-main-foreground border-border shadow-shadow rounded-base bg-main absolute top-16 right-5 left-5 border-2 p-4">
+            <div className="text-main-foreground border-border shadow-shadow rounded-base bg-secondary-background absolute top-16 w-full border-2 p-4">
               <div className="flex flex-col gap-2">
+                <p className="w-full pb-4 text-center [font-family:var(--font-sedgewickAve)] text-3xl">
+                  Dileepa·G
+                </p>
                 {links.map((link) => {
                   return (
                     <Link
                       key={link.path}
                       className={clsx(
-                        "hover:border-border rounded-base border-2 px-3 py-2 text-center transition-colors",
-                        path === link.path
-                          ? "border-border"
-                          : "border-transparent",
+                        "rounded-base border-2 px-3 py-2 text-center",
+                        path === link.path,
                       )}
                       href={link.path}
                       onClick={closeMenu}
