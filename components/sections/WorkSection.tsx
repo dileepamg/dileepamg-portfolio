@@ -7,7 +7,6 @@ import {
 import tracifiedConsumerAppImage from "@/media/tracified-consumer-app.jpg";
 import { IconBrandBehance, IconBrandFigma } from "@tabler/icons-react";
 import Image from "next/image";
-import { LuExternalLink } from "react-icons/lu";
 
 const projects = [
   {
@@ -20,16 +19,16 @@ const projects = [
     live: "#",
     image: tracifiedConsumerAppImage,
   },
-  {
-    title: "QGIS Hub Plugin",
-    description:
-      "Developed at Camptocamp with hedesignedlp from Ismail Sunni, this plugin allows QGIS users to easily browse and add resources from the QGIS Hub directly into their projects. It supports grid and list views, search, and filtering by resource type.",
-    tools: ["Figma", "Adobe Photoshop"],
-    figma: "#",
-    behance: "#",
-    live: "#",
-    image: tracifiedConsumerAppImage,
-  },
+  // {
+  //   title: "QGIS Hub Plugin",
+  //   description:
+  //     "Developed at Camptocamp with hedesignedlp from Ismail Sunni, this plugin allows QGIS users to easily browse and add resources from the QGIS Hub directly into their projects. It supports grid and list views, search, and filtering by resource type.",
+  //   tools: ["Figma", "Adobe Photoshop"],
+  //   figma: "#",
+  //   behance: "#",
+  //   live: "#",
+  //   image: tracifiedConsumerAppImage,
+  // },
 ];
 
 export default function WorkSection() {
@@ -38,14 +37,14 @@ export default function WorkSection() {
       <Accordion type="single" collapsible defaultValue="item-1">
         <AccordionItem value="item-1">
           <AccordionTrigger>
-            <h1 className="mb-2 text-3xl md:text-4xl">My Work</h1>
+            <h1 className="mb-2 text-2xl md:text-3xl">My Work</h1>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="grid grid-cols-1 gap-8 p-4 md:grid-cols-2">
+            <div className="my-4 ml-2 grid grid-cols-1 gap-8 pr-2 md:grid-cols-1 lg:grid-cols-2">
               {projects.map((project) => (
                 <div
                   key={project.title}
-                  className="group bg-bg dark:bg-darkBg shadow-shadow transform rounded-lg border-3 p-6 transition-transform hover:scale-102"
+                  className="group dark:bg-darkBg shadow-shadow transform rounded-lg border-3 bg-white p-6 transition-transform hover:scale-102 dark:bg-black"
                 >
                   <div className="relative mb-4 w-full overflow-hidden rounded-lg">
                     <Image
@@ -98,7 +97,7 @@ export default function WorkSection() {
                         Behance
                       </a>
                     </div>
-                    <div className="flex w-full gap-4">
+                    {/* <div className="flex w-full gap-4">
                       <a
                         href={project.live}
                         target="_blank"
@@ -108,7 +107,7 @@ export default function WorkSection() {
                         <LuExternalLink size={20} />
                         Live Demo
                       </a>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               ))}

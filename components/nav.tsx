@@ -31,12 +31,12 @@ export default function Nav() {
 
   const links = [
     {
-      path: "/",
+      path: "/#about",
       text: "About",
     },
     {
-      path: "/#career",
-      text: "Career",
+      path: "/#experience",
+      text: "Experience",
     },
     {
       path: "/#work",
@@ -61,10 +61,14 @@ export default function Nav() {
       )}
     >
       {/* Desktop Navigation */}
-      <nav className="border-border bg-secondary-background font-base shadow-shadow mx-auto hidden gap-5 rounded-lg border-2 p-2.5 px-5 text-sm sm:flex sm:text-base">
-        <p className="w-full [font-family:var(--font-sedgewickAve)] text-3xl">
+      <nav className="border-border bg-secondary-background font-base shadow-shadow mx-auto hidden items-center gap-2 rounded-lg border-2 p-2.5 px-5 text-sm sm:flex sm:text-base lg:gap-5">
+        <a
+          href="/"
+          className="w-full [font-family:var(--font-sedgewickAve)] text-3xl sm:text-2xl"
+        >
           Dileepa·G
-        </p>
+        </a>
+
         {links.map((link) => {
           return (
             <Link

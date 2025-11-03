@@ -32,7 +32,7 @@ const notoSansSinhala = Noto_Sans_Sinhala({
 });
 
 export const metadata: Metadata = {
-  title: "DileepaMG Portfolio",
+  title: "Dileepa Galmangoda | Portfolio",
   description: "Portfolio of Dileepa Mahanama Galmangoda",
 };
 
@@ -71,9 +71,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <div className="mx-auto flex min-h-screen w-[90%] items-center justify-center sm:max-w-[70%] md:max-w-[60%] lg:max-w-[50%] 2xl:max-w-[40%]">
-            {children}
-          </div>
+          {children}
         </ThemeProvider>
       </body>
     </html>

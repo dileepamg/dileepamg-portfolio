@@ -11,7 +11,7 @@ export function ThemeSwitcher() {
   return (
     <Button
       size="icon"
-      className="relative h-10 w-20"
+      className="relative min-h-10 min-w-10"
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
     >
       <Sun className="stroke-text w500:h-4 w500:w-4 hidden h-6 w-6 dark:inline" />

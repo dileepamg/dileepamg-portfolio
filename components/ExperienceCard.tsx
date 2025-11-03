@@ -24,12 +24,12 @@ export default function ExperienceCard({
   techStacks,
 }: ExperienceCardProps) {
   return (
-    <div className="border-b-2 border-b-gray-300 p-5">
+    <div className="border-b-2 border-b-gray-300 p-5 last:border-b-0">
       <div className="flex flex-col md:flex-row md:justify-between">
         <div className="w-full">
-          <div className="flex flex-col gap-1 pb-2 align-top md:flex-row md:justify-between">
+          <div className="flex flex-col items-start gap-1 pb-2 align-top md:justify-between xl:flex-row">
             <div className="flex flex-col gap-3 md:flex-row">
-              <div className="relative h-[50px] w-[50px]">
+              <div className="relative m-1 h-[50px] w-[50px]">
                 <Image
                   src={companylogo}
                   fill
@@ -38,21 +38,20 @@ export default function ExperienceCard({
                 />
               </div>
               <div className="flex flex-col">
+                <p className="text-xl font-bold text-[#ff4d50]">{role}</p>
                 <a
                   href={link}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`${company} (opens in new tab)`}
                 >
-                  <h2 className="flex items-center text-xl font-bold hover:underline">
+                  <p className="flex items-center text-base hover:underline">
                     {company}
                     <span className="ml-1" aria-hidden="true">
                       <LuArrowUpRight />
                     </span>
-                  </h2>
+                  </p>
                 </a>
-
-                <p className="text-base text-[#ff4d50]">{role}</p>
               </div>
             </div>
             <div className="flex justify-between text-sm font-semibold text-gray-500 md:justify-end md:gap-4">
