@@ -40,7 +40,7 @@ export default function Footer() {
           <p>
             Devs pls don't roast me{" 🥺 "}
             <a
-              href="#"
+              href="https://github.com/dileepamg/dileepamg-portfolio"
               target="_blank"
               className="text-main after:content-['_↗'] hover:underline"
             >
