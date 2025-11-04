@@ -8,6 +8,11 @@ import {
   Space_Grotesk,
 } from "next/font/google";
 import "./globals.css";
+
+export const PRODUCTION_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : "https://localhost:3000";
+
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
@@ -34,6 +39,16 @@ const notoSansSinhala = Noto_Sans_Sinhala({
 export const metadata: Metadata = {
   title: "Dileepa Galmangoda | Portfolio",
   description: "Portfolio of Dileepa Mahanama Galmangoda",
+  metadataBase: new URL(PRODUCTION_URL),
+  openGraph: {
+    title: {
+      default: "Dileepa Galmangoda",
+      template: "%s | Dileepa Galmangoda",
+    },
+    description: "UI/UX Designer",
+    url: "/",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

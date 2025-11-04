@@ -48,7 +48,7 @@ export default function AboutSection() {
             </a>
           </div>
         </div>
-        <div className="relative order-1 h-[200px] w-[154px] md:order-2 md:h-[300px] md:w-[231px]">
+        <div className="shadow-shadow-2xl relative order-1 h-[300px] w-[300px] overflow-hidden rounded-4xl md:order-2 md:h-[320px] md:w-[320px]">
           <Image
             src="/dileepa-g.png"
             fill
