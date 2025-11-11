@@ -4,6 +4,7 @@ import AboutSection from "@/components/sections/AboutSection";
 import AiDisclaimer from "@/components/sections/AiDisclaimer";
 import ExperienceSection from "@/components/sections/ExperienceSection";
 import Footer from "@/components/sections/Footer";
+import WorkSection from "@/components/sections/WorkSection";
 import ProfileStructuredData from "@/components/structured-data/profile";
 import { Suspense } from "react";
 
@@ -18,7 +19,7 @@ export default function Home() {
           <AboutSection />
           <div>
             <ExperienceSection />
-            {/* <WorkSection /> */}
+            <WorkSection />
             <AiDisclaimer />
           </div>
         </div>

@@ -1,6 +1,21 @@
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import WelcomeText from "@/components/WelcomeText";
 import Image from "next/image";
 import { FaBehance, FaGithub, FaLinkedin } from "react-icons/fa6";
+
+import { LuArrowRight, LuDownload } from "react-icons/lu";
 export default function AboutSection() {
   return (
     <section id="about" className="scroll-mt-16 pt-35 align-top">
@@ -10,14 +25,53 @@ export default function AboutSection() {
           <p className="mt-1 [font-family:var(--font-pixelifysans)] text-xl md:text-2xl">
             UI/UX Designer
           </p>
-          <p className="text-md mt-4 break-words sm:text-lg md:mt-8">
-            <WelcomeText /> 🙏 I design experiences around real people and clear
-            goals. My work starts with user behaviour and ends with outcomes the
-            business can feel. Currently working as a Senior UI/UX Designer at
-            Villvay, focused on turning complex ideas into interfaces that are
-            simple, dependable, and a little more thoughtful every day.
+          <p className="text-md mt-4 text-pretty break-words sm:text-lg md:mt-8">
+            <WelcomeText /> 🙏 I make complex journeys feel straightforward by
+            shaping content, prototyping ideas, and keeping accessibility and
+            consistency in view. In practice, that means clear language,
+            predictable patterns, and flows that help people finish what they
+            start without friction. Currently, I’m a Senior UI/UX Designer at
+            Villvay.
           </p>
+          <Dialog>
+            <div className="flex flex-row gap-4 py-4">
+              <Button variant="neutral">
+                Download CV <LuDownload />
+              </Button>
+              <DialogTrigger asChild>
+                <Button>
+                  Contact Me <LuArrowRight />
+                </Button>
+              </DialogTrigger>
+            </div>
 
+            <form>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Contact Dileepa</DialogTitle>
+                  <DialogDescription>
+                    Fill this form to get in touch.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4">
+                  <div className="grid gap-3">
+                    <Label htmlFor="name-1">Name</Label>
+                    <Input id="name-1" name="name" />
+                  </div>
+                  <div className="grid gap-3">
+                    <Label htmlFor="email-1">Email</Label>
+                    <Input id="email-1" name="email" type="email" />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="neutral">Cancel</Button>
+                  </DialogClose>
+                  <Button type="submit">Send</Button>
+                </DialogFooter>
+              </DialogContent>
+            </form>
+          </Dialog>
           <div className="mt-6 flex justify-start space-x-5">
             {/* <a href="#" target="_blank">
               <IconBrandFigma
@@ -48,11 +102,11 @@ export default function AboutSection() {
             </a>
           </div>
         </div>
-        <div className="shadow-shadow-2xl relative order-1 h-[300px] w-[300px] overflow-hidden rounded-4xl md:order-2 md:h-[320px] md:w-[320px]">
+        <div className="shadow-shadow-2xl relative order-1 h-[200px] w-[200px] overflow-hidden rounded-4xl md:order-2 md:h-[300px] md:w-[300px]">
           <Image
             src="/dileepa-g.png"
             fill
-            className="object-contain"
+            className="object-cover"
             alt="Portrait"
           />
         </div>
