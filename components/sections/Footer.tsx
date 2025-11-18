@@ -49,7 +49,7 @@ export default function Footer() {
           </p>
         </span>
         <span className="order-1 space-y-1 text-center text-xs font-light sm:order-2 sm:text-right">
-          <p>{year} &copy; Dileepa Galmangoda</p>
+          <p>{year} &copy; Dileepa Mahanama Galmangoda</p>
           <p className="text-neutral-400">
             Thanks for the inspo{" 💙 "}
             <a

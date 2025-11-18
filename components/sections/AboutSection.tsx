@@ -1,21 +1,11 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import WelcomeText from "@/components/WelcomeText";
+import ProfilePic from "@/public/dileepa-g.png";
 import Image from "next/image";
+import Link from "next/link";
 import { FaBehance, FaGithub, FaLinkedin } from "react-icons/fa6";
 
-import { LuArrowRight, LuDownload } from "react-icons/lu";
+import { LuDownload, LuSend } from "react-icons/lu";
 export default function AboutSection() {
   return (
     <section id="about" className="scroll-mt-16 pt-35 align-top">
@@ -26,52 +16,27 @@ export default function AboutSection() {
             UI/UX Designer
           </p>
           <p className="text-md mt-4 text-pretty break-words sm:text-lg md:mt-8">
-            <WelcomeText /> 🙏 I make complex journeys feel straightforward by
-            shaping content, prototyping ideas, and keeping accessibility and
-            consistency in view. In practice, that means clear language,
-            predictable patterns, and flows that help people finish what they
-            start without friction. Currently, I’m a Senior UI/UX Designer at
+            <WelcomeText /> 🙏 I design digital experiences that feel natural
+            and engaging by refining interfaces, content and prototypes.
+            Alongside my UI/UX work, I also create visuals and digital content
+            across different formats. Currently, I’m a Senior UI/UX Designer at
             Villvay.
           </p>
-          <Dialog>
-            <div className="flex flex-row gap-4 py-4">
-              <Button variant="neutral">
-                Download CV <LuDownload />
-              </Button>
-              <DialogTrigger asChild>
-                <Button>
-                  Contact Me <LuArrowRight />
-                </Button>
-              </DialogTrigger>
-            </div>
 
-            <form>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Contact Dileepa</DialogTitle>
-                  <DialogDescription>
-                    Fill this form to get in touch.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4">
-                  <div className="grid gap-3">
-                    <Label htmlFor="name-1">Name</Label>
-                    <Input id="name-1" name="name" />
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="email-1">Email</Label>
-                    <Input id="email-1" name="email" type="email" />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="neutral">Cancel</Button>
-                  </DialogClose>
-                  <Button type="submit">Send</Button>
-                </DialogFooter>
-              </DialogContent>
-            </form>
-          </Dialog>
+          <div className="flex flex-row gap-4 py-4">
+            <Button asChild variant="neutral">
+              <Link href="/DileepaG-CV-2025.pdf" download>
+                Download CV <LuDownload />
+              </Link>
+            </Button>
+
+            <Button asChild>
+              <a href="mailto:dileepagalmangoda@gmail.com">
+                Contact Me <LuSend />
+              </a>
+            </Button>
+          </div>
+
           <div className="mt-6 flex justify-start space-x-5">
             {/* <a href="#" target="_blank">
               <IconBrandFigma
@@ -102,10 +67,11 @@ export default function AboutSection() {
             </a>
           </div>
         </div>
-        <div className="shadow-shadow-2xl relative order-1 h-[200px] w-[200px] overflow-hidden rounded-4xl md:order-2 md:h-[300px] md:w-[300px]">
+        <div className="shadow-shadow-2xl relative order-1 min-h-[200px] min-w-[200px] overflow-hidden rounded-4xl md:order-2 md:h-[300px] md:w-[300px]">
           <Image
-            src="/dileepa-g.png"
+            src={ProfilePic}
             fill
+            placeholder="blur"
             className="object-cover"
             alt="Portrait"
           />

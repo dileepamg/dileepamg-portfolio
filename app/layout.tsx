@@ -37,12 +37,12 @@ const notoSansSinhala = Noto_Sans_Sinhala({
 });
 
 export const metadata: Metadata = {
-  title: "Dileepa Galmangoda | Portfolio",
+  title: "Dileepa Mahanama Galmangoda",
   description: "Portfolio of Dileepa Mahanama Galmangoda",
   metadataBase: new URL(PRODUCTION_URL),
   openGraph: {
     title: {
-      default: "Dileepa Galmangoda",
+      default: "Dileepa Mahanama Galmangoda",
       template: "%s | Dileepa Galmangoda",
     },
     description: "UI/UX Designer",
