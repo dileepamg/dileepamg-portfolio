@@ -35,12 +35,16 @@ export default function Nav() {
       text: "About",
     },
     {
+      path: "/#work",
+      text: "Work",
+    },
+    {
       path: "/#experience",
       text: "Experience",
     },
     {
-      path: "/#work",
-      text: "Work",
+      path: "/#fun",
+      text: "Fun",
     },
   ];
   const toggleMenu = () => {
@@ -53,7 +57,7 @@ export default function Nav() {
   return (
     <div
       className={clsx(
-        "fixed top-10 z-50 w-[80%] transition-transform duration-300 ease-in-out sm:max-w-[70%] md:max-w-[60%] lg:max-w-[50%] 2xl:max-w-[40%]",
+        "fixed top-10 z-50 w-[80%] transition-transform duration-300 ease-in-out sm:max-w-[70%] lg:max-w-[60%] 2xl:max-w-[40%]",
         {
           "-translate-y-[calc(100%+3rem)]": !isVisible,
           "translate-y-0": isVisible,
@@ -61,7 +65,7 @@ export default function Nav() {
       )}
     >
       {/* Desktop Navigation */}
-      <nav className="border-border bg-secondary-background font-base shadow-shadow mx-auto hidden items-center gap-2 rounded-lg border-2 p-2.5 px-5 text-sm sm:flex sm:text-base lg:gap-5">
+      <nav className="border-border bg-secondary-background font-base shadow-shadow mx-auto hidden items-center gap-2 rounded-lg border-2 p-2.5 px-5 text-sm sm:flex sm:text-base lg:gap-4">
         <a
           href="/"
           className="w-full [font-family:var(--font-sedgewickAve)] text-3xl sm:text-2xl"
@@ -106,9 +110,12 @@ export default function Nav() {
             {/* Menu Content */}
             <div className="text-main-foreground border-border shadow-shadow rounded-base bg-secondary-background absolute top-16 w-full border-2 p-4">
               <div className="flex flex-col gap-2">
-                <p className="w-full pb-4 text-center [font-family:var(--font-sedgewickAve)] text-3xl">
-                  Dileepa·G
-                </p>
+                <div className="flex w-full flex-row justify-between pb-4">
+                  <p className="text-center [font-family:var(--font-sedgewickAve)] text-3xl">
+                    Dileepa·G
+                  </p>
+                  <ThemeSwitcher />
+                </div>
                 {links.map((link) => {
                   return (
                     <Link

@@ -4,43 +4,21 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import tracifiedConsumerAppImage from "@/media/tracified-consumer-app.jpg";
-import { IconBrandBehance, IconBrandFigma } from "@tabler/icons-react";
+import { projects } from "@/data/projects";
+
+import { IconBrandBehance } from "@tabler/icons-react";
+
 import Image from "next/image";
-
-const projects = [
-  {
-    title: "Tracified Consumer App",
-    description:
-      "Tracified Consumer App was designed to provide users with a seamless way to explore a product's journey. By scanning a QR code or barcode, users can intuitively access transparent, traceable information about the product's lifecycle.",
-    tools: ["Figma"],
-    figma: "#",
-    behance: "#",
-    live: "#",
-    image: tracifiedConsumerAppImage,
-  },
-  // {
-  //   title: "QGIS Hub Plugin",
-  //   description:
-  //     "Developed at Camptocamp with hedesignedlp from Ismail Sunni, this plugin allows QGIS users to easily browse and add resources from the QGIS Hub directly into their projects. It supports grid and list views, search, and filtering by resource type.",
-  //   tools: ["Figma", "Adobe Photoshop"],
-  //   figma: "#",
-  //   behance: "#",
-  //   live: "#",
-  //   image: tracifiedConsumerAppImage,
-  // },
-];
-
 export default function WorkSection() {
   return (
     <section id="work" className="scroll-mt-16">
       <Accordion type="single" collapsible defaultValue="item-1">
         <AccordionItem value="item-1">
           <AccordionTrigger>
-            <h1 className="mb-2 text-2xl md:text-3xl">My Work</h1>
+            <h1 className="mb-2 text-2xl md:text-3xl">Featured Work</h1>
           </AccordionTrigger>
           <AccordionContent>
-            <div className="my-4 ml-2 grid grid-cols-1 gap-8 pr-2 md:grid-cols-1 lg:grid-cols-2">
+            <div className="my-2 ml-2 grid grid-cols-1 gap-8 pr-2 md:grid-cols-2 lg:grid-cols-3">
               {projects.map((project) => (
                 <div
                   key={project.title}
@@ -51,15 +29,15 @@ export default function WorkSection() {
                       src={project.image}
                       alt={project.title}
                       className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                      width={600}
-                      height={469}
+                      width={200}
+                      height={150}
                     />
                   </div>
 
-                  <h3 className="mb-2 transform text-2xl font-bold">
+                  <h3 className="mb-3 transform text-2xl font-bold">
                     {project.title}
                   </h3>
-                  <div className="mb-4 flex flex-wrap gap-2">
+                  {/* <div className="mb-4 hidden gap-2 sm:flex sm:flex-wrap">
                     {project.tools.map((tools) => (
                       <span
                         key={tools}
@@ -71,14 +49,14 @@ export default function WorkSection() {
                         {tools}
                       </span>
                     ))}
-                  </div>
-                  <p className="dark:text-darkText sm:text-md mb-4 text-sm">
+                  </div> */}
+                  <p className="dark:text-darkText sm:text-md mb-4 hidden text-sm text-pretty sm:block">
                     {project.description}
                   </p>
 
                   <div className="flex flex-col gap-4">
                     <div className="flex w-full gap-4">
-                      <a
+                      {/* <a
                         href={project.figma}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -86,7 +64,7 @@ export default function WorkSection() {
                       >
                         <IconBrandFigma />
                         Figma
-                      </a>
+                      </a> */}
                       <a
                         href={project.behance}
                         target="_blank"
@@ -94,7 +72,7 @@ export default function WorkSection() {
                         className="shadow-shadow flex w-full transform items-center gap-2 border-2 bg-blue-400 px-2 py-2 text-black transition-transform hover:-translate-y-1 dark:text-black"
                       >
                         <IconBrandBehance />
-                        Behance
+                        View on Behance <span className="ml-auto">↗</span>
                       </a>
                     </div>
                     {/* <div className="flex w-full gap-4">

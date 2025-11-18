@@ -1,6 +1,11 @@
+import { Button } from "@/components/ui/button";
 import WelcomeText from "@/components/WelcomeText";
+import ProfilePic from "@/public/dileepa-g.png";
 import Image from "next/image";
+import Link from "next/link";
 import { FaBehance, FaGithub, FaLinkedin } from "react-icons/fa6";
+
+import { LuDownload, LuSend } from "react-icons/lu";
 export default function AboutSection() {
   return (
     <section id="about" className="scroll-mt-16 pt-35 align-top">
@@ -10,13 +15,27 @@ export default function AboutSection() {
           <p className="mt-1 [font-family:var(--font-pixelifysans)] text-xl md:text-2xl">
             UI/UX Designer
           </p>
-          <p className="text-md mt-4 break-words sm:text-lg md:mt-8">
-            <WelcomeText /> 🙏 I design experiences around real people and clear
-            goals. My work starts with user behaviour and ends with outcomes the
-            business can feel. Currently working as a Senior UI/UX Designer at
-            Villvay, focused on turning complex ideas into interfaces that are
-            simple, dependable, and a little more thoughtful every day.
+          <p className="text-md mt-4 text-pretty break-words sm:text-lg md:mt-8">
+            <WelcomeText /> 🙏 I design digital experiences that feel natural
+            and engaging by refining interfaces, content and prototypes.
+            Alongside my UI/UX work, I also create visuals and digital content
+            across different formats. Currently, I’m a Senior UI/UX Designer at
+            Villvay.
           </p>
+
+          <div className="flex flex-row gap-4 py-4">
+            <Button asChild variant="neutral">
+              <Link href="/DileepaG-CV-2025.pdf" download>
+                Download CV <LuDownload />
+              </Link>
+            </Button>
+
+            <Button asChild>
+              <a href="mailto:dileepagalmangoda@gmail.com">
+                Contact Me <LuSend />
+              </a>
+            </Button>
+          </div>
 
           <div className="mt-6 flex justify-start space-x-5">
             {/* <a href="#" target="_blank">
@@ -48,11 +67,12 @@ export default function AboutSection() {
             </a>
           </div>
         </div>
-        <div className="shadow-shadow-2xl relative order-1 h-[300px] w-[300px] overflow-hidden rounded-4xl md:order-2 md:h-[320px] md:w-[320px]">
+        <div className="shadow-shadow-2xl relative order-1 min-h-[200px] min-w-[200px] overflow-hidden rounded-4xl md:order-2 md:h-[300px] md:w-[300px]">
           <Image
-            src="/dileepa-g.png"
+            src={ProfilePic}
             fill
-            className="object-contain"
+            placeholder="blur"
+            className="object-cover"
             alt="Portrait"
           />
         </div>

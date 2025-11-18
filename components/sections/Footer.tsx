@@ -10,7 +10,7 @@ export default function Footer() {
   return (
     <footer id="footer" className="mt-20 w-full bg-neutral-800 text-white">
       <div className="mx-auto flex w-[90%] flex-col-reverse items-center justify-center gap-4 py-10 sm:max-w-[70%] md:max-w-[60%] md:flex-row md:justify-between lg:max-w-[50%] 2xl:max-w-[40%]">
-        <span className="space-y-1 text-center text-xs font-light sm:text-left">
+        <span className="order-2 space-y-1 text-center text-xs font-light sm:order-1 sm:text-left">
           <p>
             Built with{" "}
             <a
@@ -48,8 +48,8 @@ export default function Footer() {
             </a>
           </p>
         </span>
-        <span className="space-y-1 text-center text-xs font-light sm:text-right">
-          <p>{year} &copy; Dileepa Galmangoda</p>
+        <span className="order-1 space-y-1 text-center text-xs font-light sm:order-2 sm:text-right">
+          <p>{year} &copy; Dileepa Mahanama Galmangoda</p>
           <p className="text-neutral-400">
             Thanks for the inspo{" 💙 "}
             <a
