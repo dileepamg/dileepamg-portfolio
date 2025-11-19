@@ -38,6 +38,9 @@ importers:
       lucide-react:
         specifier: ^0.513.0
         version: 0.513.0(react@19.1.0)
+      media-chrome:
+        specifier: ^4.16.0
+        version: 4.16.0(react@19.1.0)
       motion:
         specifier: ^12.23.24
         version: 12.23.24(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -50,6 +53,9 @@ importers:
       next-video:
         specifier: ^2.5.1
         version: 2.5.1(@types/node@20.17.57)(@types/react-dom@19.1.6(@types/react@19.1.6))(@types/react@19.1.6)(next@16.0.0(babel-plugin-react-compiler@1.0.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      player.style:
+        specifier: ^0.3.0
+        version: 0.3.0(react@19.1.0)
       react:
         specifier: ^19.0.0
         version: 19.1.0

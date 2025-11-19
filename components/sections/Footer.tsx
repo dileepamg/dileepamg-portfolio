@@ -9,7 +9,7 @@ export default function Footer() {
 
   return (
     <footer id="footer" className="mt-20 w-full bg-neutral-800 text-white">
-      <div className="mx-auto flex w-[90%] flex-col-reverse items-center justify-center gap-4 py-10 sm:max-w-[70%] md:max-w-[60%] md:flex-row md:justify-between lg:max-w-[50%] 2xl:max-w-[40%]">
+      <div className="mx-auto flex w-[90%] flex-col-reverse items-center justify-center gap-4 py-10 sm:max-w-[70%] md:max-w-[60%] md:flex-row md:justify-between 2xl:max-w-[40%]">
         <span className="order-2 space-y-1 text-center text-xs font-light sm:order-1 sm:text-left">
           <p>
             Built with{" "}

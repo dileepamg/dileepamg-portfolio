@@ -95,7 +95,7 @@ export default function Nav() {
         {/* Hamburger Button */}
         <button
           onClick={toggleMenu}
-          className="text-main-foreground border-border shadow-shadow rounded-base bg-secondary-background flex items-center justify-center border-2 p-2.5"
+          className="border-border shadow-shadow rounded-base bg-secondary-background flex items-center justify-center border-2 p-2.5"
           aria-label="Toggle menu"
         >
           {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -108,7 +108,7 @@ export default function Nav() {
             <div className="fixed inset-0" onClick={closeMenu} />
 
             {/* Menu Content */}
-            <div className="text-main-foreground border-border shadow-shadow rounded-base bg-secondary-background absolute top-16 w-full border-2 p-4">
+            <div className="border-border shadow-shadow rounded-base bg-secondary-background absolute top-16 w-full border-2 p-4">
               <div className="flex flex-col gap-2">
                 <div className="flex w-full flex-row justify-between pb-4">
                   <p className="text-center [font-family:var(--font-sedgewickAve)] text-3xl">
