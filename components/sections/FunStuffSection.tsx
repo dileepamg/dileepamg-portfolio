@@ -1,3 +1,4 @@
+import ReelplayTheme from "@/components/ReelplayTheme";
 import {
   Accordion,
   AccordionContent,
@@ -23,7 +24,7 @@ export default function FunStuffSection() {
                     key={video.id}
                     className="shadow-shadow overflow-hidden rounded-lg border-2"
                   >
-                    <Video src={video.src} />
+                    <Video src={video.src} slot="media" theme={ReelplayTheme} />
                   </div>
                 ))}
               </div>

@@ -3,9 +3,9 @@ import WelcomeText from "@/components/WelcomeText";
 import ProfilePic from "@/public/dileepa-g.png";
 import Image from "next/image";
 import Link from "next/link";
-import { FaBehance, FaGithub, FaLinkedin } from "react-icons/fa6";
+import { FaBehance, FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
+import { LuCalendarDays, LuDownload } from "react-icons/lu";
 
-import { LuDownload, LuSend } from "react-icons/lu";
 export default function AboutSection() {
   return (
     <section id="about" className="scroll-mt-16 pt-35 align-top">
@@ -26,13 +26,16 @@ export default function AboutSection() {
           <div className="flex flex-row gap-4 py-4">
             <Button asChild variant="neutral">
               <Link href="/DileepaG-CV-2025.pdf" download>
-                Download CV <LuDownload />
+                <LuDownload /> Download CV
               </Link>
             </Button>
 
             <Button asChild>
-              <a href="mailto:dileepagalmangoda@gmail.com">
-                Contact Me <LuSend />
+              <a
+                href="https://calendar.app.google/3QVZ8AywYnCyzrpLA"
+                target="_blank"
+              >
+                <LuCalendarDays /> Schedule a Call
               </a>
             </Button>
           </div>
@@ -55,6 +58,12 @@ export default function AboutSection() {
               target="_blank"
             >
               <FaLinkedin
+                size="32px"
+                className="bg-white opacity-60 hover:opacity-100 dark:bg-black"
+              />
+            </a>
+            <a href="https://x.com/xaradiyel/" target="_blank">
+              <FaXTwitter
                 size="32px"
                 className="bg-white opacity-60 hover:opacity-100 dark:bg-black"
               />
