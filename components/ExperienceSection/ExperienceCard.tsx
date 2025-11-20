@@ -3,26 +3,13 @@
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { LuArrowUpRight } from "react-icons/lu";
+import { type CareerPosition } from "./data";
 
 type ExperienceCardProps = {
-  role: string;
-  link: string;
-  companylogo: string;
-  company: string;
-  year: string;
-  responsibility: readonly string[];
-  techStacks: readonly string[];
+  position: CareerPosition;
 };
 
-export default function ExperienceCard({
-  role,
-  link,
-  companylogo,
-  company,
-  year,
-  responsibility,
-  techStacks,
-}: ExperienceCardProps) {
+export default function ExperienceCard({ position }: ExperienceCardProps) {
   return (
     <div className="border-b-2 border-b-gray-300 p-5 last:border-b-0">
       <div className="flex flex-col md:flex-row md:justify-between">
@@ -31,22 +18,31 @@ export default function ExperienceCard({
             <div className="flex flex-col gap-3 md:flex-row">
               <div className="relative m-1 h-[50px] w-[50px]">
                 <Image
-                  src={companylogo}
+                  src={position.companylogoLight}
                   fill
                   alt="Company Logo"
-                  className="object-contain"
+                  className="object-contain dark:hidden"
+                />
+
+                <Image
+                  src={position.companyLogoDark}
+                  fill
+                  alt="Company Logo"
+                  className="hidden object-contain dark:block"
                 />
               </div>
               <div className="flex flex-col">
-                <p className="text-xl font-bold text-[#ff4d50]">{role}</p>
+                <p className="text-xl font-bold text-[#ff4d50]">
+                  {position.role}
+                </p>
                 <a
-                  href={link}
+                  href={position.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`${company} (opens in new tab)`}
+                  aria-label={`${position.company} (opens in new tab)`}
                 >
                   <p className="flex items-center text-base hover:underline">
-                    {company}
+                    {position.company}
                     <span className="ml-1" aria-hidden="true">
                       <LuArrowUpRight />
                     </span>
@@ -55,12 +51,12 @@ export default function ExperienceCard({
               </div>
             </div>
             <div className="flex justify-between text-sm font-semibold text-gray-500 md:justify-end md:gap-4">
-              <code>{year}</code>
+              <code>{position.year}</code>
             </div>
           </div>
 
           <div className="space-y-1 pt-2">
-            {responsibility.map((item) => (
+            {position.responsibility.map((item) => (
               <p key={item} className="text-sm md:text-sm lg:text-base">
                 • {item}
               </p>
@@ -68,7 +64,7 @@ export default function ExperienceCard({
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            {techStacks.map((tech) => (
+            {position.techStacks.map((tech) => (
               <Badge
                 key={tech}
                 variant="outline"

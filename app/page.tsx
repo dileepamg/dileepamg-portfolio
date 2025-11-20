@@ -1,12 +1,12 @@
+import AboutSection from "@/components/AboutSection";
+import AiDisclaimer from "@/components/AiDisclaimer";
+import ExperienceSection from "@/components/ExperienceSection";
+import Footer from "@/components/Footer";
+import FunStuffSection from "@/components/FunStuffSection";
 import Nav from "@/components/nav";
 import ScrollStar from "@/components/ScrollStar";
-import AboutSection from "@/components/sections/AboutSection";
-import AiDisclaimer from "@/components/sections/AiDisclaimer";
-import ExperienceSection from "@/components/sections/ExperienceSection";
-import Footer from "@/components/sections/Footer";
-import FunStuffSection from "@/components/sections/FunStuffSection";
-import WorkSection from "@/components/sections/WorkSection";
 import ProfileStructuredData from "@/components/structured-data/profile";
+import WorkSection from "@/components/WorkSection";
 
 import { Suspense } from "react";
 
