@@ -1,3 +1,4 @@
+import { getProfileStructuredData } from "@/components/structured-data/profile";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -56,6 +57,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = getProfileStructuredData();
   return (
     <html
       lang="en"
@@ -80,6 +82,12 @@ export default function RootLayout({
             "dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]",
           )}
         /> */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd),
+          }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

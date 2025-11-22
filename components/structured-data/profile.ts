@@ -1,6 +1,3 @@
-"use client";
-
-import Script from "next/script";
 import type { Person, ProfilePage, WebSite, WithContext } from "schema-dts";
 
 const SITE_URL = "https://dileepa.design";
@@ -9,7 +6,7 @@ const PERSON_ID = `${SITE_URL}#person`;
 const WEBSITE_ID = `${SITE_URL}#website`;
 const WEBPAGE_ID = `${PAGE_URL}#webpage`;
 
-export default function ProfileStructuredData() {
+export function getProfileStructuredData() {
   const person: WithContext<Person> = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -18,12 +15,19 @@ export default function ProfileStructuredData() {
     givenName: "Dileepa",
     familyName: "Galmangoda",
     url: SITE_URL,
-    image: `${SITE_URL}/dileepa-g.png`,
+    image: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}/dileepa-g.png`,
+      width: "550",
+      height: "550",
+      caption: "Dileepa Mahanama Galmangoda",
+    },
     sameAs: [
       "https://www.linkedin.com/in/dileepa-galmangoda",
       "https://github.com/dileepamg",
       "https://www.behance.net/dileepamg",
     ],
+    mainEntityOfPage: { "@id": WEBPAGE_ID },
   };
 
   const website: WithContext<WebSite> = {
@@ -32,6 +36,7 @@ export default function ProfileStructuredData() {
     "@id": WEBSITE_ID,
     url: SITE_URL,
     name: "Dileepa Galmangoda | Portfolio",
+    publisher: { "@id": PERSON_ID },
   };
 
   const profilePage: WithContext<ProfilePage> = {
@@ -43,23 +48,5 @@ export default function ProfileStructuredData() {
     mainEntity: { "@id": PERSON_ID },
   };
 
-  return (
-    <>
-      <Script
-        id="ld-person"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }}
-      />
-      <Script
-        id="ld-website"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }}
-      />
-      <Script
-        id="ld-profilepage"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePage) }}
-      />
-    </>
-  );
+  return [person, website, profilePage];
 }

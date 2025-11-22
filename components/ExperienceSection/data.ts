@@ -1,8 +1,14 @@
-// /data/experiences.ts
+import elementsLogo from "./elements.png";
+import kimpLogo from "./kimp.png";
+import tracifiedLogo from "./tracified.png";
+import villvayLogo from "./villvay.png";
+import zMessengerLogo from "./zmessenger.png";
+
 export const experiences = [
   {
     role: "Senior UI/UX Designer",
-    companylogo: "/company-logos/villvay.png",
+    companylogoLight: villvayLogo,
+    companyLogoDark: villvayLogo,
     company: "Villvay Systems (Pvt) Ltd.",
     link: "https://villvay.com",
     year: "April 2024 - Present",
@@ -15,7 +21,8 @@ export const experiences = [
   },
   {
     role: "Multimedia Engineer",
-    companylogo: "/company-logos/tracified.png",
+    companylogoLight: tracifiedLogo,
+    companyLogoDark: tracifiedLogo,
     company: "Tracified (Pvt) Ltd.",
     link: "https://tracified.com",
     year: "March 2022 - February 2024",
@@ -28,7 +35,8 @@ export const experiences = [
   },
   {
     role: "Designer - Remote",
-    companylogo: "/company-logos/kimp.png",
+    companylogoLight: kimpLogo,
+    companyLogoDark: kimpLogo,
     company: "Kimp.io (Doto Media Inc.)",
     link: "https://www.kimp.io",
     year: "June 2020 - March 2022",
@@ -46,7 +54,8 @@ export const experiences = [
   },
   {
     role: "Digital Designer",
-    companylogo: "/company-logos/zmessenger.png",
+    companylogoLight: zMessengerLogo,
+    companyLogoDark: zMessengerLogo,
     company: "zMessenger (Pvt) Ltd.",
     link: "https://www.zmessenger.com/",
     year: "November 2019 - June 2020",
@@ -65,7 +74,8 @@ export const experiences = [
   },
   {
     role: "Freelance Digital Strategist/Designer",
-    companylogo: "/company-logos/elements.png",
+    companylogoLight: elementsLogo,
+    companyLogoDark: elementsLogo,
     company: "Elements Sri Lanka",
     link: "http://elements.lk",
     year: "January 2018 - September 2019",
@@ -85,3 +95,5 @@ export const experiences = [
     ],
   },
 ] as const;
+
+export type CareerPosition = (typeof experiences)[number];

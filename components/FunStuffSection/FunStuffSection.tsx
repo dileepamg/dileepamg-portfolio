@@ -5,8 +5,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { videos } from "@/data/videos";
 import Video from "next-video";
+import { videos } from "./videos";
 
 export default function FunStuffSection() {
   return (

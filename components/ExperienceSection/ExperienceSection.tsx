@@ -1,5 +1,4 @@
 "use client";
-import ExperienceCard from "@/components/ExperienceCard";
 import {
   Accordion,
   AccordionContent,
@@ -7,8 +6,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { experiences } from "@/data/experiences";
 import { useState } from "react";
+import { experiences } from "./data";
+import ExperienceCard from "./ExperienceCard";
 
 export default function ExperienceSection() {
   const [showAll, setShowAll] = useState(false);
@@ -30,7 +30,7 @@ export default function ExperienceSection() {
                   }`}
                 >
                   {experiences.map((exp) => (
-                    <ExperienceCard key={exp.company} {...exp} />
+                    <ExperienceCard key={exp.company} position={exp} />
                   ))}
                 </div>
                 {!showAll && experiences.length > 2 && (

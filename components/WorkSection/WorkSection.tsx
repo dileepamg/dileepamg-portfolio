@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { projects } from "@/data/projects";
+import { projects } from "./data";
 
 import { IconBrandBehance } from "@tabler/icons-react";
 
