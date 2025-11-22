@@ -1,6 +1,7 @@
 import { getProfileStructuredData } from "@/components/structured-data/profile";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import {
   Noto_Sans_Sinhala,
@@ -95,6 +96,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
