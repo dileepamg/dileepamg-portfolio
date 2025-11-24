@@ -1,14 +1,15 @@
 import elementsLogo from "./elements.png";
 import kimpLogo from "./kimp.png";
 import tracifiedLogo from "./tracified.png";
-import villvayLogo from "./villvay.png";
+import villvayLogoDark from "./villvay-dark.png";
+import villvayLogoLight from "./villvay-light.png";
 import zMessengerLogo from "./zmessenger.png";
 
 export const experiences = [
   {
     role: "Senior UI/UX Designer",
-    companylogoLight: villvayLogo,
-    companyLogoDark: villvayLogo,
+    companylogoLight: villvayLogoLight,
+    companyLogoDark: villvayLogoDark,
     company: "Villvay Systems (Pvt) Ltd.",
     link: "https://villvay.com",
     year: "April 2024 - Present",

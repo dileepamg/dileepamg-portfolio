@@ -17,6 +17,7 @@ export default function WelcomeText() {
         maxIterations={15}
         sequential={true}
         animateOn="hover"
+        lang={hovered ? "si" : "en"}
         className={
           hovered ? "[font-family:var(--font-notoSansSinhala)]" : "font-base"
         }

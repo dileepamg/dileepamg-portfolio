@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Highlighter } from "@/components/ui/highlighter";
 import WelcomeText from "@/components/WelcomeText";
 import ProfilePic from "@/public/dileepa-g.png";
 import Image from "next/image";
@@ -12,15 +13,24 @@ export default function AboutSection() {
       <div className="flex flex-col items-start justify-between gap-8 sm:flex-row">
         <div className="order-2 md:order-1 md:w-[60%]">
           <h1 className="text-3xl md:text-4xl">Dileepa Galmangoda</h1>
-          <p className="mt-1 [font-family:var(--font-pixelifysans)] text-xl md:text-2xl">
-            UI/UX Designer
+          <p className="mt-1 [font-family:var(--font-handjet)] text-xl md:text-2xl">
+            UI/UX Designer & Creative Generalist
           </p>
-          <p className="text-md mt-4 text-pretty break-words sm:text-lg md:mt-8">
-            <WelcomeText /> 🙏 I design digital experiences that feel natural
-            and engaging by refining interfaces, content and prototypes.
-            Alongside my UI/UX work, I also create visuals and digital content
-            across different formats. Currently, I’m a Senior UI/UX Designer at
-            Villvay.
+          <p className="text-md mt-4 leading-8 text-pretty break-words sm:text-lg md:mt-8">
+            <WelcomeText /> 🙏 I design{" "}
+            <Highlighter
+              action="underline"
+              color="#57b4ba"
+              strokeWidth={2}
+              padding={0.2}
+              iterations={2}
+            >
+              digital experiences
+            </Highlighter>{" "}
+            that feel natural and engaging by refining interfaces, content and
+            prototypes. Alongside my UI/UX work, I also create visuals and
+            digital content across different formats. Currently, I’m a Senior
+            UI/UX Designer at Villvay.
           </p>
 
           <div className="flex flex-row gap-4 py-4">
@@ -76,7 +86,7 @@ export default function AboutSection() {
             </a>
           </div>
         </div>
-        <div className="shadow-shadow-2xl relative order-1 min-h-[200px] min-w-[200px] overflow-hidden rounded-4xl md:order-2 md:h-[300px] md:w-[300px]">
+        <div className="shadow-shadow-2xl relative order-1 mr-2 min-h-[200px] min-w-[200px] overflow-hidden rounded-4xl md:order-2 md:h-[300px] md:w-[300px]">
           <Image
             src={ProfilePic}
             fill

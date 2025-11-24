@@ -22,9 +22,15 @@ export default function FunStuffSection() {
                 {videos.map((video) => (
                   <div
                     key={video.id}
-                    className="shadow-shadow overflow-hidden rounded-lg border-2"
+                    className="shadow-shadow aspect-square overflow-hidden rounded-lg border-2 bg-gray-100 dark:bg-gray-800"
                   >
-                    <Video src={video.src} slot="media" theme={ReelplayTheme} />
+                    <Video
+                      src={video.src}
+                      slot="media"
+                      theme={ReelplayTheme}
+                      className="h-full w-full object-cover"
+                      preload="metadata"
+                    />
                   </div>
                 ))}
               </div>
