@@ -22,7 +22,7 @@ export default function WorkSection() {
               {projects.map((project) => (
                 <div
                   key={project.title}
-                  className="group dark:bg-darkBg shadow-shadow transform rounded-lg border-3 bg-white p-6 transition-transform hover:scale-102 dark:bg-black"
+                  className="group dark:bg-darkBg shadow-shadow transform rounded-lg border-3 bg-[#fef8ee] p-6 transition-transform hover:scale-102 dark:bg-black"
                 >
                   <div className="relative mb-4 w-full overflow-hidden rounded-lg">
                     <Image
@@ -69,7 +69,7 @@ export default function WorkSection() {
                         href={project.behance}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="shadow-shadow flex w-full transform items-center gap-2 border-2 bg-blue-400 px-2 py-2 text-black transition-transform hover:-translate-y-1 dark:text-black"
+                        className="shadow-shadow bg-main flex w-full transform items-center gap-2 border-2 px-2 py-2 text-black transition-transform hover:-translate-y-1 dark:text-black"
                       >
                         <IconBrandBehance />
                         View on Behance <span className="ml-auto">↗</span>
