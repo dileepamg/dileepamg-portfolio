@@ -19,7 +19,7 @@ export default function ScrollStar() {
       className="fixed -bottom-20 -left-20 z-0 hidden md:-bottom-30 md:-left-30 md:block md:opacity-100"
       style={{ transform: `rotate(${rotation}deg)` }}
     >
-      <Star34 color="#ff9a76" size={300} stroke="black" strokeWidth={2} />
+      <Star34 color="#f2b973" size={300} stroke="black" strokeWidth={2} />
     </div>
   );
 }

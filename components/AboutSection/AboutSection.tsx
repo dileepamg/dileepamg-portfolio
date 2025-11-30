@@ -20,7 +20,7 @@ export default function AboutSection() {
             <WelcomeText /> 🙏 I design{" "}
             <Highlighter
               action="underline"
-              color="#57b4ba"
+              color="#4ed3c7"
               strokeWidth={2}
               padding={0.2}
               iterations={2}
