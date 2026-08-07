@@ -27,15 +27,16 @@ export default function AboutSection() {
             >
               digital experiences
             </Highlighter>{" "}
-            that feel natural and engaging by refining interfaces, content and
-            prototypes. Alongside my UI/UX work, I also create visuals and
-            digital content across different formats. Currently, I’m a Senior
-            UI/UX Designer at Villvay.
+            that make every interface feel like it already understands what the
+            user is trying to do. My work moves between shaping flows, refining
+            designs, building prototypes and using AI-assisted workflows to
+            explore and improve ideas. I’m currently a Senior UI/UX Designer at
+            Villvay.
           </p>
 
           <div className="flex flex-row gap-4 py-4">
             <Button asChild variant="neutral">
-              <Link href="/DileepaG-CV-2025.pdf" download>
+              <Link href="/DileepaG-CV-2026.pdf" download>
                 <LuDownload /> Download CV
               </Link>
             </Button>
@@ -51,12 +52,6 @@ export default function AboutSection() {
           </div>
 
           <div className="mt-6 flex justify-start space-x-5">
-            {/* <a href="#" target="_blank">
-              <IconBrandFigma
-                size="32px"
-                className="bg-white opacity-60 hover:opacity-100 dark:bg-black"
-              />
-            </a> */}
             <a href="https://www.behance.net/dileepamg" target="_blank">
               <FaBehance
                 size="32px"

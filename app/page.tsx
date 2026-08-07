@@ -1,5 +1,5 @@
 import AboutSection from "@/components/AboutSection";
-import AiDisclaimer from "@/components/AiDisclaimer";
+import BackToTop from "@/components/BackToTop";
 import ExperienceSection from "@/components/ExperienceSection";
 import Footer from "@/components/Footer";
 import FunStuffSection from "@/components/FunStuffSection";
@@ -21,10 +21,11 @@ export default function Home() {
             <WorkSection />
             <ExperienceSection />
             <FunStuffSection />
-            <AiDisclaimer />
           </div>
         </div>
       </main>
+      <BackToTop />
+
       <Suspense fallback={null}>
         <Footer />
       </Suspense>
