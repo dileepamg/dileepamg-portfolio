@@ -14,11 +14,19 @@ export const experiences = [
     link: "https://villvay.com",
     year: "April 2024 - Present",
     responsibility: [
-      "Designed UI/UX for B2B eCommerce websites and mobile apps.",
-      "Created interactive prototypes and high-fidelity mockups using standard design systems.",
-      "Collaborated with developers to enhance overall UX for client websites.",
+      "Designed UI/UX for global B2B eCommerce websites and mobile apps.",
+      "Created interactive prototypes and high-fidelity mockups using standard design systems and best practices.",
+      "Applied accessibility standards such as WCAG throughout my designs.",
+      "Used AI-assisted workflows for concept exploration, content drafting and research synthesis to speed up early-stage design.",
+      "Collaborated with development teams to enhance overall UX for client websites.",
     ],
-    techStacks: ["Figma", "Adobe XD", "Design Systems"],
+    techStacks: [
+      "Figma",
+      "Adobe XD",
+      "Design Systems",
+      "WCAG",
+      "AI-Assisted Workflows",
+    ],
   },
   {
     role: "Multimedia Engineer",
@@ -28,9 +36,9 @@ export const experiences = [
     link: "https://tracified.com",
     year: "March 2022 - February 2024",
     responsibility: [
-      "Created interactive prototypes, high and low fidelity mockups for Tracified products.",
-      "Collaborated with development teams to improve UX practices.",
-      "Produced digital content and established consistent branding across digital and print media.",
+      "Created interactive prototypes, high and low fidelity UI mockups for Tracified products and features.",
+      "Worked with development teams to streamline best UX practices within the products.",
+      "Produced digital content for company social media platforms and initiated branding across all digital and print media.",
     ],
     techStacks: ["Figma", "Adobe XD", "Adobe Illustrator", "Adobe Photoshop"],
   },
@@ -42,9 +50,9 @@ export const experiences = [
     link: "https://www.kimp.io",
     year: "June 2020 - March 2022",
     responsibility: [
-      "Created branding documents, logos, social media graphics, and web visuals for clients in the US, UK, and Canada.",
-      "Worked on UI designs using Figma and visual assets using Adobe tools.",
-      "Handled diverse digital design and print requirements efficiently.",
+      "Delivered design work for clients across the US, UK and Canada, covering branding documents, logos, social media graphics, web visuals, slide decks and print artwork.",
+      "Used Photoshop and Illustrator for graphics, InDesign for book and editorial layouts, and Figma for UI design.",
+      "Worked to tight turnaround targets inside a high-volume remote design team.",
     ],
     techStacks: [
       "Adobe Photoshop",
@@ -61,9 +69,9 @@ export const experiences = [
     link: "https://www.zmessenger.com/",
     year: "November 2019 - June 2020",
     responsibility: [
-      "Produced digital and print artworks for key brand clients following brand guidelines.",
-      "Created graphics and videos using Adobe Suite and HTML/GIF banners with Bannersnack.",
-      "Explored experimental UI/UX projects using Adobe XD.",
+      "Produced digital and printed artworks for key brand clients, adhering to corporate brand guidelines and moodboards within demanding timelines.",
+      "Created graphics and videos using Adobe Photoshop, Illustrator, After Effects and Premiere Pro.",
+      "Built HTML/GIF web banners using the Bannersnack platform and engaged in experimental UI/UX design projects using Adobe XD.",
     ],
     techStacks: [
       "Adobe Photoshop",
@@ -81,9 +89,9 @@ export const experiences = [
     link: "http://elements.lk",
     year: "January 2018 - September 2019",
     responsibility: [
-      "Managed and designed web, graphic, and video projects for clients in Sri Lanka and Australia.",
-      "Executed digital marketing campaigns using Meta Ads Manager and Google Ads.",
-      "Developed static web projects using WordPress, HTML, and CSS.",
+      "Managed web, graphic and video projects alongside digital marketing initiatives for clients in Sri Lanka and Australia, handling strategy, design and production end to end.",
+      "Worked directly with clients on scoping, timelines and revisions, delivering branding, print and social assets.",
+      "Built and maintained WordPress and static HTML/CSS sites, and ran campaigns through Meta Ads Manager and Google Ads.",
     ],
     techStacks: [
       "WordPress",

@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev & next-video sync -w",
+    "dev": "next dev --experimental-https & next-video sync -w",
+    "dev:http": "next dev & next-video sync -w",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -41,6 +42,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "^1.0.0",
+    "concurrently": "^10.0.4",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
     "prettier": "^3.6.0",

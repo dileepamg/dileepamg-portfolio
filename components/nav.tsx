@@ -4,28 +4,50 @@ import clsx from "clsx";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ThemeSwitcher } from "./theme-switcher";
 
 export default function Nav() {
   const path = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const isNavigating = useRef(false);
+
+  // Arriving on a page restores the previous scroll position or jumps to a
+  // hash, and that fires a scroll event that looks exactly like scrolling
+  // down. Show the nav on every route change and ignore those events briefly,
+  // so it can't hide itself the moment a page loads.
+  useEffect(() => {
+    setIsVisible(true);
+    isNavigating.current = true;
+
+    const timer = window.setTimeout(() => {
+      isNavigating.current = false;
+      lastScrollY.current = window.scrollY;
+    }, 500);
+
+    return () => window.clearTimeout(timer);
+  }, [path]);
 
   // Watch scroll direction to show/hide nav
   useEffect(() => {
-    let lastScrollY = window.pageYOffset;
+    lastScrollY.current = window.scrollY;
+
     const handleScroll = () => {
-      const currentScrollY = window.pageYOffset;
-      if (currentScrollY < lastScrollY) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
+      const currentScrollY = window.scrollY;
+
+      if (isNavigating.current) {
+        lastScrollY.current = currentScrollY;
+        return;
       }
-      lastScrollY = currentScrollY;
+
+      // Near the top the nav always shows, however the reader got there.
+      setIsVisible(currentScrollY < 80 || currentScrollY < lastScrollY.current);
+      lastScrollY.current = currentScrollY;
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
