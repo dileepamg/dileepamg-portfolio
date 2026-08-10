@@ -37,6 +37,12 @@ export type CaseStudyMedia =
        * Long page prototypes need a taller box than 16:9 to be usable.
        */
       aspect?: string;
+      /**
+       * Still frame shown until the viewer clicks to load. Nothing is
+       * requested from the third party before that, so the embed costs
+       * nothing on first paint.
+       */
+      poster?: StaticImageData;
     };
 
 /**
@@ -126,6 +132,7 @@ export const caseStudies: readonly CaseStudy[] = [
       kind: "embed",
       src: "https://embed.figma.com/proto/Qt5QIEDUt8z7AgCf60iGbK/M-Factor-Platform-1.1?page-id=0%3A1&node-id=1298-11561&m=dev&scaling=scale-down-width&content-scaling=fixed&hide-ui=1&embed-host=share",
       title: "Interactive prototype of The (M) Factor homepage",
+      poster: mfactorHero,
       caption:
         "Interactive prototype. Start on the homepage and click through to the other pages.",
     },

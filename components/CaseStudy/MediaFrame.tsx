@@ -2,6 +2,7 @@ import type { CaseStudyMedia } from "@/components/WorkSection/caseStudies";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import ExpandableImage from "./ExpandableImage";
+import PrototypeEmbed from "./PrototypeEmbed";
 
 type MediaFrameProps = {
   media: CaseStudyMedia;
@@ -56,12 +57,11 @@ export default function MediaFrame({
               className="object-cover object-top"
             />
           ) : (
-            <iframe
+            <PrototypeEmbed
               src={media.src}
               title={media.title}
-              loading="lazy"
-              allowFullScreen
-              className="h-full w-full"
+              poster={media.poster}
+              sizes={sizes}
             />
           )}
         </div>
