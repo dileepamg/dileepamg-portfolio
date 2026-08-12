@@ -2,6 +2,7 @@ import { getProfileStructuredData } from "@/components/structured-data/profile";
 import { ThemeProvider } from "@/components/theme-provider";
 import { GridPattern } from "@/components/ui/grid-pattern";
 import { cn } from "@/lib/utils";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import {
@@ -83,6 +84,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const jsonLd = getProfileStructuredData();
+  // Inlined at build time, so it has to be read as a whole expression rather
+  // than through a variable key.
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
   return (
     <html
       lang="en"
@@ -128,6 +133,7 @@ export default function RootLayout({
           {children}
           <Analytics />
         </ThemeProvider>
+        {gaId && <GoogleAnalytics gaId={gaId} />}
       </body>
     </html>
   );
