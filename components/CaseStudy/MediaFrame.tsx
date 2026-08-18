@@ -4,6 +4,37 @@ import Image from "next/image";
 import ExpandableImage from "./ExpandableImage";
 import PrototypeEmbed from "./PrototypeEmbed";
 
+/** The handset the mobile screens were drawn at. */
+export const PHONE_ASPECT = "430 / 960";
+
+function isPortrait(media: CaseStudyMedia) {
+  return media.kind === "image" && media.orientation === "portrait";
+}
+
+/**
+ * Phone screens are too narrow to sit two to a row at full width, so a set of
+ * them runs three across instead. A lone one is capped rather than stretched,
+ * since a full width handset would be taller than the viewport.
+ */
+export function mediaGridClass(items: readonly CaseStudyMedia[]) {
+  if (items.every(isPortrait)) {
+    return items.length === 1
+      ? "mx-auto w-full max-w-[280px]"
+      : "grid grid-cols-2 gap-4 md:grid-cols-3";
+  }
+
+  return "grid gap-4 md:grid-cols-2";
+}
+
+/** Matches the widths `mediaGridClass` lays out. */
+export function mediaSizes(items: readonly CaseStudyMedia[]) {
+  if (items.every(isPortrait)) {
+    return items.length === 1 ? "280px" : "(min-width: 768px) 20vw, 45vw";
+  }
+
+  return "(min-width: 768px) 30vw, 90vw";
+}
+
 type MediaFrameProps = {
   media: CaseStudyMedia;
   /**
@@ -26,8 +57,14 @@ export default function MediaFrame({
   priority = false,
   className,
 }: MediaFrameProps) {
-  // Embeds may override the ratio; everything else stays 16:9 so rows line up.
-  const aspect = media.kind === "embed" ? media.aspect : undefined;
+  // Embeds may override the ratio and phone screens keep their own. Everything
+  // else stays 16:9 so rows line up.
+  const aspect =
+    media.kind === "embed"
+      ? media.aspect
+      : isPortrait(media)
+        ? PHONE_ASPECT
+        : undefined;
 
   return (
     <figure className={cn("w-full", className)}>
@@ -37,6 +74,8 @@ export default function MediaFrame({
           alt={media.alt}
           sizes={sizes}
           priority={priority}
+          aspect={aspect}
+          portrait={isPortrait(media)}
         />
       ) : (
         <div

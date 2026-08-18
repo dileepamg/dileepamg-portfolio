@@ -11,10 +11,15 @@ import { videos } from "./videos";
 export default function FunStuffSection() {
   return (
     <section id="fun" className="scroll-mt-16">
-      <Accordion type="single" collapsible defaultValue="item-1">
+      <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
           <AccordionTrigger>
-            <h1 className="mb-2 text-2xl md:text-3xl">Some Fun Motion Stuff</h1>
+            <span className="mb-2 block text-left">
+              <h1 className="text-2xl md:text-3xl">Some Fun Motion Stuff</h1>
+              <span className="text-sm font-normal text-gray-500">
+                Tucked away in here. Have a look if you fancy it.
+              </span>
+            </span>
           </AccordionTrigger>
           <AccordionContent>
             <div className="pr-2 pb-4">

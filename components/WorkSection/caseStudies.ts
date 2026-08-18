@@ -8,6 +8,12 @@ import mfactorMapView from "@/media/mfactor-map-view.png";
 import mfactorProviderProfile from "@/media/mfactor-provider-profile.png";
 import mfactorResources from "@/media/mfactor-resources.png";
 import mfactorSearchResults from "@/media/mfactor-search-results.png";
+import wurthCategory from "@/media/wurth-category.png";
+import wurthDeals from "@/media/wurth-deals.png";
+import wurthHero from "@/media/wurth-hero.png";
+import wurthHome from "@/media/wurth-home.png";
+import wurthProductDetail from "@/media/wurth-product-detail.png";
+import wurthSignIn from "@/media/wurth-sign-in.png";
 import type { StaticImageData } from "next/image";
 
 /**
@@ -26,6 +32,11 @@ export type CaseStudyMedia =
       alt: string;
       /** Shown under the image. Say what the reader is looking at. */
       caption?: string;
+      /**
+       * Phone screens are framed to a handset ratio and laid out several to
+       * a row. Everything else is cropped to 16:9 so rows line up.
+       */
+      orientation?: "landscape" | "portrait";
     }
   | {
       kind: "embed";
@@ -90,6 +101,8 @@ export type CaseStudy = {
     figma?: string;
     behance?: string;
     live?: string;
+    appStore?: string;
+    playStore?: string;
   };
 
   /* ---- project page only; omit any of these and the block is skipped ---- */
@@ -113,6 +126,172 @@ export type CaseStudy = {
 };
 
 export const caseStudies: readonly CaseStudy[] = [
+  {
+    slug: "designing-wurth-baer-supply-app",
+    title: "Würth Baer Supply App",
+    pageTitle: "Designing the Würth Baer Supply App",
+    summary: "A woodworking trade catalog that works from a phone.",
+    description:
+      "Product design for the iOS and Android app of a woodworking supply distributor, covering catalog search and browse, product pages that carry trade pricing and branch level stock, a deals tab, and an account area built around reordering rather than discovery.",
+    role: "Senior UI/UX Designer",
+    year: "2025 – 2026",
+
+    media: {
+      kind: "image",
+      src: wurthHero,
+      alt: "Three Würth Baer Supply app screens: the signed in home, a product page and the deals tab",
+    },
+
+    links: {
+      appStore:
+        "https://apps.apple.com/us/app/wurth-baer-supply-company/id6753968791",
+      playStore: "https://play.google.com/store/apps/details?id=com.wurth.wbs",
+    },
+
+    overview: [
+      { label: "Type", value: "Client project at Villvay Systems" },
+      { label: "Role", value: "Senior UI/UX Designer" },
+      { label: "Platform", value: "iOS and Android" },
+      { label: "Tools", value: "Figma" },
+    ],
+
+    challenge:
+      "The desktop store already handled a catalog this size. The problem was what it becomes on a phone, where a product name runs four lines, a price has several units and quantity tiers sitting behind it, and stock means nothing until you name a branch.",
+    outcome:
+      "The app is live on both stores. A buyer can scan the part in their hand or type an item number, see the price at the quantity they need and what their branch actually holds, and reorder from lists and past orders without going through the catalog at all.",
+
+    personas: [
+      {
+        label: "Ordering",
+        title: "Trade buyers",
+        description:
+          "Cabinetmakers, commercial contractors and furniture shops running an account with the distributor. They usually know the part before they open the app, often because they are holding it, and a lot of what they order is something they have ordered before. What they need settled is the price at their quantity, whether their branch has it, and how soon it arrives.",
+      },
+      {
+        label: "Browsing",
+        title: "Woodworkers buying for themselves",
+        description:
+          "Hobbyists and smaller shops without a standing account. They come in by category rather than by part number, compare across brands and finishes before committing, and are who the daily discounts are aimed at. The catalog has to stay readable for them without the trade shorthand a buyer takes for granted.",
+      },
+    ],
+
+    process: [
+      {
+        phase: "Discover",
+        title: "Learning how the catalog is actually addressed",
+        body: [
+          "Würth Baer Supply has been distributing to the woodworking trade since 1950, out of 28 branches across the upper Midwest and the East Coast. The catalog behind that runs from abrasives and adhesives through decorative hardware, drawer slides, fasteners, laminate and shop tools. I worked through the existing desktop store the way a customer would and kept a note of everything a phone would have to carry across.",
+          "Three things came out of that, and they shaped most of what followed. A product is addressed by an item number and a manufacturer number far more often than by its name, and the names run long enough to be useless as an identifier anyway. A price is not a number, it is a unit of measure and a quantity tier. And stock is a fact about a branch rather than a fact about a product.",
+        ],
+        takeaways: [
+          "Buyers search with a part number, not a phrase. The name is for confirming, not for finding.",
+          "Every price has to keep its unit attached, because there is no default the reader can assume.",
+          "In stock is not an answer on its own. In stock where, and how many, is.",
+        ],
+      },
+      {
+        phase: "Define",
+        title: "Separating reordering from shopping",
+        body: [
+          "Two jobs turned up in the same app, and they pull the home screen in opposite directions. Someone with an account repeating an order wants the shortest possible path back to a previous purchase. Someone browsing wants a way into a taxonomy several thousand products deep. Trying to serve both with one layout would have made a worse version of each.",
+          "I gave the first one the top of the screen. Signed in, home opens on Shopping Lists, Recent Orders and Purchased Items, collapsed into three rows so they cost almost no height, with Featured Categories underneath. Browsing is still one tap away, but the app opens on what you have already bought rather than on what is new.",
+        ],
+        media: [
+          {
+            kind: "image",
+            src: wurthHome,
+            orientation: "portrait",
+            alt: "Signed in home screen with shopping lists, recent orders, purchased items and a featured categories grid",
+            caption:
+              "The three reorder routes sit above the catalog. Search and the barcode scanner stay pinned in the header.",
+          },
+        ],
+        takeaways: [
+          "The common case here is a repeat, so home is a reorder surface before it is a storefront.",
+          "Collapsed rows let three entry points share the space a single carousel would have taken.",
+        ],
+      },
+      {
+        phase: "Ideate",
+        title: "Working out where each fact belongs",
+        body: [
+          "A desktop product page can lay everything out at once. On a 430 point screen the same information has to be put in an order, so I sorted the facts by the question each one answers. Anything that helps you find the product belongs in search, anything that rules a product in or out belongs on the list card, anything that decides the purchase belongs on the product page, and the one action you always come back to belongs in a bar that never scrolls away.",
+          "The barcode scanner came out of the same sort. If the fastest identifier is the number printed on the box, the fastest input is the camera, so it sits inside the search field rather than behind a menu. Deals became a tab of its own for a similar reason. Mobile only discounts are one of the stated reasons for the app to exist, and a strip on the home screen would have buried them.",
+        ],
+        takeaways: [
+          "Sorting facts by the question they answer settled most of the layout before I drew anything.",
+          "The scanner is not a feature here, it is the shortest route to the identifier people already use.",
+        ],
+      },
+      {
+        phase: "Design",
+        title: "Building the product page",
+        body: [
+          "The product page carries the most, so it took the most work. It opens with what identifies the item, meaning any deal tags, the brand, the full name, and both the item number and the manufacturer number, then the image carousel. Pricing follows and stays honest about units, listing each one with its measure attached, the discounted figure against the list figure, and the quantity break tiers as a compact band rather than a screen of their own.",
+          "Configuring the item runs two ways, because buyers arrive knowing different things. If you have the part number you pick it straight from a dropdown. If you do not, you build the item from options, and a divider reading OR select options makes it clear these are two routes to the same product rather than two things to fill in. Combinations that do not exist stay visible and struck through, which tells you more than removing them would. Below that sits everything about getting hold of it: the count in stock at a named branch, a way to check other branches, and any open backorders. Add to Cart never scrolls away.",
+        ],
+        media: [
+          {
+            kind: "image",
+            src: wurthProductDetail,
+            orientation: "portrait",
+            alt: "Product page showing deal tags, item and manufacturer numbers, multi unit pricing, quantity breaks, option chips, branch stock and a pinned add to cart button",
+            caption:
+              "Identity, then price with its units, then configuration, then availability at a named branch.",
+          },
+          {
+            kind: "image",
+            src: wurthCategory,
+            orientation: "portrait",
+            alt: "Category browse screen with a grid of illustrated subcategory tiles",
+            caption:
+              "Browsing keeps a picture against every label. Hardware is recognised faster than it is read.",
+          },
+        ],
+        takeaways: [
+          "Two ways into the same product, said out loud, beats one path that half the buyers cannot use.",
+          "Unavailable options are worth showing. Struck through tells you the variant exists but not in this configuration.",
+          "Detail that only some people need went behind Show More rather than being cut.",
+        ],
+      },
+      {
+        phase: "Validate",
+        title: "Shipping it, then tightening it",
+        body: [
+          "The app went live on the App Store and Google Play, which changes the nature of a review. Once it is on a phone the conversation stops being about a frame in Figma and becomes about how the thing behaves in a hand, at arm's length, with a thumb.",
+          "The screens that took the most passes were the ones carrying the most logic, the product page above all. The pricing rows, the option chips and the stock block each had to be tightened before the density read as usable rather than crowded.",
+        ],
+        takeaways: [
+          "The heaviest screen is the one worth revisiting after launch, not only before it.",
+        ],
+      },
+    ],
+
+    gallery: [
+      {
+        kind: "image",
+        src: wurthDeals,
+        orientation: "portrait",
+        alt: "Deals tab with a brand promotion carousel above a list of daily discounts",
+        caption:
+          "The Deals tab. Brand promotions up top, then daily discounts with the discount, the item number and the variation count on every row.",
+      },
+      {
+        kind: "image",
+        src: wurthSignIn,
+        orientation: "portrait",
+        alt: "Sign in screen with email or user ID, password, forgot links and a create account prompt",
+        caption:
+          "Email or user ID, because trade accounts are not always set up against an email. The prompt below separates having an account from having a login for it.",
+      },
+    ],
+
+    reflection:
+      "The hardest thing to settle was how much of the desktop product page to carry across. A distributor's catalog is precise by nature and every field on that page is there because someone once needed it, so cutting on a phone means deciding whose need is the rarer one. Most of what came off the first screen went behind a Show More rather than being dropped, which keeps the page short without pretending the detail is not there.",
+
+    disclaimer:
+      "All brand names, trademarks and product imagery shown here remain the property of their respective owners and clients. This work was produced during my time at [Villvay Systems](https://villvay.com) and is shown for portfolio purposes only.",
+  },
   {
     slug: "designing-mfactor-directory",
     title: "The (M) Factor Directory",

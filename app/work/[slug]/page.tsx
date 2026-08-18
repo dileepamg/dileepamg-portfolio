@@ -1,4 +1,7 @@
-import MediaFrame from "@/components/CaseStudy/MediaFrame";
+import MediaFrame, {
+  mediaGridClass,
+  mediaSizes,
+} from "@/components/CaseStudy/MediaFrame";
 import ProcessStepItem, {
   stepColor,
   stepId,
@@ -14,7 +17,12 @@ import {
   getCaseStudy,
 } from "@/components/WorkSection/caseStudies";
 import { cn } from "@/lib/utils";
-import { IconBrandBehance, IconBrandFigma } from "@tabler/icons-react";
+import {
+  IconBrandAppstore,
+  IconBrandBehance,
+  IconBrandFigma,
+  IconBrandGooglePlay,
+} from "@tabler/icons-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -205,13 +213,13 @@ export default async function CaseStudyPage({ params }: PageProps) {
           {study.gallery && study.gallery.length > 0 && (
             <section className="space-y-6">
               <h2 className="text-2xl md:text-3xl">More from the project</h2>
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className={mediaGridClass(study.gallery)}>
                 {study.gallery.map((item) => (
                   <MediaFrame
                     key={item.kind === "image" ? item.alt : item.src}
                     media={item}
                     expandable
-                    sizes="(min-width: 768px) 30vw, 90vw"
+                    sizes={mediaSizes(study.gallery!)}
                   />
                 ))}
               </div>
@@ -229,50 +237,75 @@ export default async function CaseStudyPage({ params }: PageProps) {
           )}
 
           {/* ---------- Links ---------- */}
-          {study.links &&
-            (study.links.figma || study.links.behance || study.links.live) && (
-              <div className="flex flex-wrap gap-3">
-                {study.links.figma && (
-                  <Button asChild>
-                    <a
-                      href={study.links.figma}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${study.title} on Figma (opens in new tab)`}
-                    >
-                      <IconBrandFigma />
-                      Open in Figma
-                    </a>
-                  </Button>
-                )}
-                {study.links.behance && (
-                  <Button asChild variant="neutral">
-                    <a
-                      href={study.links.behance}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${study.title} on Behance (opens in new tab)`}
-                    >
-                      <IconBrandBehance />
-                      View on Behance
-                    </a>
-                  </Button>
-                )}
-                {study.links.live && (
-                  <Button asChild variant="neutral">
-                    <a
-                      href={study.links.live}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${study.title} live site (opens in new tab)`}
-                    >
-                      <LuExternalLink />
-                      Live site
-                    </a>
-                  </Button>
-                )}
-              </div>
-            )}
+          {study.links && Object.values(study.links).some(Boolean) && (
+            <div className="flex flex-wrap gap-3">
+              {study.links.figma && (
+                <Button asChild>
+                  <a
+                    href={study.links.figma}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${study.title} on Figma (opens in new tab)`}
+                  >
+                    <IconBrandFigma />
+                    Open in Figma
+                  </a>
+                </Button>
+              )}
+              {study.links.behance && (
+                <Button asChild variant="neutral">
+                  <a
+                    href={study.links.behance}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${study.title} on Behance (opens in new tab)`}
+                  >
+                    <IconBrandBehance />
+                    View on Behance
+                  </a>
+                </Button>
+              )}
+              {study.links.appStore && (
+                <Button asChild variant="neutral">
+                  <a
+                    href={study.links.appStore}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${study.title} on the App Store (opens in new tab)`}
+                  >
+                    <IconBrandAppstore />
+                    App Store
+                  </a>
+                </Button>
+              )}
+              {study.links.playStore && (
+                <Button asChild variant="neutral">
+                  <a
+                    href={study.links.playStore}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${study.title} on Google Play (opens in new tab)`}
+                  >
+                    <IconBrandGooglePlay />
+                    Google Play
+                  </a>
+                </Button>
+              )}
+              {study.links.live && (
+                <Button asChild variant="neutral">
+                  <a
+                    href={study.links.live}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${study.title} live site (opens in new tab)`}
+                  >
+                    <LuExternalLink />
+                    Live site
+                  </a>
+                </Button>
+              )}
+            </div>
+          )}
 
           {/* ---------- Next project ---------- */}
           {hasNext && nextStudy && (

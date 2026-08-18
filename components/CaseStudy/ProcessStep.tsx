@@ -1,6 +1,6 @@
 import type { ProcessStep } from "@/components/WorkSection/caseStudies";
 import { cn } from "@/lib/utils";
-import MediaFrame from "./MediaFrame";
+import MediaFrame, { mediaGridClass, mediaSizes } from "./MediaFrame";
 
 /**
  * One colour for every step, so the spine reads as a single sequence.
@@ -29,6 +29,9 @@ export default function ProcessStepItem({
 }: ProcessStepItemProps) {
   const number = String(index + 1).padStart(2, "0");
   const id = stepId(index, step.title);
+  const isPhoneSet = step.media?.every(
+    (item) => item.kind === "image" && item.orientation === "portrait",
+  );
 
   return (
     <li id={id} className="relative scroll-mt-28 md:pl-24">
@@ -81,11 +84,13 @@ export default function ProcessStepItem({
         </div>
 
         {step.media && step.media.length > 0 && (
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <div className={cn("mt-5", mediaGridClass(step.media))}>
             {step.media.map((item, mediaIndex) => {
               // An odd count would leave a lone item stranded in one column,
               // so the pairs come first and the odd one out runs full width.
+              // Phone screens keep their own layout and are never stretched.
               const isFeatured =
+                !isPhoneSet &&
                 step.media!.length % 2 === 1 &&
                 mediaIndex === step.media!.length - 1;
 
@@ -98,7 +103,7 @@ export default function ProcessStepItem({
                   sizes={
                     isFeatured
                       ? "(min-width: 1536px) 40vw, (min-width: 768px) 60vw, 90vw"
-                      : "(min-width: 768px) 30vw, 90vw"
+                      : mediaSizes(step.media!)
                   }
                 />
               );

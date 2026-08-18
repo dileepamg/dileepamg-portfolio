@@ -6,6 +6,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import Image, { type StaticImageData } from "next/image";
 import { LuMaximize2 } from "react-icons/lu";
 
@@ -14,10 +15,14 @@ type ExpandableImageProps = {
   alt: string;
   sizes: string;
   priority?: boolean;
+  /** CSS aspect-ratio for the framed crop. Defaults to 16:9. */
+  aspect?: string;
+  /** Keeps the dialog narrow, so a handset capture is not upscaled. */
+  portrait?: boolean;
 };
 
 /**
- * Shows a 16:9 crop so every screenshot lines up, and opens the uncropped
+ * Shows a cropped frame so every screenshot lines up, and opens the uncropped
  * image in a dialog on click. Long page screenshots scroll inside it.
  */
 export default function ExpandableImage({
@@ -25,6 +30,8 @@ export default function ExpandableImage({
   alt,
   sizes,
   priority = false,
+  aspect,
+  portrait = false,
 }: ExpandableImageProps) {
   return (
     <Dialog>
@@ -32,7 +39,11 @@ export default function ExpandableImage({
         <button
           type="button"
           aria-label={`View the full image: ${alt}`}
-          className="group border-border relative aspect-video w-full cursor-pointer overflow-hidden rounded-lg border-2"
+          className={cn(
+            "group border-border relative w-full cursor-pointer overflow-hidden rounded-lg border-2",
+            !aspect && "aspect-video",
+          )}
+          style={aspect ? { aspectRatio: aspect } : undefined}
         >
           <Image
             src={src}
@@ -49,12 +60,21 @@ export default function ExpandableImage({
         </button>
       </DialogTrigger>
 
-      <DialogContent className="max-h-[90vh] w-full overflow-y-auto p-4 sm:max-w-4xl">
+      <DialogContent
+        className={cn(
+          "max-h-[90vh] w-full overflow-y-auto p-4",
+          portrait ? "sm:max-w-[26rem]" : "sm:max-w-4xl",
+        )}
+      >
         <DialogTitle className="sr-only">{alt}</DialogTitle>
         <Image
           src={src}
           alt={alt}
-          sizes="(min-width: 640px) 56rem, 100vw"
+          sizes={
+            portrait
+              ? "(min-width: 640px) 24rem, 100vw"
+              : "(min-width: 640px) 56rem, 100vw"
+          }
           className="h-auto w-full"
         />
       </DialogContent>
