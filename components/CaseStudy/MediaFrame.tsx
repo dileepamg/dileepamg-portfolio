@@ -18,21 +18,26 @@ function isPortrait(media: CaseStudyMedia) {
  */
 export function mediaGridClass(items: readonly CaseStudyMedia[]) {
   if (items.every(isPortrait)) {
-    return items.length === 1
-      ? "mx-auto w-full max-w-[280px]"
-      : "grid grid-cols-2 gap-4 md:grid-cols-3";
+    if (items.length === 1) return "mx-auto w-full max-w-[280px]";
+    // A pair gets a column each so it fills the section. Falling through to
+    // the three-across rule would lay two screens into a three-column grid
+    // and leave the last third of the row empty.
+    if (items.length === 2) return "grid grid-cols-2 gap-x-4 gap-y-8";
+    return "grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3";
   }
 
-  return "grid gap-4 md:grid-cols-2";
+  return "grid gap-x-4 gap-y-8 lg:grid-cols-2";
 }
 
 /** Matches the widths `mediaGridClass` lays out. */
 export function mediaSizes(items: readonly CaseStudyMedia[]) {
   if (items.every(isPortrait)) {
-    return items.length === 1 ? "280px" : "(min-width: 768px) 20vw, 45vw";
+    if (items.length === 1) return "280px";
+    if (items.length === 2) return "(min-width: 640px) 30vw, 45vw";
+    return "(min-width: 768px) 20vw, 45vw";
   }
 
-  return "(min-width: 768px) 30vw, 90vw";
+  return "(min-width: 1024px) 32vw, (min-width: 640px) 65vw, 90vw";
 }
 
 type MediaFrameProps = {
@@ -53,7 +58,10 @@ export default function MediaFrame({
   media,
   expandable = false,
   bordered = true,
-  sizes = "(min-width: 1536px) 40vw, (min-width: 768px) 60vw, 90vw",
+  // Full content width: the reading column less its padding. The old value
+  // here described the retired 60%/40% column ladder, so it under-reported the
+  // box on desktop and over-reported it past 1536px.
+  sizes = "(min-width: 1463px) 960px, (min-width: 640px) 66vw, 90vw",
   priority = false,
   className,
 }: MediaFrameProps) {
@@ -80,8 +88,8 @@ export default function MediaFrame({
       ) : (
         <div
           className={cn(
-            "relative w-full overflow-hidden rounded-lg",
-            bordered && "border-border border-2",
+            "relative w-full overflow-hidden",
+            bordered && "border-rule border",
             !aspect && "aspect-video",
           )}
           style={aspect ? { aspectRatio: aspect } : undefined}
@@ -107,7 +115,7 @@ export default function MediaFrame({
       )}
 
       {media.caption && (
-        <figcaption className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+        <figcaption className="text-ink-soft mt-2 text-sm">
           {media.caption}
         </figcaption>
       )}

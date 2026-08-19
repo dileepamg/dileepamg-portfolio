@@ -22,7 +22,7 @@ export default function RichText({ children }: { children: string }) {
         href={match[2]}
         target="_blank"
         rel="noopener noreferrer"
-        className="font-bold underline underline-offset-2"
+        className="text-brand-text hover:underline"
       >
         {match[1]}
       </a>,

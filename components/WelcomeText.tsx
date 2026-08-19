@@ -18,9 +18,7 @@ export default function WelcomeText() {
         sequential={true}
         animateOn="hover"
         lang={hovered ? "si" : "en"}
-        className={
-          hovered ? "[font-family:var(--font-notoSansSinhala)]" : "font-base"
-        }
+        className={hovered ? "font-sinhala" : "font-sans"}
       />
     </span>
   );

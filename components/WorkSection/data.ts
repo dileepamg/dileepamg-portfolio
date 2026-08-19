@@ -13,7 +13,7 @@ export const projects = [
   {
     title: "Digital Content Creation",
     description:
-      "Various digital content created for businesses based in Sri Lanka, United States, Australia and United Kingdom",
+      "Various digital content created for businesses based in Sri Lanka, United States, Australia and United Kingdom.",
     behance: "https://www.behance.net/gallery/99471015/Social-Media-Web",
     image: digitalContentImage,
   },

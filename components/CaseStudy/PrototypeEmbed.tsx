@@ -1,5 +1,7 @@
 "use client";
 
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import Image, { type StaticImageData } from "next/image";
 import { useEffect, useState } from "react";
 import { LuPlay } from "react-icons/lu";
@@ -55,11 +57,18 @@ export default function PrototypeEmbed({
         )}
 
         <span className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/45 p-4">
-          <span className="border-border bg-main rounded-base shadow-shadow flex items-center gap-2 border-2 px-4 py-2 text-sm font-bold text-black transition-transform group-hover:-translate-y-1">
+          {/* The parent <button> owns the hover, so the morph is driven from
+              the group rather than from this element's own :hover. */}
+          <span
+            className={cn(
+              buttonVariants({ variant: "secondary" }),
+              "group-hover:rounded-(--btn-radius)",
+            )}
+          >
             <LuPlay />
             Load interactive prototype
           </span>
-          <span className="text-center text-xs font-bold text-white">
+          <span className="text-center text-xs font-medium text-white">
             Runs in Figma, so give it a few seconds to start
           </span>
         </span>
@@ -80,7 +89,7 @@ export default function PrototypeEmbed({
       {isCovered && (
         <span
           role="status"
-          className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white text-sm font-bold dark:bg-black"
+          className="bg-paper text-ink-soft pointer-events-none absolute inset-0 flex items-center justify-center text-sm font-medium"
         >
           Loading prototype…
         </span>
