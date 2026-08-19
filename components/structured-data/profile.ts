@@ -1,6 +1,6 @@
+import { SITE_URL } from "@/lib/site";
 import type { Person, ProfilePage, WebSite, WithContext } from "schema-dts";
 
-const SITE_URL = "https://dileepa.design";
 const PAGE_URL = `${SITE_URL}/`;
 const PERSON_ID = `${SITE_URL}#person`;
 const WEBSITE_ID = `${SITE_URL}#website`;

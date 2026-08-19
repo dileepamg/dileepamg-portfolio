@@ -1,52 +1,59 @@
+import { JsonLd } from "@/components/structured-data/JsonLd";
 import { getProfileStructuredData } from "@/components/structured-data/profile";
 import { ThemeProvider } from "@/components/theme-provider";
-import { GridPattern } from "@/components/ui/grid-pattern";
+import { SiteFrame } from "@/components/ui/site-frame";
+import { SITE_URL } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import {
-  Handjet,
+  DM_Sans,
   Noto_Sans_Sinhala,
-  Pixelify_Sans,
   Sedgwick_Ave_Display,
-  Space_Grotesk,
 } from "next/font/google";
 import "./globals.css";
 
-export const PRODUCTION_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
-  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : "https://localhost:3000";
+/**
+ * Kept as a named export because it was one before; the origin itself now
+ * lives in `lib/site` so the metadata, the structured data and the sitemap
+ * cannot drift onto different hosts.
+ */
+export const PRODUCTION_URL = SITE_URL;
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+/** The site's primary face, used for body and headings alike. */
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
-const pixelifySans = Pixelify_Sans({
-  variable: "--font-pixelifysans",
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
-const handjet = Handjet({
-  variable: "--font-handjet",
-  subsets: ["latin"],
-  weight: ["500"],
-});
-
+/** The wordmark only. Deliberately left as it was through the redesign. */
 const sedgewickAve = Sedgwick_Ave_Display({
   variable: "--font-sedgewickAve",
   subsets: ["latin"],
   weight: ["400"],
 });
 
+/** Needed for the Sinhala greeting, a script requirement, not a style. */
 const notoSansSinhala = Noto_Sans_Sinhala({
   variable: "--font-notoSansSinhala",
   subsets: ["sinhala"],
   weight: ["500"],
 });
+
+/**
+ * The font variables have to land on <html>, not <body>. `--font-body` is
+ * declared in `:root` and resolves `var(--font-dm-sans)` at that
+ * element. If the variable is only defined further down the tree, that
+ * declaration computes to nothing and every `font-sans` silently falls back
+ * to the system stack.
+ */
+const fontVariables = [
+  dmSans.variable,
+  sedgewickAve.variable,
+  notoSansSinhala.variable,
+].join(" ");
 
 export const metadata: Metadata = {
   title: "Dileepa Mahanama Galmangoda",
@@ -61,6 +68,9 @@ export const metadata: Metadata = {
     "Dileepa Galmangoda",
   ],
   metadataBase: new URL(PRODUCTION_URL),
+  // Without this every page is its own canonical by default, so a URL reached
+  // with a tracking query or a trailing variant reads as a separate page.
+  alternates: { canonical: "/" },
   openGraph: {
     title: {
       default: "Dileepa Mahanama Galmangoda",
@@ -91,45 +101,19 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="scroll-smooth"
+      className={cn("scroll-smooth", fontVariables)}
       suppressHydrationWarning
       data-scroll-behavior="smooth"
     >
-      {/* <body
-        className={cn(
-          `${spaceGrotesk.variable} ${pixelifySans.variable} ${sedgewickAve.variable} ${notoSansSinhala.variable} ${handjet.variable} antialiased`,
-          "relative min-h-screen bg-white dark:bg-black",
-          "[background-size:10px_10px]",
-          "[background-image:linear-gradient(to_right,#F7F7FA_1px,transparent_1px),linear-gradient(to_bottom,#F7F7FA_1px,transparent_1px)]",
-          "dark:[background-image:linear-gradient(to_right,#121212_1px,transparent_1px),linear-gradient(to_bottom,#121212_1px,transparent_1px)]",
-        )}
-      > */}
-      <body
-        className={cn(
-          `${spaceGrotesk.variable} ${pixelifySans.variable} ${sedgewickAve.variable} ${notoSansSinhala.variable} ${handjet.variable} antialiased`,
-          "relative min-h-screen bg-white dark:bg-black",
-        )}
-      >
-        <GridPattern
-          width={25}
-          height={25}
-          x={-1}
-          y={-1}
-          strokeDasharray={"4 2"}
-          className={cn("opacity-60")}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(jsonLd),
-          }}
-        />
+      <body className="bg-surface relative min-h-screen antialiased">
+        <JsonLd data={jsonLd} />
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem={false}
           disableTransitionOnChange
         >
+          <SiteFrame />
           {children}
           <Analytics />
         </ThemeProvider>

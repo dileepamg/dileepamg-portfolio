@@ -86,7 +86,7 @@ export const experiences = [
     companylogoLight: elementsLogo,
     companyLogoDark: elementsLogo,
     company: "Elements Sri Lanka",
-    link: "http://elements.lk",
+    link: "https://elements.lk",
     year: "January 2018 - September 2019",
     responsibility: [
       "Managed web, graphic and video projects alongside digital marketing initiatives for clients in Sri Lanka and Australia, handling strategy, design and production end to end.",

@@ -3,52 +3,185 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ==========================================================================
+   1. BRAND
+   The only block that needs editing to re-brand the site. Everything below
+   is derived from these, so a new accent or a new paper colour propagates
+   through every component without touching a single class name.
+   ========================================================================== */
+
 :root {
-  /* --background: oklch(0.9499 0.0305 57.92); */
-  --background: oklch(100% 0 0);
-  --secondary-background: oklch(0.8231 0.1095 71.02);
-  --foreground: oklch(0% 0 0);
-  --main-foreground: oklch(0% 0 0);
-  --main: oklch(0.7916 0.116 186.69);
-  --border: oklch(0% 0 0);
-  --ring: oklch(0% 0 0);
-  --overlay: oklch(0% 0 0 / 0.8);
-  --shadow: 4px 4px 0px 0px var(--border);
-  --shadow-2xl: 6px 6px 0px 0px var(--border);
-  --chart-1: #5294ff;
-  --chart-2: #ff4d50;
-  --chart-3: #facc00;
-  --chart-4: #05e17a;
-  --chart-5: #7a83ff;
-  --chart-active-dot: #000;
+  /* Accent. --brand fills solid surfaces, --brand-ink is the text that sits
+     on top of them, and --brand-text is the accent used as text or as a rule
+     directly on the page, where a fill has no chance to carry the contrast. */
+  --brand: #1f2de6;
+  --brand-ink: #ffffff;
+  --brand-text: #1f2de6;
+
+  /* Paper and ink. --surface is the page behind the reading column; --paper
+     is the column itself, so the frame reads as a sheet laid on a desk. */
+  --paper: #ffffff;
+  --surface: #fafafa;
+  --surface-2: #f4f4f5;
+  /* Three ink weights, with one rule: --ink for headings, --ink-soft for
+     every piece of running prose (body copy, card and section descriptions,
+     captions), --ink-faint only for micro-labels such as uppercase eyebrows,
+     dates, badges and fine print. Prose never uses --ink-faint, or descriptions end up
+     lighter than the paragraphs beside them. */
+  --ink: #101216;
+  --ink-soft: #2b2f36;
+  --ink-faint: #52565e;
+
+  /* The ruled lines. Every border in the design is this one colour. */
+  --hairline: #e4e4e7;
+
+  --danger: #b42318;
+  --danger-ink: #ffffff;
+
+  /* Typography. --font-heading is split out so a second face can be dropped
+     in for headings later without touching the body text.
+
+     These are deliberately named differently from the Tailwind theme keys
+     they feed (--font-display, --font-logo, --font-sinhala). Reusing a theme
+     key here makes `@theme inline` emit `--x: var(--x)`, a reference cycle. */
+  --font-body: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-wordmark: var(--font-sedgewickAve), cursive;
+  --font-si: var(--font-notoSansSinhala), sans-serif;
+}
+
+:root {
+  /* Geometry. Frames are square so the page reads as one continuous ruled
+     grid; only the controls sitting inside them get a radius. Named
+     --frame-radius rather than --radius-frame for the same reason as the
+     fonts above: --radius-frame is the Tailwind theme key it feeds. */
+  --frame-radius: 0px;
+  --radius: 0.375rem;
+
+  /* How wide the reading column is allowed to get. The column is a percentage
+     of the viewport up to this point and then stops, so it never narrows as
+     the screen widens. Change this one value to retune the column on large
+     screens; the frame rails read the same width and follow automatically. */
+  --reading-max: 64rem;
 }
 
 .dark {
-  --background: oklch(23.93% 0 0);
-  --secondary-background: oklch(23.93% 0 0);
-  --foreground: oklch(92.49% 0 0);
-  --main-foreground: oklch(0% 0 0);
-  --main: oklch(0.7916 0.116 186.69);
-  --border: oklch(0% 0 0);
-  --ring: oklch(100% 0 0);
-  --shadow: 4px 4px 0px 0px var(--border);
-  --shadow-2xl: 6px 6px 0px 0px var(--border);
-  --chart-1: #5294ff;
-  --chart-2: #ff6669;
-  --chart-3: #e0b700;
-  --chart-4: #04c86d;
-  --chart-5: #7a83ff;
-  --chart-active-dot: #fff;
+  /* Ultramarine goes muddy against near-black, so the fill lifts a little and
+     the text weight lifts further to hold its contrast ratio. */
+  --brand: #4954ff;
+  --brand-ink: #ffffff;
+  --brand-text: #929aff;
+
+  --paper: #0b0b0c;
+  --surface: #08080a;
+  --surface-2: #17171a;
+  --ink: #ededef;
+  --ink-soft: #c8c8d0;
+  --ink-faint: #9b9ba4;
+
+  --hairline: #26262a;
+
+  --danger: #e96359;
+  --danger-ink: #0b0b0c;
 }
 
+/* ==========================================================================
+   2. NOTEBOOK
+   The grid language: hairline rules, dashed rails and the diagonal hatch
+   that fills the margins either side of the reading column.
+   ========================================================================== */
+
+:root {
+  --rule: var(--hairline);
+
+  /* Hatch fill for the gutters. Pinned to the viewport so the stripes stay
+     put while the page scrolls and the margin reads as a fixed edge rather
+     than a moving texture. */
+  --pattern-fg: color-mix(in oklab, var(--ink) 7%, transparent);
+  --pattern-size: 10px;
+
+  /* The hatch runs in a fixed band either side of the reading column rather
+     than across the whole page, so the texture reads as a marked-up margin
+     and everything beyond it stays quiet. */
+  --gutter-width: 2.5rem;
+
+  /* Corner nodes: the small accent squares pinned to a frame's corners. */
+  --node-size: 5px;
+  --node-color: var(--brand);
+}
+
+.dark {
+  --pattern-fg: color-mix(in oklab, var(--ink) 10%, transparent);
+}
+
+/* ==========================================================================
+   3. SEMANTIC TOKENS
+   shadcn's contract, mapped onto the brand layer above. Components import
+   these names, so restyling happens in section 1 rather than in components.
+   ========================================================================== */
+
+:root {
+  --background: var(--paper);
+  --foreground: var(--ink);
+
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-ink);
+
+  /* Solid chrome (nav). Tailwind's `neutral-800` / `neutral-50`. Fixed
+     across themes so the bar stays the same dark surface on light and dark. */
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+
+  --muted: var(--surface-2);
+  --muted-foreground: var(--ink-faint);
+
+  --accent: var(--surface-2);
+  --accent-foreground: var(--ink);
+
+  --destructive: var(--danger);
+  --destructive-foreground: var(--danger-ink);
+
+  --border: var(--hairline);
+  --input: var(--hairline);
+  --ring: var(--brand);
+
+  --chart-1: var(--brand);
+  --chart-2: #05e17a;
+  --chart-3: #facc00;
+  --chart-4: #ff4d50;
+  --chart-5: #7a83ff;
+}
+
+/* ==========================================================================
+   4. THEME
+   Exposes the tokens above as Tailwind utilities.
+   ========================================================================== */
+
 @theme inline {
-  --color-main: var(--main);
   --color-background: var(--background);
-  --color-secondary-background: var(--secondary-background);
   --color-foreground: var(--foreground);
-  --color-main-foreground: var(--main-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
-  --color-overlay: var(--overlay);
+  --color-input: var(--input);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -56,21 +189,142 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
-  --spacing-boxShadowX: 4px;
-  --spacing-boxShadowY: 4px;
-  --spacing-reverseBoxShadowX: -4px;
-  --spacing-reverseBoxShadowY: -4px;
-  --radius-base: 10px;
-  --shadow-shadow: var(--shadow);
-  --shadow-shadow-2xl: var(--shadow-2xl);
-  --font-weight-base: 500;
-  --font-weight-heading: 700;
+  /* Design-language aliases, so sections read as intent rather than as a
+     lookup into the shadcn palette. */
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-rule: var(--rule);
+  --color-pattern: var(--pattern-fg);
+  --color-brand: var(--brand);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-text: var(--brand-text);
+
+  --font-sans: var(--font-body);
+  --font-display: var(--font-heading);
+  --font-logo: var(--font-wordmark);
+  --font-sinhala: var(--font-si);
+
+  /* The button morph. Fast out of the gate, settling slowly, so the corner
+     change reads as the shape relaxing rather than as a linear tween. */
+  --ease-morph: cubic-bezier(0.2, 0.9, 0.25, 1);
+
+  --spacing-gutter: var(--gutter-width);
+
+  --radius-frame: var(--frame-radius);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
 }
 
+/* ==========================================================================
+   4b. TYPE SCALE
+   Line height is set per font size rather than per element, so every piece of
+   text on the site derives it from the size it already has, including across
+   breakpoints, where a `md:text-lg` picks up the matching leading with no
+   second class to remember.
+
+   Every value is unitless, so it is a ratio of the element's own font size.
+   A fixed length (`leading-8`) does not scale: the same 2rem would follow
+   16px text up to 18px at `sm`, and the block would tighten as it grew.
+
+   Prose sizes share one ratio so paragraphs read identically whatever size
+   they are set at. Display sizes tighten as they grow, because long headings
+   set at loose leading drift apart.
+   ========================================================================== */
+
+@theme {
+  /* Prose: one ratio across the three sizes body copy is ever set at. */
+  --text-sm--line-height: 1.6;
+  --text-base--line-height: 1.6;
+  --text-lg--line-height: 1.6;
+
+  /* Labels, badges and fine print: short runs that should stay compact. */
+  --text-xs--line-height: 1.45;
+
+  /* Display. */
+  --text-xl--line-height: 1.4;
+  --text-2xl--line-height: 1.3;
+  --text-3xl--line-height: 1.2;
+  --text-4xl--line-height: 1.15;
+  --text-5xl--line-height: 1.1;
+}
+
+/* ==========================================================================
+   5. UTILITIES
+   ========================================================================== */
+
+/* The 45° hatch that fills the margins beside the reading column. */
+@utility bg-hatch {
+  background-image: repeating-linear-gradient(
+    315deg,
+    var(--pattern-fg) 0,
+    var(--pattern-fg) 1px,
+    transparent 0,
+    transparent 50%
+  );
+  background-size: var(--pattern-size) var(--pattern-size);
+  background-attachment: fixed;
+}
+
+/* ==========================================================================
+   6. BASE
+   ========================================================================== */
+
 @layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    /* Bands draw their dividers as 200vw bars, which overflow the document
+       box. Clipped here as well as on the body, or the page gains a
+       horizontal scrollbar. */
+    @apply overflow-x-clip;
+
+    /* Hold the scrollbar's track open at all times.
+       Opening a dialog locks scrolling on the body, which takes the scrollbar
+       away and widens the viewport by its width. Radix pads the body to
+       compensate, but that padding cannot reach the fixed frame layer, whose
+       rails are positioned against the viewport, so the rails jump outward
+       while the content stays put and the two fall out of alignment. Reserving
+       the track means nothing changes width when the scrollbar goes. */
+    scrollbar-gutter: stable;
+  }
+
   body {
-    font-family: var(--font-space-grotesk);
-    @apply text-foreground font-base bg-background;
+    /* Section rules are drawn as 200vw bars so they run past the column and
+       out through the margins; clipping here keeps that off the scrollbar. */
+    @apply bg-surface text-foreground overflow-x-clip font-sans antialiased;
+    font-feature-settings:
+      "kern" 1,
+      "liga" 1;
+  }
+
+  /* Radix locks scrolling by hiding the body's overflow, and the library
+     behind it pads the body by the scrollbar's width to make up for the space
+     the scrollbar would have left behind.
+
+     That compensation is wrong here twice over. The scrollbar belongs to the
+     html element, which is its own scroll container because of the clipping
+     above, so it never goes away and there is no gap to fill. And the padding
+     only narrows the body: the reading column is centred inside it and slides
+     left, while the frame rails are fixed to the viewport and cannot follow,
+     so opening a dialog pulls the white column out from under its own rails.
+
+     The gap is applied as `margin-right`, not padding. react-remove-scroll
+     defaults to `gapMode: "margin"`, and it carries its own `!important`.
+     This rule still wins because an important declaration inside a cascade
+     layer outranks an important declaration outside every layer. Padding is
+     zeroed alongside it to cover the library's other gap mode; the body has no
+     spacing of its own for that to discard. */
+  body[data-scroll-locked] {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
   }
 
   h1,
@@ -79,6 +333,17 @@
   h4,
   h5,
   h6 {
-    @apply font-heading;
+    @apply font-display font-semibold text-balance;
+    letter-spacing: -0.02em;
+  }
+
+  /* Anything that lands via a hash link clears the fixed nav. */
+  :target {
+    scroll-margin-top: 7rem;
+  }
+
+  ::selection {
+    background-color: var(--brand);
+    color: var(--brand-ink);
   }
 }

@@ -49,3 +49,32 @@ videos/*
 !videos/*.js
 !videos/*.ts
 public/_next-video
+
+# agents / AI tooling
+# Local assistant state and per-machine MCP wiring. None of it describes
+# the site, and the MCP files in particular point at local commands and can
+# end up holding tokens, so they stay out of the repo.
+.agents/
+.claude/
+skills-lock.json
+.mcp.json
+**/mcp.json
+.cursor/
+.cursorrules
+.cursorignore
+.windsurf/
+.windsurfrules
+.aider*
+.continue/
+.codeium/
+.gemini/
+GEMINI.md
+.roo/
+.cline*
+.opencode/
+.crush/
+.specstory/
+.tabnine*
+.github/copilot-instructions.md
+CLAUDE.md
+AGENTS.md

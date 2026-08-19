@@ -22,7 +22,7 @@ export default function BackToTop() {
       type="button"
       size="icon"
       aria-label="Back to top"
-      className="fixed right-5 bottom-5 z-50 rounded-full"
+      className="fixed right-5 bottom-5 z-50"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
     >
       <LuArrowUp />

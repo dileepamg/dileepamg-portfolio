@@ -1,5 +1,8 @@
 import MediaFrame from "@/components/CaseStudy/MediaFrame";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { cardDescriptionClass, cardTitleClass } from "./cardStyles";
+import { LuArrowRight } from "react-icons/lu";
 import { type CaseStudy } from "./caseStudies";
 
 type CaseStudyCardProps = {
@@ -14,38 +17,45 @@ export default function CaseStudyCard({ study }: CaseStudyCardProps) {
   return (
     <article
       aria-labelledby={headingId}
-      className="shadow-shadow rounded-lg border-3 bg-white p-4 md:p-5 dark:bg-black"
+      className="group border-rule bg-paper hover:border-brand/50 relative border p-6 transition-colors md:p-8"
     >
-      <div className="flex flex-col gap-5 sm:flex-row-reverse">
+      {/* Stacked until `lg`. The split used to start at `sm`, where each half
+          was about 190px, and because the image half was `shrink-0` while the
+          text half asked for a full 100%, the row summed to 150% of the card
+          and the excess was pushed off the reversed row's left edge, clipping
+          the title and every line of the description. */}
+      <div className="flex flex-col gap-6 lg:flex-row-reverse lg:gap-8">
         <Link
           href={href}
           aria-label={`View the ${title} case study`}
-          className="w-full shrink-0 sm:w-1/2"
+          className="w-full lg:w-1/2 lg:shrink-0"
         >
           <MediaFrame
             media={media}
-            bordered={false}
-            sizes="(min-width: 1536px) 20vw, (min-width: 640px) 30vw, 90vw"
+            sizes="(min-width: 1463px) 480px, (min-width: 1024px) 33vw, 90vw"
           />
         </Link>
 
-        <div className="flex w-full flex-col justify-center gap-4">
-          <h3 id={headingId} className="text-2xl font-bold">
-            <Link href={href} className="hover:underline">
+        {/* `flex-1` sizes this from what is left rather than from a fixed
+            100%, and `min-w-0` lets it fall below its intrinsic width. */}
+        <div className="flex min-w-0 flex-1 flex-col justify-center gap-4">
+          <h3 id={headingId} className={cardTitleClass}>
+            <Link
+              href={href}
+              className="hover:text-brand-text transition-colors"
+            >
               {title}
             </Link>
           </h3>
 
-          <p className="dark:text-darkText text-sm text-pretty lg:text-base">
-            {description}
-          </p>
+          <p className={cardDescriptionClass}>{description}</p>
 
-          <Link
-            href={href}
-            className="shadow-shadow bg-main flex w-fit transform items-center gap-2 border-2 px-2 py-2 text-black transition-transform hover:-translate-y-1 dark:text-black"
-          >
-            See how it came together <span>→</span>
-          </Link>
+          <Button asChild variant="outline" className="w-fit">
+            <Link href={href}>
+              See how it came together
+              <LuArrowRight className="transition-transform group-hover:translate-x-1" />
+            </Link>
+          </Button>
         </div>
       </div>
     </article>

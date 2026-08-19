@@ -4,24 +4,42 @@ import ExperienceSection from "@/components/ExperienceSection";
 import Footer from "@/components/Footer";
 import FunStuffSection from "@/components/FunStuffSection";
 import Nav from "@/components/nav";
-import ScrollStar from "@/components/ScrollStar";
+import { Band } from "@/components/ui/band";
 import WorkSection from "@/components/WorkSection";
+import { columnClass, columnPadding } from "@/lib/layout";
+import { cn } from "@/lib/utils";
 
 import { Suspense } from "react";
 
 export default function Home() {
   return (
     <div className="relative flex min-h-screen flex-col">
-      <ScrollStar />
-      <main className="mx-auto w-[90%] flex-1 space-y-8 sm:max-w-[70%] md:max-w-[60%] 2xl:max-w-[40%]">
+      <main className={cn(columnClass, "relative mx-auto flex-1")}>
         <Nav />
-        <div className="relative z-10 space-y-8">
-          <AboutSection />
-          <div className="space-y-5">
+
+        {/* The hatch shows through the gaps between bands, turning each gap
+            into a channel with a rule on both sides rather than one shared
+            divider. */}
+        <div className="bg-hatch relative z-10 space-y-8">
+          {/* Extra top padding clears the fixed nav. */}
+          <Band
+            topCrosses={false}
+            className={cn(columnPadding, "pt-32 md:pt-40")}
+          >
+            <AboutSection />
+          </Band>
+          <Band className={columnPadding}>
             <WorkSection />
+          </Band>
+          <Band className={columnPadding}>
             <ExperienceSection />
+          </Band>
+          {/* Last band before the footer, so its bottom rule is the end of the
+              page rather than a division between two sections, and nothing meets
+              it there for a registration mark to mark. */}
+          <Band bottomCrosses={false} className={columnPadding}>
             <FunStuffSection />
-          </div>
+          </Band>
         </div>
       </main>
       <BackToTop />

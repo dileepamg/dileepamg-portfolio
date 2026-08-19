@@ -1,6 +1,9 @@
-import MediaFrame from "@/components/CaseStudy/MediaFrame";
+import MediaFrame, {
+  mediaGridClass,
+  mediaSizes,
+} from "@/components/CaseStudy/MediaFrame";
 import ProcessStepItem, {
-  stepColor,
+  stepChipClass,
   stepId,
 } from "@/components/CaseStudy/ProcessStep";
 import RichText from "@/components/CaseStudy/RichText";
@@ -13,6 +16,10 @@ import {
   caseStudies,
   getCaseStudy,
 } from "@/components/WorkSection/caseStudies";
+import { Band } from "@/components/ui/band";
+import { JsonLd } from "@/components/structured-data/JsonLd";
+import { getCaseStudyStructuredData } from "@/components/structured-data/caseStudy";
+import { columnClass, columnPadding, splitGrid } from "@/lib/layout";
 import { cn } from "@/lib/utils";
 import { IconBrandBehance, IconBrandFigma } from "@tabler/icons-react";
 import type { Metadata } from "next";
@@ -39,17 +46,49 @@ export async function generateMetadata({
 
   const heading = study.pageTitle ?? study.title;
 
+  /**
+   * Declaring `openGraph` here replaces the parent's block outright rather
+   * than merging into it, so the site-wide image has to be restated or the
+   * page ships `og:image` with no value and every share of a case study
+   * renders without a preview. The study's own thumbnail is the better
+   * picture anyway.
+   */
+  const image = study.media.kind === "image" ? study.media.src : undefined;
+
   return {
     title: heading,
     description: study.summary,
+    alternates: { canonical: `/work/${study.slug}` },
     openGraph: {
       title: heading,
       description: study.summary,
       url: `/work/${study.slug}`,
       type: "article",
+      images: image
+        ? [
+            {
+              url: image.src,
+              width: image.width,
+              height: image.height,
+              alt: heading,
+            },
+          ]
+        : ["/opengraph-image.png"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: heading,
+      description: study.summary,
+      images: image ? [image.src] : ["/opengraph-image.png"],
     },
   };
 }
+
+/** Section headings across the page, so the type scale stays in step. */
+const sectionHeadingClass = "text-brand-text text-2xl md:text-3xl";
+
+/** A framed panel. Square, hairline, sitting on the paper column. */
+const panelClass = "border-rule bg-paper border p-6 md:p-8";
 
 export default async function CaseStudyPage({ params }: PageProps) {
   const { slug } = await params;
@@ -57,180 +96,225 @@ export default async function CaseStudyPage({ params }: PageProps) {
 
   if (!study) notFound();
 
+  const jsonLd = getCaseStudyStructuredData(study);
   const currentIndex = caseStudies.findIndex((item) => item.slug === slug);
   const nextStudy = caseStudies[(currentIndex + 1) % caseStudies.length];
   const hasNext = caseStudies.length > 1;
 
   return (
     <div className="relative flex min-h-screen flex-col">
-      <main className="mx-auto w-[90%] flex-1 sm:max-w-[70%] md:max-w-[60%] 2xl:max-w-[40%]">
+      {/* Describes this specific project. The site-wide Person and WebSite
+          nodes come from the root layout, and this block references them by
+          `@id` rather than restating them. */}
+      <JsonLd data={jsonLd} />
+      <main className={cn(columnClass, "relative mx-auto flex-1")}>
         <Nav />
 
-        <div className="relative z-10 space-y-8 pt-35 pb-8">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm font-bold hover:underline"
+        <div className="bg-hatch relative z-10 space-y-8 pb-12">
+          <Band
+            topRule={false}
+            className={cn(columnPadding, "space-y-8 pt-32 md:pt-40")}
           >
-            <LuArrowLeft /> Back to home
-          </Link>
+            <Link
+              href="/"
+              className="text-ink-soft hover:text-brand-text inline-flex items-center gap-2 text-sm font-medium transition-colors"
+            >
+              <LuArrowLeft /> Back to Home
+            </Link>
 
-          {/* ---------- Hero ---------- */}
-          <header className="space-y-4">
-            <h1 className="text-3xl md:text-4xl">
-              {study.pageTitle ?? study.title}
-            </h1>
-            <p className="text-lg font-bold text-[#ff4d50] md:text-xl">
-              {study.summary}
-            </p>
+            {/* ---------- Hero ---------- */}
+            <header className="space-y-4">
+              <h1 className="text-3xl md:text-4xl">
+                {study.pageTitle ?? study.title}
+              </h1>
+              <p className="text-brand-text text-lg font-medium md:text-xl">
+                {study.summary}
+              </p>
 
-            {study.tags && study.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {study.tags.map((tag) => (
-                  <Badge key={tag} variant="outline">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </header>
-
-          <MediaFrame media={study.heroMedia ?? study.media} priority />
-
-          {/* ---------- Facts ---------- */}
-          {study.overview && study.overview.length > 0 && (
-            <dl className="shadow-shadow grid grid-cols-2 gap-5 rounded-lg border-3 bg-white p-5 sm:grid-cols-4 md:p-6 dark:bg-black">
-              {study.overview.map((fact) => (
-                <div key={fact.label}>
-                  <dt className="text-xs font-bold tracking-wide text-gray-500 uppercase">
-                    {fact.label}
-                  </dt>
-                  <dd className="mt-1 text-sm font-bold text-pretty">
-                    {fact.value}
-                  </dd>
+              {study.tags && study.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {study.tags.map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant="outline"
+                      className="text-ink-faint"
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
                 </div>
-              ))}
-            </dl>
-          )}
-
-          {/* ---------- The gist, for skimmers ---------- */}
-          {(study.challenge || study.outcome) && (
-            <div className="grid gap-6 md:grid-cols-2">
-              {study.challenge && (
-                <section className="shadow-shadow rounded-lg border-3 bg-white p-5 md:p-6 dark:bg-black">
-                  <h2 className="text-xl font-bold">The challenge</h2>
-                  <p className="mt-2 text-sm text-pretty lg:text-base">
-                    {study.challenge}
-                  </p>
-                </section>
               )}
+            </header>
 
-              {study.outcome && (
-                <section className="shadow-shadow rounded-lg border-3 bg-white p-5 md:p-6 dark:bg-black">
-                  <h2 className="text-xl font-bold">The outcome</h2>
-                  <p className="mt-2 text-sm text-pretty lg:text-base">
-                    {study.outcome}
-                  </p>
-                </section>
-              )}
-            </div>
-          )}
+            <MediaFrame media={study.heroMedia ?? study.media} priority />
+          </Band>
 
-          {/* ---------- Who it is for ---------- */}
-          {study.personas && study.personas.length > 0 && (
-            <section className="space-y-4">
-              <h2 className="text-2xl md:text-3xl">
-                Who it is for{" "}
-                <span className="text-base font-normal text-gray-500 md:text-lg">
-                  (Personas, if you will..)
-                </span>
-              </h2>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {study.personas.map((persona) => (
+          <Band className={cn(columnPadding, "space-y-8")}>
+            {/* ---------- Facts ----------
+              Ruled cells rather than a padded box: the gap is the rule, so the
+              block reads as a table cut out of the page grid. */}
+            {study.overview && study.overview.length > 0 && (
+              <dl className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                {study.overview.map((fact) => (
                   <div
-                    key={persona.title}
-                    className="shadow-shadow rounded-lg border-2 bg-white p-4 dark:bg-black"
+                    key={fact.label}
+                    className="border-rule bg-brand/5 border p-6"
                   >
-                    <p className="text-xs font-bold tracking-wide text-gray-500 uppercase">
-                      {persona.label}
-                    </p>
-                    <h3 className="mt-1 text-lg font-bold">{persona.title}</h3>
-                    <p className="mt-2 text-sm text-pretty">
-                      {persona.description}
-                    </p>
+                    <dt className="text-ink-faint text-xs font-medium tracking-wide">
+                      {fact.label}
+                    </dt>
+                    <dd className="mt-1 text-sm font-medium text-pretty lg:text-base">
+                      {fact.value}
+                    </dd>
                   </div>
                 ))}
+              </dl>
+            )}
+
+            {/* ---------- The gist, for skimmers ---------- */}
+            {(study.challenge || study.outcome) && (
+              <div className={cn(splitGrid, "gap-6")}>
+                {study.challenge && (
+                  <section className={panelClass}>
+                    <h2 className="text-xl font-semibold">The challenge</h2>
+                    <p className="text-ink-soft mt-2 text-sm text-pretty lg:text-base">
+                      {study.challenge}
+                    </p>
+                  </section>
+                )}
+
+                {study.outcome && (
+                  <section className={panelClass}>
+                    <h2 className="text-xl font-semibold">The outcome</h2>
+                    <p className="text-ink-soft mt-2 text-sm text-pretty lg:text-base">
+                      {study.outcome}
+                    </p>
+                  </section>
+                )}
               </div>
-            </section>
-          )}
+            )}
+          </Band>
 
-          {/* ---------- Process ---------- */}
-          {study.process && study.process.length > 0 && (
-            <section className="space-y-6">
-              <h2 className="text-2xl md:text-3xl">How it came together</h2>
+          <Band className={cn(columnPadding, "space-y-8")}>
+            {/* ---------- Who it is for ---------- */}
+            {study.personas && study.personas.length > 0 && (
+              <section className="space-y-4">
+                <h2 className={sectionHeadingClass}>
+                  Who it is for{" "}
+                  <span className="text-ink-soft text-base font-normal md:text-lg">
+                    (Personas, if you will..)
+                  </span>
+                </h2>
+                <div className={cn(splitGrid, "gap-4")}>
+                  {study.personas.map((persona) => (
+                    <div
+                      key={persona.title}
+                      className="border-rule bg-paper border p-6"
+                    >
+                      {/* Tracks the description's size, including its step up
+                          at `lg`, so the two never drift apart. */}
+                      <p className="text-ink-faint text-sm font-medium tracking-wide lg:text-base">
+                        {persona.label}
+                      </p>
+                      <h3 className="mt-1 text-xl font-semibold">
+                        {persona.title}
+                      </h3>
+                      <p className="text-ink-soft mt-2 text-sm text-pretty lg:text-base">
+                        {persona.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </Band>
 
-              {/* Jump links, so a long page stays navigable. */}
-              <nav aria-label="Process steps">
-                <ol className="flex flex-wrap gap-2">
+          <Band className={cn(columnPadding, "space-y-8")}>
+            {/* ---------- Process ---------- */}
+            {study.process && study.process.length > 0 && (
+              <section className="space-y-6">
+                <h2 className={sectionHeadingClass}>How it came together</h2>
+
+                {/* Jump links, so a long page stays navigable. */}
+                <nav aria-label="Process steps">
+                  <ol className="flex flex-wrap gap-2">
+                    {study.process.map((step, index) => (
+                      <li key={step.title}>
+                        <a
+                          href={`#${stepId(index, step.title)}`}
+                          className={cn(
+                            "hover:border-brand hover:bg-brand hover:text-brand-ink flex items-center gap-2 px-3 py-1.5 text-xs font-medium transition-colors",
+                            stepChipClass,
+                          )}
+                        >
+                          <span className="tabular-nums">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <span>{step.phase}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </nav>
+
+                <ol className="space-y-8">
                   {study.process.map((step, index) => (
-                    <li key={step.title}>
-                      <a
-                        href={`#${stepId(index, step.title)}`}
-                        className={cn(
-                          "border-border shadow-shadow rounded-base hover:translate-x-boxShadowX hover:translate-y-boxShadowY flex items-center gap-2 border-2 px-3 py-1.5 text-xs font-bold text-black transition-transform hover:shadow-none",
-                          stepColor,
-                        )}
-                      >
-                        <span>{String(index + 1).padStart(2, "0")}</span>
-                        <span>{step.phase}</span>
-                      </a>
-                    </li>
+                    <ProcessStepItem
+                      key={step.title}
+                      step={step}
+                      index={index}
+                      isLast={index === study.process!.length - 1}
+                    />
                   ))}
                 </ol>
-              </nav>
+              </section>
+            )}
+          </Band>
 
-              <ol className="space-y-8">
-                {study.process.map((step, index) => (
-                  <ProcessStepItem
-                    key={step.title}
-                    step={step}
-                    index={index}
-                    isLast={index === study.process!.length - 1}
-                  />
-                ))}
-              </ol>
-            </section>
-          )}
+          <Band className={cn(columnPadding, "space-y-8")}>
+            {/* ---------- Gallery ---------- */}
+            {study.gallery && study.gallery.length > 0 && (
+              <section className="space-y-6">
+                <h2 className={sectionHeadingClass}>More from the project</h2>
+                <div className={mediaGridClass(study.gallery)}>
+                  {study.gallery.map((item) => (
+                    <MediaFrame
+                      key={item.kind === "image" ? item.alt : item.src}
+                      media={item}
+                      expandable
+                      sizes={mediaSizes(study.gallery!)}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
 
-          {/* ---------- Gallery ---------- */}
-          {study.gallery && study.gallery.length > 0 && (
-            <section className="space-y-6">
-              <h2 className="text-2xl md:text-3xl">More from the project</h2>
-              <div className="grid gap-6 md:grid-cols-2">
-                {study.gallery.map((item) => (
-                  <MediaFrame
-                    key={item.kind === "image" ? item.alt : item.src}
-                    media={item}
-                    expandable
-                    sizes="(min-width: 768px) 30vw, 90vw"
-                  />
-                ))}
+            {/* ---------- Reflection ---------- */}
+            {study.reflection && (
+              <div className="space-y-3">
+                <section className={panelClass}>
+                  <h2 className="text-xl font-semibold">Looking back</h2>
+                  <p className="text-ink-soft mt-2 text-sm text-pretty lg:text-base">
+                    <RichText>{study.reflection}</RichText>
+                  </p>
+                </section>
+
+                {study.disclaimer && (
+                  <p className="text-ink-soft text-sm text-pretty">
+                    <RichText>{study.disclaimer}</RichText>
+                  </p>
+                )}
               </div>
-            </section>
-          )}
+            )}
 
-          {/* ---------- Reflection ---------- */}
-          {study.reflection && (
-            <section className="shadow-shadow rounded-lg border-3 bg-white p-5 md:p-6 dark:bg-black">
-              <h2 className="text-xl font-bold">Looking back</h2>
-              <p className="mt-2 text-sm text-pretty lg:text-base">
-                <RichText>{study.reflection}</RichText>
+            {study.disclaimer && !study.reflection && (
+              <p className="text-ink-soft text-sm text-pretty">
+                <RichText>{study.disclaimer}</RichText>
               </p>
-            </section>
-          )}
+            )}
 
-          {/* ---------- Links ---------- */}
-          {study.links &&
-            (study.links.figma || study.links.behance || study.links.live) && (
+            {/* ---------- Links ---------- */}
+            {study.links && Object.values(study.links).some(Boolean) && (
               <div className="flex flex-wrap gap-3">
                 {study.links.figma && (
                   <Button asChild>
@@ -240,67 +324,63 @@ export default async function CaseStudyPage({ params }: PageProps) {
                       rel="noopener noreferrer"
                       aria-label={`${study.title} on Figma (opens in new tab)`}
                     >
-                      <IconBrandFigma />
+                      <IconBrandFigma data-icon="inline-start" />
                       Open in Figma
                     </a>
                   </Button>
                 )}
                 {study.links.behance && (
-                  <Button asChild variant="neutral">
+                  <Button asChild variant="outline">
                     <a
                       href={study.links.behance}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`${study.title} on Behance (opens in new tab)`}
                     >
-                      <IconBrandBehance />
+                      <IconBrandBehance data-icon="inline-start" />
                       View on Behance
                     </a>
                   </Button>
                 )}
                 {study.links.live && (
-                  <Button asChild variant="neutral">
+                  <Button asChild variant="outline">
                     <a
                       href={study.links.live}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`${study.title} live site (opens in new tab)`}
                     >
-                      <LuExternalLink />
+                      <LuExternalLink data-icon="inline-start" />
                       Live site
                     </a>
                   </Button>
                 )}
               </div>
             )}
+          </Band>
 
-          {/* ---------- Next project ---------- */}
-          {hasNext && nextStudy && (
-            <Link
-              href={`/work/${nextStudy.slug}`}
-              className="shadow-shadow group flex items-center justify-between gap-4 rounded-lg border-3 bg-white p-5 md:p-6 dark:bg-black"
-            >
-              <span>
-                <span className="text-xs font-bold tracking-wide text-gray-500 uppercase">
-                  Next project
+          <Band className={cn(columnPadding, "space-y-8")}>
+            {/* ---------- Next project ---------- */}
+            {hasNext && nextStudy && (
+              <Link
+                href={`/work/${nextStudy.slug}`}
+                className="border-rule bg-paper hover:border-brand/50 group relative flex items-center justify-between gap-4 border p-6 transition-colors md:p-8"
+              >
+                <span>
+                  <span className="text-ink-faint text-xs font-medium tracking-wide">
+                    Next project
+                  </span>
+                  <span className="group-hover:text-brand-text mt-1 block text-xl font-semibold transition-colors">
+                    {nextStudy.title}
+                  </span>
                 </span>
-                <span className="mt-1 block text-xl font-bold">
-                  {nextStudy.title}
-                </span>
-              </span>
-              <LuArrowRight
-                size={24}
-                className="shrink-0 transition-transform group-hover:translate-x-1"
-              />
-            </Link>
-          )}
-
-          {/* ---------- Attribution ---------- */}
-          {study.disclaimer && (
-            <p className="border-border border-t-2 pt-6 text-xs text-pretty text-gray-500 dark:text-gray-400">
-              <RichText>{study.disclaimer}</RichText>
-            </p>
-          )}
+                <LuArrowRight
+                  size={24}
+                  className="shrink-0 transition-transform group-hover:translate-x-1"
+                />
+              </Link>
+            )}
+          </Band>
         </div>
       </main>
 
