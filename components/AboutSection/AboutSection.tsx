@@ -1,7 +1,6 @@
+import ProfileLanyard from "@/components/AboutSection/ProfileLanyard";
 import { Button } from "@/components/ui/button";
 import WelcomeText from "@/components/WelcomeText";
-import ProfilePic from "@/public/dileepa-g.png";
-import Image from "next/image";
 import type { IconType } from "react-icons";
 import { FaBehance, FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { LuCalendarDays, LuDownload, LuMail } from "react-icons/lu";
@@ -38,16 +37,17 @@ const socials: Social[] = [
 export default function AboutSection() {
   return (
     <section id="about" className="scroll-mt-28 align-top">
-      {/* Portrait above the text until the column can hold both side by side,
-          which is `lg`, the same point every other split on the site waits
-          for. The split used to start at `sm`, where the column is ~408px
-          wide: the portrait took 200 of it and the text, floored by the width
-          of its own button row, could not shrink into what was left. */}
-      <div className="flex flex-col items-start justify-between gap-8 lg:flex-row">
+      {/* The badge hangs above the text until the column can hold both side by
+          side, which is `xl` rather than the `lg` every other split on the
+          site waits for. At `lg` the column is ~642px: the badge needs ~380 of
+          that to have room to swing, and 260px is not a text column. The badge
+          is wider than the portrait it replaces because its size is set by the
+          canvas height, and the canvas has to be tall enough for a strap. */}
+      <div className="flex flex-col items-start justify-between gap-8 xl:flex-row">
         {/* `min-w-0` is what lets this actually shrink: a flex item defaults
             to `min-width: auto`, which refuses to go below its content's
             intrinsic width and pushes the overflow onto the page instead. */}
-        <div className="order-2 min-w-0 flex-1 lg:order-1">
+        <div className="order-2 min-w-0 flex-1 xl:order-1">
           <h1 className="text-3xl md:text-4xl">Dileepa Galmangoda</h1>
           <p className="text-brand-text mt-1 text-xl font-medium md:text-2xl">
             UI/UX Designer & Creative Generalist
@@ -56,8 +56,10 @@ export default function AboutSection() {
             <WelcomeText /> 🙏 I design digital experiences that make every
             interface feel like it already understands what the user is trying
             to do. My work moves between shaping flows, refining designs,
-            building prototypes and using AI-assisted workflows to explore and
-            improve ideas. I’m currently a Senior UI/UX Designer at Villvay.
+            building prototypes and using{" "}
+            <span className="whitespace-nowrap">AI-assisted</span> workflows to
+            explore ideas and test directions. I’m currently open to new design
+            opportunities and collaborations.
           </p>
 
           <div className="flex flex-row flex-wrap gap-4 py-4">
@@ -109,21 +111,19 @@ export default function AboutSection() {
           </div>
         </div>
 
-        {/* Sized so it never takes more than about a third of the row: at
-            `lg` the column holds ~650px, and a 300px portrait there would
-            leave the text too narrow for its own button row. */}
-        <div className="border-rule relative order-1 size-50 shrink-0 border lg:order-2 lg:size-56 xl:size-[300px]">
-          {/* Mirrors the `size-*` ladder on the wrapper: 200px, then 224px
-              at `lg`, then 300px at `xl`. Widths first, because the browser
-              takes the first matching clause. */}
-          <Image
-            src={ProfilePic}
-            fill
-            sizes="(min-width: 1280px) 300px, (min-width: 1024px) 224px, 200px"
-            placeholder="blur"
-            className="object-cover"
-            alt="Portrait"
-          />
+        {/* Reserves the badge's space in the row, and marks where it hangs.
+            Nothing is drawn in here: a badge on a string swings, and any box
+            it was rendered inside would shear the strap off at the edge the
+            moment it did — a bigger box only moves the edge. So the canvas is
+            pinned to the viewport instead and reads this element's position
+            every frame, leaving the strap free to travel anywhere on screen.
+
+            That layer sits at `z-40`: above the paper, the rules and every
+            section it passes over, under only the nav at `z-50`. It is inert
+            until the pointer is actually over the card, so covering the page
+            with it costs the page nothing. */}
+        <div className="relative order-1 h-[300px] w-full shrink-0 sm:h-[350px] xl:order-2 xl:h-auto xl:min-h-[375px] xl:w-[380px] xl:self-stretch">
+          <ProfileLanyard />
         </div>
       </div>
     </section>
