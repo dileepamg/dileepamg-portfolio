@@ -7,22 +7,34 @@ import ProcessStepItem, {
   stepId,
 } from "@/components/CaseStudy/ProcessStep";
 import RichText from "@/components/CaseStudy/RichText";
-import BackToTop from "@/components/BackToTop";
-import Footer from "@/components/Footer";
-import Nav from "@/components/nav";
+import { CaseStudyPageSkeleton } from "@/components/loading/PageSkeletons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  caseStudies,
-  getCaseStudy,
-} from "@/components/WorkSection/caseStudies";
 import { Band } from "@/components/ui/band";
 import { JsonLd } from "@/components/structured-data/JsonLd";
 import { getCaseStudyStructuredData } from "@/components/structured-data/caseStudy";
 import { columnClass, columnPadding, splitGrid } from "@/lib/layout";
 import { cn } from "@/lib/utils";
+import { metadataClient } from "@/sanity/lib/client";
+import {
+  type DynamicFetchOptions,
+  getDynamicFetchOptions,
+  sanityFetch,
+  sanityFetchMetadata,
+} from "@/sanity/lib/live";
+import {
+  cleanSanityString,
+  mapCaseStudy,
+  mapCaseStudyCard,
+} from "@/sanity/lib/mappers";
+import {
+  CASE_STUDIES_QUERY,
+  CASE_STUDY_QUERY,
+  CASE_STUDY_SLUGS_QUERY,
+} from "@/sanity/lib/queries";
 import { IconBrandBehance, IconBrandFigma } from "@tabler/icons-react";
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -32,17 +44,25 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return caseStudies.map((study) => ({ slug: study.slug }));
+export async function generateStaticParams() {
+  const studies = await metadataClient.fetch(CASE_STUDY_SLUGS_QUERY);
+  return studies.map((study) => ({ slug: study.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const study = getCaseStudy(slug);
+  const { data: documents } = await sanityFetchMetadata({
+    query: CASE_STUDY_QUERY,
+    perspective: "published",
+  });
+  const document = documents.find(
+    (item) => cleanSanityString(item.slug) === slug,
+  );
 
-  if (!study) return {};
+  if (!document) return {};
+  const study = mapCaseStudy(document);
 
   const heading = study.pageTitle ?? study.title;
 
@@ -91,16 +111,70 @@ const sectionHeadingClass = "text-brand-text text-2xl md:text-3xl";
 const panelClass = "border-rule bg-paper border p-6 md:p-8";
 
 export default async function CaseStudyPage({ params }: PageProps) {
+  const { isEnabled } = await draftMode();
+  if (isEnabled) {
+    return (
+      <Suspense fallback={<CaseStudyPageSkeleton />}>
+        <DynamicCaseStudyPage params={params} />
+      </Suspense>
+    );
+  }
+
   const { slug } = await params;
-  const study = getCaseStudy(slug);
+  return (
+    <CachedCaseStudyPage
+      slug={slug}
+      perspective="published"
+      stega={false}
+    />
+  );
+}
 
-  if (!study) notFound();
+async function DynamicCaseStudyPage({ params }: PageProps) {
+  const [{ slug }, options] = await Promise.all([
+    params,
+    getDynamicFetchOptions(),
+  ]);
+  return <CachedCaseStudyPage slug={slug} {...options} />;
+}
 
+async function CachedCaseStudyPage({
+  slug,
+  perspective,
+  stega,
+}: { slug: string } & DynamicFetchOptions) {
+  "use cache";
+
+  const [{ data: documents }, { data: cardDocuments }] = await Promise.all([
+    sanityFetch({
+      query: CASE_STUDY_QUERY,
+      perspective,
+      stega,
+    }),
+    sanityFetch({
+      query: CASE_STUDIES_QUERY,
+      perspective,
+      stega,
+    }),
+  ]);
+
+  const document = documents.find(
+    (item) => cleanSanityString(item.slug) === slug,
+  );
+  if (!document) notFound();
+
+  const study = mapCaseStudy(
+    document as unknown as Parameters<typeof mapCaseStudy>[0],
+  );
+  const caseStudies = cardDocuments.map((card) =>
+    mapCaseStudyCard(
+      card as unknown as Parameters<typeof mapCaseStudyCard>[0],
+    ),
+  );
   const jsonLd = getCaseStudyStructuredData(study);
   const currentIndex = caseStudies.findIndex((item) => item.slug === slug);
   const nextStudy = caseStudies[(currentIndex + 1) % caseStudies.length];
   const hasNext = caseStudies.length > 1;
-
   return (
     <div className="relative flex min-h-screen flex-col">
       {/* Describes this specific project. The site-wide Person and WebSite
@@ -108,8 +182,6 @@ export default async function CaseStudyPage({ params }: PageProps) {
           `@id` rather than restating them. */}
       <JsonLd data={jsonLd} />
       <main className={cn(columnClass, "relative mx-auto flex-1")}>
-        <Nav />
-
         <div className="bg-hatch relative z-10 space-y-8 pb-12">
           <Band
             topRule={false}
@@ -383,12 +455,6 @@ export default async function CaseStudyPage({ params }: PageProps) {
           </Band>
         </div>
       </main>
-
-      <BackToTop />
-
-      <Suspense fallback={null}>
-        <Footer />
-      </Suspense>
     </div>
   );
 }

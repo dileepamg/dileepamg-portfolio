@@ -8,23 +8,38 @@ import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { splitGrid } from "@/lib/layout";
 import { cn } from "@/lib/utils";
-import { caseStudies } from "./caseStudies";
+import type { StaticImageData } from "next/image";
+import type { CaseStudy } from "./caseStudies";
 import CaseStudyCard from "./CaseStudyCard";
 import { cardDescriptionClass, cardTitleClass } from "./cardStyles";
-import { projects } from "./data";
 
 import { IconBrandBehance } from "@tabler/icons-react";
 import { LuExternalLink } from "react-icons/lu";
 
 import Image from "next/image";
 
-export default function WorkSection() {
+type WorkSectionProps = {
+  caseStudies: readonly CaseStudy[];
+  projects: readonly {
+    title: string;
+    description: string;
+    behance: string;
+    image: StaticImageData;
+  }[];
+  heading?: string;
+};
+
+export default function WorkSection({
+  caseStudies,
+  projects,
+  heading = "Featured Work",
+}: WorkSectionProps) {
   return (
     <section id="work" className="scroll-mt-28">
       <Accordion type="single" collapsible defaultValue="item-1">
         <AccordionItem value="item-1" className="border-b-0">
           <AccordionTrigger className="pt-0 transition-opacity hover:opacity-70 [&>svg]:size-6">
-            <SectionHeading title="Featured Work" />
+            <SectionHeading title={heading} />
           </AccordionTrigger>
           <AccordionContent>
             <div className="my-2 space-y-8 pb-2">
@@ -113,6 +128,20 @@ export default function WorkSection() {
                     </article>
                   );
                 })}
+              </div>
+
+              <div className="flex justify-center">
+                <Button asChild variant="outline">
+                  <a
+                    href="https://www.behance.net/dileepamg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <IconBrandBehance data-icon="inline-start" />
+                    View more on Behance
+                    <LuExternalLink data-icon="inline-end" />
+                  </a>
+                </Button>
               </div>
             </div>
           </AccordionContent>

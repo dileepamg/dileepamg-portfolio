@@ -39,6 +39,7 @@ import {
   Canvas,
   extend,
   useFrame,
+  useThree,
   type ThreeElement,
   type ThreeEvent,
 } from "@react-three/fiber";
@@ -57,10 +58,21 @@ import {
   MeshLineMaterial,
   type MeshLineMaterialParameters,
 } from "meshline";
-import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import {
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type RefObject,
+} from "react";
 import * as THREE from "three";
 
 const CARD_MODEL = "/lanyard/card.glb";
+
+// Keep the model warm across client navigations so remounts do not hang in
+// Suspense waiting on a cold fetch after the previous WebGL world disposed.
+useGLTF.preload(CARD_MODEL);
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
@@ -89,6 +101,7 @@ const BACK_UV_RECT = { x: 0.5, y: 0, w: 0.5, h: 0.757 };
 const CARD_SIZE = { width: 1.612, height: 2.25 };
 const ANCHOR_Y = 4;
 const REST_Y = -0.474;
+const SCENE_WARMUP_SECONDS = 0.75;
 
 /**
  * What a loaded texture's `.image` actually is. three types it as `any`, but
@@ -122,6 +135,8 @@ interface LanyardProps {
   lanyardWidth?: number;
   bandColor?: string;
   className?: string;
+  onReady?: () => void;
+  onUnavailable?: () => void;
 }
 
 export default function Lanyard({
@@ -138,6 +153,8 @@ export default function Lanyard({
   lanyardWidth = 1,
   bandColor = "#ffffff",
   className,
+  onReady,
+  onUnavailable,
 }: LanyardProps) {
   const [isMobile, setIsMobile] = useState<boolean>(
     () => typeof window !== "undefined" && window.innerWidth < 768,
@@ -184,56 +201,117 @@ export default function Lanyard({
           gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)
         }
       >
-        <FrameBadge
-          anchorRef={anchorRef}
-          cardHeight={cardHeight}
-          cardOffsetTop={cardOffsetTop}
-          fov={fov}
-        />
-        <ambientLight intensity={Math.PI} />
-        <Physics gravity={gravity} timeStep={isMobile ? 1 / 30 : 1 / 60}>
-          <Band
-            isMobile={isMobile}
-            frontImage={frontImage}
-            backImage={backImage}
-            imageFit={imageFit}
-            lanyardWidth={lanyardWidth}
-            bandColor={bandColor}
+        <Suspense fallback={null}>
+          <FrameBadge
+            anchorRef={anchorRef}
+            cardHeight={cardHeight}
+            cardOffsetTop={cardOffsetTop}
+            fov={fov}
           />
-        </Physics>
-        <Environment blur={0.75}>
-          <Lightformer
-            intensity={2}
-            color="white"
-            position={[0, -1, 5]}
-            rotation={[0, 0, Math.PI / 3]}
-            scale={[100, 0.1, 1]}
+          <ambientLight intensity={Math.PI} />
+          <Physics gravity={gravity} timeStep={isMobile ? 1 / 30 : 1 / 60}>
+            <Band
+              isMobile={isMobile}
+              frontImage={frontImage}
+              backImage={backImage}
+              imageFit={imageFit}
+              lanyardWidth={lanyardWidth}
+              bandColor={bandColor}
+            />
+          </Physics>
+          <Environment blur={0.75}>
+            <Lightformer
+              intensity={2}
+              color="white"
+              position={[0, -1, 5]}
+              rotation={[0, 0, Math.PI / 3]}
+              scale={[100, 0.1, 1]}
+            />
+            <Lightformer
+              intensity={3}
+              color="white"
+              position={[-1, -1, 1]}
+              rotation={[0, 0, Math.PI / 3]}
+              scale={[100, 0.1, 1]}
+            />
+            <Lightformer
+              intensity={3}
+              color="white"
+              position={[1, 1, 1]}
+              rotation={[0, 0, Math.PI / 3]}
+              scale={[100, 0.1, 1]}
+            />
+            <Lightformer
+              intensity={10}
+              color="white"
+              position={[-10, 0, 14]}
+              rotation={[0, Math.PI / 2, Math.PI / 3]}
+              scale={[100, 10, 1]}
+            />
+          </Environment>
+          <SceneStatus
+            onReady={onReady}
+            onUnavailable={onUnavailable}
           />
-          <Lightformer
-            intensity={3}
-            color="white"
-            position={[-1, -1, 1]}
-            rotation={[0, 0, Math.PI / 3]}
-            scale={[100, 0.1, 1]}
-          />
-          <Lightformer
-            intensity={3}
-            color="white"
-            position={[1, 1, 1]}
-            rotation={[0, 0, Math.PI / 3]}
-            scale={[100, 0.1, 1]}
-          />
-          <Lightformer
-            intensity={10}
-            color="white"
-            position={[-10, 0, 14]}
-            rotation={[0, Math.PI / 2, Math.PI / 3]}
-            scale={[100, 10, 1]}
-          />
-        </Environment>
+        </Suspense>
       </Canvas>
     </div>
   );
+}
+
+function SceneStatus({
+  onReady,
+  onUnavailable,
+}: {
+  onReady?: () => void;
+  onUnavailable?: () => void;
+}) {
+  const { gl } = useThree();
+  const elapsed = useRef(0);
+  const ready = useRef(false);
+  const onReadyRef = useRef(onReady);
+  const onUnavailableRef = useRef(onUnavailable);
+  onReadyRef.current = onReady;
+  onUnavailableRef.current = onUnavailable;
+
+  useFrame((_, delta) => {
+    if (ready.current) return;
+
+    elapsed.current += Math.min(delta, 0.1);
+    if (elapsed.current >= SCENE_WARMUP_SECONDS) {
+      ready.current = true;
+      onReadyRef.current?.();
+    }
+  });
+
+  useEffect(() => {
+    const canvas = gl.domElement;
+    const handleLost = (event: Event) => {
+      event.preventDefault();
+      elapsed.current = 0;
+      ready.current = false;
+      onUnavailableRef.current?.();
+    };
+    const handleRestored = () => {
+      // Restart warm-up so the still badge stays up until the band settles
+      // again after a context restore (common after client navigations).
+      elapsed.current = 0;
+      ready.current = false;
+    };
+
+    canvas.addEventListener("webglcontextlost", handleLost);
+    canvas.addEventListener("webglcontextrestored", handleRestored);
+
+    return () => {
+      canvas.removeEventListener("webglcontextlost", handleLost);
+      canvas.removeEventListener(
+        "webglcontextrestored",
+        handleRestored,
+      );
+    };
+  }, [gl]);
+
+  return null;
 }
 
 /**

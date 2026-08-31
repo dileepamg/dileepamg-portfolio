@@ -1,0 +1,82 @@
+import type { QueryParams } from "next-sanity";
+import {
+  defineLive,
+  resolvePerspectiveFromCookies,
+  type LivePerspective,
+} from "next-sanity/live";
+import { cookies, draftMode } from "next/headers";
+import { client } from "./client";
+
+const previewToken = process.env.SANITY_API_READ_TOKEN;
+if (!previewToken) {
+  throw new Error("Missing SANITY_API_READ_TOKEN");
+}
+
+export const { sanityFetch, SanityLive } = defineLive({
+  client: client.withConfig({
+    token: previewToken,
+    useCdn: false,
+  }),
+  serverToken: previewToken,
+  browserToken: previewToken,
+  strict: true,
+});
+
+export type DynamicFetchOptions = {
+  perspective: LivePerspective;
+  stega: boolean;
+};
+
+export async function getDynamicFetchOptions(): Promise<DynamicFetchOptions> {
+  const { isEnabled } = await draftMode();
+  if (!isEnabled) {
+    return { perspective: "published", stega: false };
+  }
+
+  const perspective = await resolvePerspectiveFromCookies({
+    cookies: await cookies(),
+  });
+
+  return {
+    perspective: perspective ?? "drafts",
+    stega: true,
+  };
+}
+
+export async function sanityFetchStaticParams<
+  const QueryString extends string,
+>({
+  query,
+  params = {},
+}: {
+  query: QueryString;
+  params?: QueryParams;
+}) {
+  "use cache";
+  return sanityFetch({
+    query,
+    params,
+    perspective: "published",
+    stega: false,
+  });
+}
+
+export async function sanityFetchMetadata<
+  const QueryString extends string,
+>({
+  query,
+  params = {},
+  perspective,
+}: {
+  query: QueryString;
+  params?: QueryParams;
+  perspective: LivePerspective;
+}) {
+  "use cache";
+  return sanityFetch({
+    query,
+    params,
+    perspective,
+    stega: false,
+  });
+}

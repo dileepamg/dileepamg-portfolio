@@ -1,0 +1,498 @@
+import { createClient } from "@sanity/client";
+import { createHash } from "node:crypto";
+import {
+  createReadStream,
+  existsSync,
+  readFileSync,
+} from "node:fs";
+import path from "node:path";
+import vm from "node:vm";
+import ts from "typescript";
+
+process.loadEnvFile?.(".env.local");
+
+const root = process.cwd();
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
+const token = process.env.SANITY_API_WRITE_TOKEN;
+const dryRun = process.argv.includes("--dry-run");
+
+if (!projectId || !dataset) {
+  throw new Error("Missing NEXT_PUBLIC_SANITY_PROJECT_ID or dataset.");
+}
+
+if (!dryRun && !token) {
+  throw new Error(
+    "Missing SANITY_API_WRITE_TOKEN. Add the temporary Editor token to .env.local.",
+  );
+}
+
+const client = createClient({
+  projectId,
+  dataset,
+  token,
+  apiVersion: "2026-08-24",
+  useCdn: false,
+});
+
+const assetCache = new Map();
+
+const slugify = (value) =>
+  value
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/[\s_]+/g, "-")
+    .replace(/-+/g, "-");
+
+const keyFor = (...parts) =>
+  createHash("sha1").update(parts.join(":")).digest("hex").slice(0, 12);
+
+function resolveImport(importPath, sourceFile) {
+  if (importPath.startsWith("@/")) {
+    return path.join(root, importPath.slice(2));
+  }
+
+  return path.resolve(path.dirname(sourceFile), importPath);
+}
+
+/**
+ * The current content modules import images through Next.js. This evaluates
+ * only their data exports while replacing those imports with filesystem
+ * markers, so the migration can reuse the existing single source of truth.
+ */
+function loadDataModule(relativePath) {
+  const sourceFile = path.join(root, relativePath);
+  let source = readFileSync(sourceFile, "utf8");
+
+  source = source.replace(
+    /import\s+([A-Za-z_$][\w$]*)\s+from\s+["']([^"']+\.(?:png|jpe?g|webp|gif|mp4))["'];?/g,
+    (_match, identifier, importPath) =>
+      `const ${identifier} = {__file: ${JSON.stringify(
+        resolveImport(importPath, sourceFile),
+      )}};`,
+  );
+
+  const output = ts.transpileModule(source, {
+    fileName: sourceFile,
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2022,
+      esModuleInterop: true,
+    },
+  }).outputText;
+
+  const moduleScope = { exports: {} };
+  vm.runInNewContext(output, {
+    module: moduleScope,
+    exports: moduleScope.exports,
+    console,
+    require: (moduleName) => {
+      throw new Error(
+        `Unexpected runtime import "${moduleName}" in ${relativePath}.`,
+      );
+    },
+  });
+
+  return moduleScope.exports;
+}
+
+function fileFrom(source) {
+  const file = source?.__file;
+  if (!file || !existsSync(file)) {
+    throw new Error(`Asset file not found: ${file ?? "unknown"}`);
+  }
+
+  return file;
+}
+
+async function uploadAsset(kind, file) {
+  const cacheKey = `${kind}:${file}`;
+  if (assetCache.has(cacheKey)) return assetCache.get(cacheKey);
+
+  if (dryRun) {
+    const placeholder = {
+      _id: `dry-run-${keyFor(cacheKey)}`,
+      url: file,
+    };
+    assetCache.set(cacheKey, placeholder);
+    return placeholder;
+  }
+
+  const asset = await client.assets.upload(kind, createReadStream(file), {
+    filename: path.basename(file),
+  });
+  assetCache.set(cacheKey, asset);
+  return asset;
+}
+
+async function sanityImage(source, alt, caption) {
+  const asset = await uploadAsset("image", fileFrom(source));
+  return {
+    _type: "image",
+    asset: { _type: "reference", _ref: asset._id },
+    alt,
+    ...(caption ? { caption } : {}),
+  };
+}
+
+async function optionalImage(file, alt) {
+  if (!existsSync(file)) return undefined;
+  return sanityImage({ __file: file }, alt);
+}
+
+async function caseStudyMedia(media, identity) {
+  if (media.kind === "image") {
+    return {
+      _type: "caseStudyMedia",
+      _key: keyFor(identity),
+      kind: "image",
+      image: await sanityImage(media.src, media.alt),
+      orientation: media.orientation ?? "landscape",
+      ...(media.caption ? { caption: media.caption } : {}),
+    };
+  }
+
+  return {
+    _type: "caseStudyMedia",
+    _key: keyFor(identity),
+    kind: "embed",
+    embedUrl: media.src,
+    embedTitle: media.title,
+    ...(media.aspect ? { aspect: media.aspect } : {}),
+    ...(media.caption ? { caption: media.caption } : {}),
+    ...(media.poster
+      ? {
+          poster: await sanityImage(
+            media.poster,
+            `${media.title} preview image`,
+          ),
+        }
+      : {}),
+  };
+}
+
+async function createOrReplace(document) {
+  if (dryRun) {
+    console.log(`Would import ${document._type}: ${document._id}`);
+    return;
+  }
+
+  await client.createOrReplace(document);
+  console.log(`Imported ${document._type}: ${document._id}`);
+}
+
+async function migrateSettings() {
+  const profileImage = await optionalImage(
+    path.join(root, "public", "dileepa-g.png"),
+    "Dileepa Mahanama Galmangoda",
+  );
+  const lanyardFront = await optionalImage(
+    path.join(root, "public", "lanyard", "card-front.jpg"),
+    "Front of Dileepa Galmangoda's ID badge",
+  );
+  const lanyardBack = await optionalImage(
+    path.join(root, "public", "lanyard", "card-back.jpg"),
+    "Back of Dileepa Galmangoda's ID badge",
+  );
+  const resumeFile = path.join(
+    root,
+    "public",
+    "Dileepa-Galmangoda-Resume.pdf",
+  );
+  const resumeAsset = await uploadAsset("file", resumeFile);
+
+  await createOrReplace({
+    _id: "siteSettings",
+    _type: "siteSettings",
+    siteName: "Dileepa Galmangoda | Portfolio",
+    brandLabel: "Dileepa·G",
+    canonicalUrl: "https://dileepa.design",
+    author: {
+      fullName: "Dileepa Mahanama Galmangoda",
+      displayName: "Dileepa Galmangoda",
+      givenName: "Dileepa",
+      familyName: "Galmangoda",
+      jobTitle: "UI/UX Designer & Creative Generalist",
+      bio: "I design digital experiences that make every interface feel like it already understands what the user is trying to do. My work moves between shaping flows, refining designs, building prototypes and using AI-assisted workflows to explore ideas and test directions. I’m currently open to new design opportunities and collaborations.",
+      ...(profileImage ? { profileImage } : {}),
+      ...(lanyardFront ? { lanyardFront } : {}),
+      ...(lanyardBack ? { lanyardBack } : {}),
+    },
+    email: "dileepagalmangoda@gmail.com",
+    scheduleUrl: "https://calendar.app.google/3QVZ8AywYnCyzrpLA",
+    resume: {
+      _type: "file",
+      asset: { _type: "reference", _ref: resumeAsset._id },
+      downloadName: "Dileepa-Galmangoda-Resume.pdf",
+    },
+    socialLinks: [
+      ["Email", "mailto:dileepagalmangoda@gmail.com", false],
+      ["Behance", "https://www.behance.net/dileepamg", true],
+      [
+        "LinkedIn",
+        "https://www.linkedin.com/in/dileepa-galmangoda/",
+        true,
+      ],
+      ["X", "https://x.com/xaradiyel/", true],
+      ["GitHub", "https://github.com/dileepamg", true],
+    ].map(([label, href, external], index) => ({
+      _type: "link",
+      _key: keyFor("social", index),
+      label,
+      href,
+      external,
+    })),
+    navigation: [
+      ["About", "/#about"],
+      ["Work", "/#work"],
+      ["Experience", "/#experience"],
+      ["Blog", "/blog"],
+      ["Fun", "/#fun"],
+    ].map(([label, href], index) => ({
+      _type: "link",
+      _key: keyFor("navigation", index),
+      label,
+      href,
+      external: false,
+    })),
+    footer: {
+      copyrightName: "Dileepa Mahanama Galmangoda",
+      sourceLabel: "GitHub",
+      sourceUrl: "https://github.com/dileepamg/dileepamg-portfolio",
+      inspirationLinks: [
+        {
+          _type: "link",
+          _key: keyFor("inspiration", "akhila"),
+          label: "Akhila",
+          href: "https://akhilaariyachandra.com/",
+          external: true,
+        },
+        {
+          _type: "link",
+          _key: keyFor("inspiration", "ralph"),
+          label: "Ralph",
+          href: "https://rcortiz.dev/",
+          external: true,
+        },
+      ],
+    },
+    defaultSeo: {
+      title: "Dileepa Mahanama Galmangoda",
+      description:
+        "Senior UI/UX Designer & Creative Generalist from Sri Lanka. Specializing in product design, visual design, and motion to build engaging digital experiences.",
+      keywords: [
+        "UI/UX Designer",
+        "Product Designer",
+        "Visual Designer",
+        "Sri Lanka",
+        "Motion Graphics",
+        "Dileepa Galmangoda",
+      ],
+      noIndex: false,
+    },
+    twitterCreator: "@xaradiyel",
+  });
+
+  await createOrReplace({
+    _id: "homePage",
+    _type: "homePage",
+    greetingLatin: "Ayubowan",
+    greetingSinhala: "ආයුබෝවන්",
+    availabilityText:
+      "I’m currently open to new design opportunities and collaborations.",
+    workHeading: "Featured Work",
+    experienceHeading: "Professional Experience",
+    blogHeading: "Blog",
+    blogDescription:
+      "Stories from things I build in my spare time with friends.",
+    motionHeading: "Some Fun Motion Stuff",
+    motionDescription:
+      "A few playful motion experiments I made along the way.",
+  });
+}
+
+async function migrateCaseStudies() {
+  const { caseStudies } = loadDataModule(
+    "components/WorkSection/caseStudies.ts",
+  );
+
+  for (const [studyIndex, study] of caseStudies.entries()) {
+    const cardMedia = await caseStudyMedia(
+      study.media,
+      `${study.slug}:card`,
+    );
+    const heroMedia = study.heroMedia
+      ? await caseStudyMedia(study.heroMedia, `${study.slug}:hero`)
+      : undefined;
+
+    const process = study.process
+      ? await Promise.all(
+          study.process.map(async (step, stepIndex) => ({
+            _type: "object",
+            _key: keyFor(study.slug, "process", stepIndex),
+            phase: step.phase,
+            title: step.title,
+            body: step.body,
+            ...(step.takeaways ? { takeaways: step.takeaways } : {}),
+            ...(step.media
+              ? {
+                  media: await Promise.all(
+                    step.media.map((media, mediaIndex) =>
+                      caseStudyMedia(
+                        media,
+                        `${study.slug}:process:${stepIndex}:${mediaIndex}`,
+                      ),
+                    ),
+                  ),
+                }
+              : {}),
+          })),
+        )
+      : undefined;
+
+    const gallery = study.gallery
+      ? await Promise.all(
+          study.gallery.map((media, index) =>
+            caseStudyMedia(media, `${study.slug}:gallery:${index}`),
+          ),
+        )
+      : undefined;
+
+    await createOrReplace({
+      _id: `caseStudy.${study.slug}`,
+      _type: "caseStudy",
+      title: study.title,
+      ...(study.pageTitle ? { pageTitle: study.pageTitle } : {}),
+      slug: { _type: "slug", current: study.slug },
+      summary: study.summary,
+      description: study.description,
+      ...(study.tags ? { tags: study.tags } : {}),
+      ...(study.role ? { role: study.role } : {}),
+      ...(study.year ? { year: study.year } : {}),
+      cardMedia,
+      ...(heroMedia ? { heroMedia } : {}),
+      ...(study.links ? { links: study.links } : {}),
+      ...(study.overview
+        ? {
+            overview: study.overview.map((item, index) => ({
+              _type: "object",
+              _key: keyFor(study.slug, "overview", index),
+              ...item,
+            })),
+          }
+        : {}),
+      ...(study.challenge ? { challenge: study.challenge } : {}),
+      ...(study.outcome ? { outcome: study.outcome } : {}),
+      ...(study.personas
+        ? {
+            personas: study.personas.map((persona, index) => ({
+              _type: "object",
+              _key: keyFor(study.slug, "persona", index),
+              ...persona,
+            })),
+          }
+        : {}),
+      ...(process ? { process } : {}),
+      ...(gallery ? { gallery } : {}),
+      ...(study.reflection ? { reflection: study.reflection } : {}),
+      ...(study.disclaimer ? { disclaimer: study.disclaimer } : {}),
+      seo: {
+        title: study.pageTitle ?? study.title,
+        description: study.summary,
+        ...(cardMedia.kind === "image" ? { image: cardMedia.image } : {}),
+        noIndex: false,
+      },
+      order: studyIndex,
+      hidden: false,
+    });
+  }
+}
+
+async function migrateExternalProjects() {
+  const { projects } = loadDataModule("components/WorkSection/data.ts");
+
+  for (const [index, project] of projects.entries()) {
+    const slug = slugify(project.title);
+    await createOrReplace({
+      _id: `externalProject.${slug}`,
+      _type: "externalProject",
+      title: project.title,
+      description: project.description,
+      url: project.behance,
+      image: await sanityImage(project.image, project.title),
+      order: index,
+      hidden: false,
+    });
+  }
+}
+
+async function migrateExperience() {
+  const { experiences } = loadDataModule(
+    "components/ExperienceSection/data.ts",
+  );
+
+  for (const [index, experience] of experiences.entries()) {
+    const id = slugify(`${experience.company}-${experience.role}`);
+    await createOrReplace({
+      _id: `experience.${id}`,
+      _type: "experience",
+      role: experience.role,
+      company: experience.company,
+      companyUrl: experience.link,
+      dateLabel: experience.year,
+      logoLight: await sanityImage(
+        experience.companylogoLight,
+        `${experience.company} logo`,
+      ),
+      logoDark: await sanityImage(
+        experience.companyLogoDark,
+        `${experience.company} logo`,
+      ),
+      responsibilities: experience.responsibility,
+      skills: experience.techStacks,
+      order: index,
+    });
+  }
+}
+
+async function migrateMotionItems() {
+  for (let index = 1; index <= 4; index += 1) {
+    const manifestPath = path.join(root, "videos", `vid${index}.mp4.json`);
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+    const playbackId = manifest.providerMetadata?.mux?.playbackId;
+    if (!playbackId) {
+      throw new Error(`Mux playback ID missing from ${manifestPath}`);
+    }
+
+    await createOrReplace({
+      _id: `motionItem.${index}`,
+      _type: "motionItem",
+      title: `Motion experiment ${index}`,
+      muxPlaybackId: playbackId,
+      order: index - 1,
+      hidden: false,
+    });
+  }
+}
+
+async function main() {
+  console.log(
+    `${dryRun ? "Checking" : "Migrating"} content for ${projectId}/${dataset}`,
+  );
+
+  await migrateSettings();
+  await migrateCaseStudies();
+  await migrateExternalProjects();
+  await migrateExperience();
+  await migrateMotionItems();
+
+  console.log(
+    dryRun
+      ? `Dry run passed. ${assetCache.size} local assets are ready to upload.`
+      : `Migration complete. ${assetCache.size} assets processed.`,
+  );
+}
+
+await main();

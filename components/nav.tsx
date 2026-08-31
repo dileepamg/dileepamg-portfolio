@@ -43,20 +43,40 @@ function NavEdgeRail({ edge }: { edge: "top" | "bottom" | "left" | "right" }) {
   );
 }
 
-export default function Nav() {
+const defaultLinks = [
+  { path: "/#about", text: "About" },
+  { path: "/#work", text: "Work" },
+  { path: "/#experience", text: "Experience" },
+  { path: "/blog", text: "Blog" },
+  { path: "/#fun", text: "Fun" },
+];
+
+type NavProps = {
+  brandLabel?: string;
+  links?: readonly {
+    path: string;
+    text: string;
+  }[];
+};
+
+export default function Nav({
+  brandLabel = "Dileepa·G",
+  links = defaultLinks,
+}: NavProps) {
   const path = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
   const isNavigating = useRef(false);
 
-  // Show the nav on every route change. Adjusting state during render is what
-  // React prescribes for reacting to a changed input, and it lands in the same
-  // commit as the new route rather than a frame later, which an effect would.
+  // Show the nav on every route change. Update the navigating ref during
+  // render (not only in an effect) so scroll events from Next.js scroll
+  // restoration can't hide the bar again before the effect runs.
   const [renderedPath, setRenderedPath] = useState(path);
   if (path !== renderedPath) {
     setRenderedPath(path);
     setIsVisible(true);
+    isNavigating.current = true;
   }
 
   // Arriving on a page restores the previous scroll position or jumps to a
@@ -65,11 +85,16 @@ export default function Nav() {
   // the moment a page loads.
   useEffect(() => {
     isNavigating.current = true;
+    setIsVisible(true);
 
     const timer = window.setTimeout(() => {
       isNavigating.current = false;
       lastScrollY.current = window.scrollY;
-    }, 500);
+      // New pages land at the top; keep the bar visible after settle.
+      if (window.scrollY < 80) {
+        setIsVisible(true);
+      }
+    }, 750);
 
     return () => window.clearTimeout(timer);
   }, [path]);
@@ -86,33 +111,25 @@ export default function Nav() {
         return;
       }
 
-      // Near the top the nav always shows, however the reader got there.
-      setIsVisible(currentScrollY < 80 || currentScrollY < lastScrollY.current);
+      const delta = currentScrollY - lastScrollY.current;
       lastScrollY.current = currentScrollY;
+
+      // Ignore no-op / sub-pixel scroll noise from layout thrash.
+      if (Math.abs(delta) < 2) return;
+
+      // Near the top the nav always shows, however the reader got there.
+      if (currentScrollY < 80) {
+        setIsVisible(true);
+        return;
+      }
+
+      setIsVisible(delta < 0);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const links = [
-    {
-      path: "/#about",
-      text: "About",
-    },
-    {
-      path: "/#work",
-      text: "Work",
-    },
-    {
-      path: "/#experience",
-      text: "Experience",
-    },
-    {
-      path: "/#fun",
-      text: "Fun",
-    },
-  ];
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -129,7 +146,7 @@ export default function Nav() {
       className={cn(
         // The bar sits exactly over the reading column, using the same
         // width constant as the column and the frame rails.
-        "fixed top-10 z-50 transition-transform duration-300 ease-in-out",
+        "fixed top-10 left-1/2 z-50 -translate-x-1/2 transition-transform duration-300 ease-in-out",
         columnClass,
         {
           "-translate-y-[calc(100%+3rem)]": !isVisible,
@@ -152,7 +169,7 @@ export default function Nav() {
         <NavEdgeRail edge="left" />
         <NavEdgeRail edge="right" />
         <Link href="/" className="font-logo w-full text-2xl lg:text-3xl">
-          Dileepa·G
+          {brandLabel}
         </Link>
 
         {links.map((link) => {
@@ -191,7 +208,9 @@ export default function Nav() {
             <div className="bg-secondary text-secondary-foreground absolute top-16 w-full p-4">
               <div className="flex flex-col gap-2">
                 <div className="border-secondary-foreground/15 flex w-full flex-row items-center justify-between border-b pb-4">
-                  <p className="font-logo text-center text-3xl">Dileepa·G</p>
+                  <p className="font-logo text-center text-3xl">
+                    {brandLabel}
+                  </p>
                   <ThemeSwitcher />
                 </div>
                 {links.map((link) => {

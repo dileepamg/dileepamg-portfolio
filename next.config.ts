@@ -1,19 +1,22 @@
 import { withNextVideo } from "next-video/process";
 import type { NextConfig } from "next";
+import { sanity } from "next-sanity/live/cache-life";
 
 const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
+  cacheLife: { default: sanity },
   reactCompiler: true,
   reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
+    ],
+  },
 
-  /**
-   * A stable, readable address for the resume, so it can be written on a
-   * business card or read out loud without the filename attached to it. A
-   * rewrite rather than a redirect: the browser keeps showing /resume, and the
-   * PDF is still served straight from static hosting with no function behind
-   * it. Renaming the file later only changes the destination here.
-   */
   /**
    * Response headers applied to everything the app serves.
    *
@@ -53,14 +56,6 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  async rewrites() {
-    return [
-      {
-        source: "/resume",
-        destination: "/Dileepa-Galmangoda-Resume.pdf",
-      },
-    ];
-  },
 };
 
 export default withNextVideo(nextConfig);
