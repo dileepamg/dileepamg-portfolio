@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=26.8.1"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "next dev --experimental-https & next-video sync -w",
