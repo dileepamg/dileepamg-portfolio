@@ -52,6 +52,7 @@ export default function PrototypeEmbed({
             alt=""
             fill
             sizes={sizes}
+            placeholder="blur"
             className="object-cover object-top"
           />
         )}

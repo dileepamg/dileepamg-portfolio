@@ -27,6 +27,7 @@ export default function ExperienceCard({ position }: ExperienceCardProps) {
                   fill
                   sizes="50px"
                   alt="Company Logo"
+                  placeholder="blur"
                   className="object-contain dark:hidden"
                 />
 
@@ -35,6 +36,7 @@ export default function ExperienceCard({ position }: ExperienceCardProps) {
                   fill
                   sizes="50px"
                   alt="Company Logo"
+                  placeholder="blur"
                   className="hidden object-contain dark:block"
                 />
               </div>

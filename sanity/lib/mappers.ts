@@ -44,6 +44,22 @@ const required = <Value>(
 export const cleanSanityString = <Value extends string>(value: Value) =>
   stegaClean(value);
 
+export function mapSanityLink(link: {
+  label: string;
+  href: string;
+  external?: boolean | null;
+}) {
+  return {
+    label: cleanSanityString(link.label),
+    href: cleanSanityString(link.href),
+    external: link.external ?? false,
+  };
+}
+
+function cleanOptionalUrl(value: string | null | undefined) {
+  return value ? cleanSanityString(value) : undefined;
+}
+
 export function toStaticImageData(
   image: ProjectedImage,
   field: string,
@@ -85,8 +101,10 @@ export function mapCaseStudyMedia(
     return {
       kind: "image",
       src: toStaticImageData(image, `${field}.image`),
-      alt: image.alt,
-      ...(media.caption ? { caption: media.caption } : {}),
+      alt: cleanSanityString(image.alt),
+      ...(media.caption
+        ? { caption: cleanSanityString(media.caption) }
+        : {}),
       orientation,
     };
   }
@@ -98,8 +116,12 @@ export function mapCaseStudyMedia(
   return {
     kind: "embed",
     src: stegaClean(required(media.embedUrl, `${field}.embedUrl`)),
-    title: required(media.embedTitle, `${field}.embedTitle`),
-    ...(media.caption ? { caption: media.caption } : {}),
+    title: cleanSanityString(
+      required(media.embedTitle, `${field}.embedTitle`),
+    ),
+    ...(media.caption
+      ? { caption: cleanSanityString(media.caption) }
+      : {}),
     ...(media.aspect ? { aspect: stegaClean(media.aspect) } : {}),
     ...(poster ? { poster } : {}),
   };
@@ -109,7 +131,7 @@ export function mapCaseStudyCard(
   study: CASE_STUDIES_QUERY_RESULT[number],
 ): CaseStudy {
   return {
-    slug: study.slug,
+    slug: cleanSanityString(study.slug),
     title: study.title,
     ...(study.pageTitle ? { pageTitle: study.pageTitle } : {}),
     summary: study.summary,
@@ -125,7 +147,7 @@ export function mapCaseStudy(
   study: CASE_STUDY_QUERY_RESULT[number],
 ): CaseStudy {
   return {
-    slug: study.slug,
+    slug: cleanSanityString(study.slug),
     title: study.title,
     ...(study.pageTitle ? { pageTitle: study.pageTitle } : {}),
     summary: study.summary,
@@ -142,7 +164,15 @@ export function mapCaseStudy(
           ),
         }
       : {}),
-    ...(study.links ? { links: study.links } : {}),
+    ...(study.links
+      ? {
+          links: {
+            figma: cleanOptionalUrl(study.links.figma),
+            behance: cleanOptionalUrl(study.links.behance),
+            live: cleanOptionalUrl(study.links.live),
+          },
+        }
+      : {}),
     ...(study.overview
       ? {
           overview: study.overview.map(({ label, value }) => ({
@@ -191,8 +221,12 @@ export function mapCaseStudy(
           ),
         }
       : {}),
-    ...(study.reflection ? { reflection: study.reflection } : {}),
-    ...(study.disclaimer ? { disclaimer: study.disclaimer } : {}),
+    ...(study.reflection
+      ? { reflection: cleanSanityString(study.reflection) }
+      : {}),
+    ...(study.disclaimer
+      ? { disclaimer: cleanSanityString(study.disclaimer) }
+      : {}),
   };
 }
 
@@ -277,15 +311,15 @@ export const mapBlogPostCard = (
 ): BlogPostCardView => ({
   id: post._id,
   title: post.title,
-  slug: post.slug,
+  slug: cleanSanityString(post.slug),
   excerpt: post.excerpt,
   publishedAt: post.publishedAt,
   readingMinutes: estimateReadingMinutes(post.body),
   tags: post.tags ?? [],
   categories: (post.categories ?? []).map((category) => ({
     title: category.title,
-    slug: category.slug,
+    slug: cleanSanityString(category.slug),
   })),
   image: toStaticImageData(post.featuredImage, `${post._id}.featuredImage`),
-  imageAlt: post.featuredImage.alt,
+  imageAlt: cleanSanityString(post.featuredImage.alt),
 });

@@ -1,27 +1,17 @@
 import ProfileLanyard from "@/components/AboutSection/ProfileLanyard";
 import { Button } from "@/components/ui/button";
 import WelcomeText from "@/components/WelcomeText";
-import type { IconType } from "react-icons";
-import { FaBehance, FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
+import { resolveSocialIcon } from "@/lib/social-icons";
+import type { StaticImageData } from "next/image";
 import {
   LuCalendarDays,
   LuDownload,
-  LuExternalLink,
-  LuMail,
 } from "react-icons/lu";
 
 type Social = {
   href: string;
   label: string;
   external: boolean;
-};
-
-const socialIcons: Record<string, IconType> = {
-  Email: LuMail,
-  Behance: FaBehance,
-  LinkedIn: FaLinkedin,
-  X: FaXTwitter,
-  GitHub: FaGithub,
 };
 
 type AboutSectionProps = {
@@ -33,8 +23,8 @@ type AboutSectionProps = {
   greetingLatin: string;
   greetingSinhala: string;
   socials: readonly Social[];
-  lanyardFrontUrl?: string;
-  lanyardBackUrl?: string;
+  lanyardFront?: StaticImageData;
+  lanyardBack?: StaticImageData;
 };
 
 export default function AboutSection({
@@ -46,8 +36,8 @@ export default function AboutSection({
   greetingLatin,
   greetingSinhala,
   socials,
-  lanyardFrontUrl,
-  lanyardBackUrl,
+  lanyardFront,
+  lanyardBack,
 }: AboutSectionProps) {
   const [bioBeforeAi, bioAfterAi] = bio.split("AI-assisted");
 
@@ -110,7 +100,7 @@ export default function AboutSection({
               page's actions rather than as more of them. */}
           <div className="mt-6 flex w-fit justify-start gap-3">
             {socials.map(({ href, label, external }) => {
-              const Icon = socialIcons[label] ?? LuExternalLink;
+              const Icon = resolveSocialIcon(href, label);
 
               return (
                 <Button
@@ -150,8 +140,8 @@ export default function AboutSection({
             with it costs the page nothing. */}
         <div className="relative order-1 h-[300px] w-full shrink-0 sm:h-[350px] xl:order-2 xl:h-auto xl:min-h-[375px] xl:w-[380px] xl:self-stretch">
           <ProfileLanyard
-            frontImage={lanyardFrontUrl}
-            backImage={lanyardBackUrl}
+            frontImage={lanyardFront}
+            backImage={lanyardBack}
           />
         </div>
       </div>
