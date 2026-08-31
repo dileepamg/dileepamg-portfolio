@@ -1,4 +1,7 @@
-const WORDS_PER_MINUTE = 220;
+import { stegaClean } from "@sanity/client/stega";
+
+// Medium uses 265 WPM; 220 was rounding ~650-word posts up to 4 min.
+const WORDS_PER_MINUTE = 265;
 
 type PortableTextChild = {
   text?: string | null;
@@ -26,15 +29,8 @@ function collectText(blocks: readonly PortableTextLikeBlock[]): string {
       if (block._type === "callout") {
         return [block.title ?? "", block.body ?? ""];
       }
-      if (block._type === "codeBlock") {
-        return [block.code ?? ""];
-      }
       if (block._type === "timeline") {
-        return (block.items ?? []).flatMap((item) => [
-          item.date ?? "",
-          item.title ?? "",
-          item.body ?? "",
-        ]);
+        return (block.items ?? []).map((item) => item.body ?? "");
       }
       return [];
     })
@@ -44,7 +40,7 @@ function collectText(blocks: readonly PortableTextLikeBlock[]): string {
 export function estimateReadingMinutes(
   blocks: readonly PortableTextLikeBlock[] | null | undefined,
 ): number {
-  const text = collectText(blocks ?? []).trim();
+  const text = stegaClean(collectText(blocks ?? [])).trim();
   if (!text) return 1;
   const words = text.split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.ceil(words / WORDS_PER_MINUTE));
