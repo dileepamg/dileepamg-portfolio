@@ -101,6 +101,7 @@ export default function MediaFrame({
               fill
               sizes={sizes}
               priority={priority}
+              placeholder="blur"
               className="object-cover object-top"
             />
           ) : (

@@ -2,8 +2,9 @@
 
 import { cn } from "@/lib/utils";
 import CardFront from "@/public/lanyard/card-front.jpg";
+import CardBack from "@/public/lanyard/card-back.jpg";
 import dynamic from "next/dynamic";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import {
   useCallback,
   useEffect,
@@ -66,7 +67,7 @@ function StillBadge({
   cardOffsetTop,
   frontImage,
 }: (typeof BADGE)[keyof typeof BADGE] & {
-  frontImage: string | typeof CardFront;
+  frontImage: StaticImageData;
 }) {
   return (
     <div className="absolute inset-0 flex flex-col items-center">
@@ -85,7 +86,7 @@ function StillBadge({
           alt=""
           fill
           sizes="(min-width: 1280px) 230px, 190px"
-          placeholder={typeof frontImage === "string" ? "empty" : "blur"}
+          placeholder="blur"
           className="rounded-[3%] object-contain"
         />
       </div>
@@ -103,8 +104,8 @@ function StillBadge({
  */
 type ProfileLanyardProps = {
   className?: string;
-  frontImage?: string;
-  backImage?: string;
+  frontImage?: StaticImageData;
+  backImage?: StaticImageData;
 };
 
 function useMediaQuery(query: string) {
@@ -131,8 +132,8 @@ function useMediaQuery(query: string) {
 
 export default function ProfileLanyard({
   className,
-  frontImage = "/lanyard/card-front.jpg",
-  backImage = "/lanyard/card-back.jpg",
+  frontImage = CardFront,
+  backImage = CardBack,
 }: ProfileLanyardProps) {
   const anchor = useRef<HTMLDivElement>(null);
   const reducedMotion = useMediaQuery(
@@ -231,8 +232,8 @@ export default function ProfileLanyard({
           )}
           anchorRef={anchor}
           {...badge}
-          frontImage={frontImage}
-          backImage={backImage}
+          frontImage={frontImage.src}
+          backImage={backImage.src}
           bandColor={BAND_COLOR}
           lanyardWidth={0.85}
           onReady={handleSceneReady}

@@ -51,6 +51,7 @@ export default function ExpandableImage({
             fill
             sizes={sizes}
             priority={priority}
+            placeholder="blur"
             className="object-cover object-top"
           />
           <span className="border-rule bg-paper text-ink-soft absolute right-2 bottom-2 flex items-center gap-1.5 border px-2 py-1 text-xs font-medium opacity-0 transition-opacity group-hover:opacity-100">
@@ -75,6 +76,7 @@ export default function ExpandableImage({
               ? "(min-width: 640px) 24rem, 100vw"
               : "(min-width: 640px) 56rem, 100vw"
           }
+          placeholder="blur"
           className="h-auto w-full"
         />
       </DialogContent>

@@ -12,7 +12,7 @@ import {
   sanityFetchMetadata,
 } from "@/sanity/lib/live";
 import { SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
-import { cleanSanityString } from "@/sanity/lib/mappers";
+import { cleanSanityString, mapSanityLink } from "@/sanity/lib/mappers";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
@@ -83,13 +83,13 @@ export default async function WebsiteLayout({
       imageWidth: dimensions?.width,
       imageHeight: dimensions?.height,
       sameAs: (settings.socialLinks ?? [])
-        .map((link) => link.href)
+        .map((link) => cleanSanityString(link.href))
         .filter((href) => href.startsWith("https://")),
       siteName: settings.siteName,
     });
   const navLinks = settings?.navigation.map((link) => ({
     path: cleanSanityString(link.href),
-    text: link.label,
+    text: cleanSanityString(link.label),
   }));
 
   return (
@@ -101,21 +101,42 @@ export default async function WebsiteLayout({
         enableSystem={false}
         disableTransitionOnChange
       >
-        <SiteFrame />
-        <Nav brandLabel={settings?.brandLabel} links={navLinks} />
-        {children}
-        <BackToTop />
-        <Footer
-          copyrightName={settings?.footer?.copyrightName}
-          sourceLabel={settings?.footer?.sourceLabel}
-          sourceUrl={settings?.footer?.sourceUrl}
-          inspirationLinks={settings?.footer?.inspirationLinks?.map(
-            (link) => ({ label: link.label, href: link.href }),
-          )}
-        />
-        <SanityLive includeDrafts={isDraftMode} />
-        {isDraftMode && <StudioVisualEditing />}
-        <Analytics />
+        <div className="flex min-h-screen flex-col">
+          <SiteFrame />
+          <Nav
+            brandLabel={
+              settings?.brandLabel
+                ? cleanSanityString(settings.brandLabel)
+                : undefined
+            }
+            links={navLinks}
+          />
+          <div className="flex flex-1 flex-col">{children}</div>
+          <BackToTop />
+          <Footer
+            copyrightName={
+              settings?.footer?.copyrightName
+                ? cleanSanityString(settings.footer.copyrightName)
+                : undefined
+            }
+            sourceLabel={
+              settings?.footer?.sourceLabel
+                ? cleanSanityString(settings.footer.sourceLabel)
+                : undefined
+            }
+            sourceUrl={
+              settings?.footer?.sourceUrl
+                ? cleanSanityString(settings.footer.sourceUrl)
+                : undefined
+            }
+            inspirationLinks={settings?.footer?.inspirationLinks?.map(
+              mapSanityLink,
+            )}
+          />
+          <SanityLive includeDrafts={isDraftMode} />
+          {isDraftMode && <StudioVisualEditing />}
+          <Analytics />
+        </div>
       </ThemeProvider>
       {gaId && <GoogleAnalytics gaId={gaId} />}
     </>

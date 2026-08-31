@@ -1,4 +1,5 @@
 import { metadataClient } from "@/sanity/lib/client";
+import { cleanSanityString } from "@/sanity/lib/mappers";
 import { RESUME_QUERY } from "@/sanity/lib/queries";
 
 export async function GET() {
@@ -17,10 +18,9 @@ export async function GET() {
     return new Response("Resume is temporarily unavailable", { status: 502 });
   }
 
-  const downloadName =
-    settings?.resume?.downloadName ??
-    asset.originalFilename ??
-    "Dileepa-Galmangoda-Resume.pdf";
+  const downloadName = settings?.resume?.downloadName
+    ? cleanSanityString(settings.resume.downloadName)
+    : asset.originalFilename ?? "Dileepa-Galmangoda-Resume.pdf";
 
   return new Response(file.body, {
     headers: {

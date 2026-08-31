@@ -1,6 +1,8 @@
 import type { BLOG_POST_QUERY_RESULT } from "@/sanity.types";
 import type { PortableTextComponents } from "@portabletext/react";
 import { PortableText } from "@portabletext/react";
+import { stegaClean } from "@sanity/client/stega";
+import { toStaticImageData } from "@/sanity/lib/mappers";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
@@ -59,10 +61,11 @@ const components: PortableTextComponents = {
       children: ReactNode;
       value?: { href?: string; blank?: boolean };
     }) => {
-      const external = value?.blank || value?.href?.startsWith("http");
+      const href = value?.href ? stegaClean(value.href) : undefined;
+      const external = value?.blank || href?.startsWith("http");
       return (
         <a
-          href={value?.href}
+          href={href}
           {...(external
             ? { target: "_blank", rel: "noopener noreferrer" }
             : {})}
@@ -85,14 +88,20 @@ const components: PortableTextComponents = {
       const dimensions = asset?.metadata?.dimensions;
       if (!asset?.url || !dimensions) return null;
 
+      const src = toStaticImageData(
+        image as Parameters<typeof toStaticImageData>[0],
+        `blog-body-${image._key ?? "image"}`,
+      );
+
       return (
         <figure className="my-8">
           <div className="border-rule bg-paper overflow-hidden border">
             <Image
-              src={asset.url}
+              src={src}
               alt={image.alt}
               width={dimensions.width}
               height={dimensions.height}
+              placeholder="blur"
               sizes="(min-width: 1463px) 960px, (min-width: 640px) 66vw, 90vw"
               className="h-auto w-full"
             />

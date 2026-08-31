@@ -89,6 +89,7 @@ export default function WorkSection({
                           alt={project.title}
                           className="object-cover object-center"
                           fill
+                          placeholder="blur"
                           sizes="(min-width: 1463px) 480px, (min-width: 1024px) 31vw, (min-width: 640px) 65vw, 90vw"
                         />
                       </a>

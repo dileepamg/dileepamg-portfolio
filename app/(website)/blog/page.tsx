@@ -71,8 +71,8 @@ async function CachedBlogPage({
   const posts = documents.map(mapBlogPostCard);
 
   return (
-    <div className="relative flex min-h-screen flex-col">
-      <main className={cn(columnClass, "relative mx-auto flex-1")}>
+    <div className="relative">
+      <main className={cn(columnClass, "relative mx-auto")}>
         <div className="bg-hatch relative z-10 space-y-8 pb-12">
           <Band
             topCrosses={false}

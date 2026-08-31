@@ -14,7 +14,7 @@ import {
   sanityFetch,
   sanityFetchMetadata,
 } from "@/sanity/lib/live";
-import { toStaticImageData } from "@/sanity/lib/mappers";
+import { toStaticImageData, cleanSanityString } from "@/sanity/lib/mappers";
 import { BLOG_POST_QUERY } from "@/sanity/lib/queries";
 import type { Metadata } from "next";
 import { draftMode } from "next/headers";
@@ -46,6 +46,7 @@ export async function generateMetadata({
   });
   if (!post) return {};
 
+  const postSlug = cleanSanityString(post.slug);
   const title = post.seo?.title ?? post.title;
   const description = post.seo?.description ?? post.excerpt;
   const image =
@@ -54,13 +55,13 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: { canonical: `/blog/${post.slug}` },
+    alternates: { canonical: `/blog/${postSlug}` },
     robots: post.seo?.noIndex ? { index: false, follow: false } : undefined,
     authors: [{ name: AUTHOR_NAME, url: "/" }],
     openGraph: {
       title,
       description,
-      url: `/blog/${post.slug}`,
+      url: `/blog/${postSlug}`,
       type: "article",
       publishedTime: post.publishedAt,
       modifiedTime: post._updatedAt,
@@ -120,6 +121,7 @@ async function CachedBlogPostPage({
 
   if (!post) notFound();
 
+  const postSlug = cleanSanityString(post.slug);
   const image = toStaticImageData(
     post.featuredImage,
     `${post._id}.featuredImage`,
@@ -131,7 +133,7 @@ async function CachedBlogPostPage({
 
   const readingMinutes = estimateReadingMinutes(post.body);
   const jsonLd = getBlogPostStructuredData({
-    slug: post.slug,
+    slug: postSlug,
     title: post.title,
     description: post.excerpt,
     publishedAt: post.publishedAt,
@@ -140,9 +142,9 @@ async function CachedBlogPostPage({
   });
 
   return (
-    <div className="relative flex min-h-screen flex-col">
+    <div className="relative">
       <JsonLd data={jsonLd} />
-      <main className={cn(columnClass, "relative mx-auto flex-1")}>
+      <main className={cn(columnClass, "relative mx-auto")}>
         <div className="bg-hatch relative z-10 space-y-8 pb-12">
           <Band
             topCrosses={false}
@@ -199,6 +201,7 @@ async function CachedBlogPostPage({
                 alt={post.featuredImage.alt}
                 fill
                 priority
+                placeholder="blur"
                 sizes="(min-width: 1463px) 960px, (min-width: 640px) 66vw, 90vw"
                 className="object-cover object-center"
               />
@@ -225,7 +228,7 @@ async function CachedBlogPostPage({
                   {post.relatedPosts.map((related) => (
                     <Link
                       key={related._id}
-                      href={`/blog/${related.slug}`}
+                      href={`/blog/${cleanSanityString(related.slug)}`}
                       className="border-rule bg-paper hover:border-brand/50 group flex items-center justify-between gap-4 border p-6 transition-colors"
                     >
                       <span>

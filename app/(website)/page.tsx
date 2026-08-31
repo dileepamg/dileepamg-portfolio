@@ -19,6 +19,8 @@ import {
   mapExperience,
   mapExternalProject,
   mapMotionItem,
+  mapSanityLink,
+  toStaticImageData,
 } from "@/sanity/lib/mappers";
 import {
   BLOG_POSTS_QUERY,
@@ -102,53 +104,68 @@ async function CachedHome({
             className={cn(columnPadding, "pt-32 md:pt-40")}
           >
             <AboutSection
-              name={siteSettings.author.displayName}
-              jobTitle={siteSettings.author.jobTitle}
-              bio={siteSettings.author.bio}
+              name={cleanSanityString(siteSettings.author.displayName)}
+              jobTitle={cleanSanityString(siteSettings.author.jobTitle)}
+              bio={cleanSanityString(siteSettings.author.bio)}
               scheduleUrl={
                 siteSettings.scheduleUrl
                   ? cleanSanityString(siteSettings.scheduleUrl)
                   : "#"
               }
               resumeDownloadName={
-                siteSettings.resume?.downloadName ??
-                "Dileepa-Galmangoda-Resume.pdf"
+                siteSettings.resume?.downloadName
+                  ? cleanSanityString(siteSettings.resume.downloadName)
+                  : "Dileepa-Galmangoda-Resume.pdf"
               }
               greetingLatin={cleanSanityString(homePage.greetingLatin)}
               greetingSinhala={cleanSanityString(
                 homePage.greetingSinhala,
               )}
-              lanyardFrontUrl={
-                siteSettings.author.lanyardFront?.asset?.url
+              lanyardFront={
+                siteSettings.author.lanyardFront
+                  ? toStaticImageData(
+                      siteSettings.author.lanyardFront,
+                      `${siteSettings._id}.lanyardFront`,
+                    )
+                  : undefined
               }
-              lanyardBackUrl={
-                siteSettings.author.lanyardBack?.asset?.url
+              lanyardBack={
+                siteSettings.author.lanyardBack
+                  ? toStaticImageData(
+                      siteSettings.author.lanyardBack,
+                      `${siteSettings._id}.lanyardBack`,
+                    )
+                  : undefined
               }
-              socials={(siteSettings.socialLinks ?? []).map((link) => ({
-                label: link.label,
-                href: cleanSanityString(link.href),
-                external: link.external ?? false,
-              }))}
+              socials={(siteSettings.socialLinks ?? []).map(mapSanityLink)}
             />
           </Band>
           <Band className={columnPadding}>
             <WorkSection
               caseStudies={caseStudies}
               projects={projects}
-              heading={homePage.workHeading}
+              heading={cleanSanityString(homePage.workHeading)}
             />
           </Band>
           <Band className={columnPadding}>
             <ExperienceSection
               experiences={experiences}
-              heading={homePage.experienceHeading}
+              heading={cleanSanityString(homePage.experienceHeading)}
             />
           </Band>
           <Band className={columnPadding}>
             <BlogSection
               posts={posts}
-              heading={homePage.blogHeading}
-              description={homePage.blogDescription}
+              heading={
+                homePage.blogHeading
+                  ? cleanSanityString(homePage.blogHeading)
+                  : undefined
+              }
+              description={
+                homePage.blogDescription
+                  ? cleanSanityString(homePage.blogDescription)
+                  : undefined
+              }
             />
           </Band>
           {/* Last band before the footer, so its bottom rule is the end of the
@@ -157,8 +174,16 @@ async function CachedHome({
           <Band bottomCrosses={false} className={columnPadding}>
             <FunStuffSection
               videos={videos}
-              heading={homePage.motionHeading}
-              description={homePage.motionDescription}
+              heading={
+                homePage.motionHeading
+                  ? cleanSanityString(homePage.motionHeading)
+                  : undefined
+              }
+              description={
+                homePage.motionDescription
+                  ? cleanSanityString(homePage.motionDescription)
+                  : undefined
+              }
             />
           </Band>
         </div>

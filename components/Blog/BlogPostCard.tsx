@@ -17,7 +17,7 @@ export function BlogPostCard({ post }: { post: BlogPostCardView }) {
   return (
     <article
       aria-labelledby={headingId}
-      className="group border-rule bg-paper hover:border-brand/50 flex h-full flex-col border transition-colors"
+      className="group border-rule bg-paper hover:border-brand/50 flex flex-col border transition-colors"
     >
       <Link
         href={href}
@@ -28,12 +28,13 @@ export function BlogPostCard({ post }: { post: BlogPostCardView }) {
           src={post.image}
           alt={post.imageAlt}
           fill
+          placeholder="blur"
           sizes="(min-width: 1024px) 32vw, (min-width: 640px) 65vw, 90vw"
           className="object-cover object-center"
         />
       </Link>
 
-      <div className="flex flex-1 flex-col gap-4 p-6">
+      <div className="flex flex-col gap-4 p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2">
             <time
@@ -60,7 +61,7 @@ export function BlogPostCard({ post }: { post: BlogPostCardView }) {
           ) : null}
         </div>
 
-        <div className="flex-1">
+        <div>
           <h2 id={headingId} className="text-xl font-semibold">
             <Link
               href={href}
