@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { ExternalLink } from "@/components/ExternalLink";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { splitGrid } from "@/lib/layout";
@@ -53,15 +54,7 @@ export default function WorkSection({
                     .toLowerCase()
                     .replace(/[^a-z0-9]+/g, "-")}`;
 
-                  // Thumbnail, title and button all open the same Behance
-                  // gallery, exactly as the case study cards above put a link
-                  // on all three. Every one of them leaves the site, so they
-                  // share the new-tab attributes rather than repeating them.
-                  const opensBehance = {
-                    href: project.behance,
-                    target: "_blank",
-                    rel: "noopener noreferrer",
-                  } as const;
+                  const behanceHref = project.behance;
 
                   return (
                     <article
@@ -69,13 +62,9 @@ export default function WorkSection({
                       aria-labelledby={headingId}
                       className="group border-rule bg-paper hover:border-brand/50 flex flex-col border transition-colors"
                     >
-                      <a
-                        {...opensBehance}
+                      <ExternalLink
+                        href={behanceHref}
                         aria-label={`View ${project.title} on Behance (opens in new tab)`}
-                        // `block` explicitly: an anchor is inline, and it only
-                        // gets a box here because the card is a flex
-                        // container. Without this the thumbnail would
-                        // collapse the moment the card stopped being flex.
                         className="border-rule relative block aspect-[4/3] w-full overflow-hidden border-b"
                       >
                         {/* `fill` + `sizes`, not `width`/`height`. The card is
@@ -92,17 +81,17 @@ export default function WorkSection({
                           placeholder="blur"
                           sizes="(min-width: 1463px) 480px, (min-width: 1024px) 31vw, (min-width: 640px) 65vw, 90vw"
                         />
-                      </a>
+                      </ExternalLink>
 
                       <div className="flex flex-1 flex-col gap-4 p-6">
                         <div className="flex-1">
                           <h3 id={headingId} className={cardTitleClass}>
-                            <a
-                              {...opensBehance}
+                            <ExternalLink
+                              href={behanceHref}
                               className="hover:text-brand-text transition-colors"
                             >
                               {project.title}
-                            </a>
+                            </ExternalLink>
                           </h3>
                           <p
                             className={cn(
@@ -119,11 +108,11 @@ export default function WorkSection({
                           variant="outline"
                           className="w-full justify-start"
                         >
-                          <a {...opensBehance}>
+                          <ExternalLink href={behanceHref}>
                             <IconBrandBehance data-icon="inline-start" />
                             View on Behance
                             <LuExternalLink className="ml-auto transition-transform group-hover:translate-x-1" />
-                          </a>
+                          </ExternalLink>
                         </Button>
                       </div>
                     </article>
@@ -133,15 +122,11 @@ export default function WorkSection({
 
               <div className="flex justify-center">
                 <Button asChild variant="outline">
-                  <a
-                    href="https://www.behance.net/dileepamg"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <ExternalLink href="https://www.behance.net/dileepamg">
                     <IconBrandBehance data-icon="inline-start" />
                     View more on Behance
                     <LuExternalLink data-icon="inline-end" />
-                  </a>
+                  </ExternalLink>
                 </Button>
               </div>
             </div>

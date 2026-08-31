@@ -1,3 +1,4 @@
+import { ExternalLink } from "@/components/ExternalLink";
 import type { ReactNode } from "react";
 
 /**
@@ -17,15 +18,13 @@ export default function RichText({ children }: { children: string }) {
     }
 
     parts.push(
-      <a
+      <ExternalLink
         key={match.index}
         href={match[2]}
-        target="_blank"
-        rel="noopener noreferrer"
         className="text-brand-text hover:underline"
       >
         {match[1]}
-      </a>,
+      </ExternalLink>,
     );
 
     lastIndex = match.index + match[0].length;

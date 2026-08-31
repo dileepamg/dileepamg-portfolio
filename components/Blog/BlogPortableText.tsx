@@ -1,4 +1,5 @@
 import type { BLOG_POST_QUERY_RESULT } from "@/sanity.types";
+import { ExternalLink } from "@/components/ExternalLink";
 import type { PortableTextComponents } from "@portabletext/react";
 import { PortableText } from "@portabletext/react";
 import { stegaClean } from "@sanity/client/stega";
@@ -62,13 +63,25 @@ const components: PortableTextComponents = {
       value?: { href?: string; blank?: boolean };
     }) => {
       const href = value?.href ? stegaClean(value.href) : undefined;
-      const external = value?.blank || href?.startsWith("http");
+      if (!href) {
+        return <>{children}</>;
+      }
+
+      const external = value?.blank || href.startsWith("http");
+      if (external) {
+        return (
+          <ExternalLink
+            href={href}
+            className="text-brand-text underline underline-offset-4"
+          >
+            {children}
+          </ExternalLink>
+        );
+      }
+
       return (
         <a
           href={href}
-          {...(external
-            ? { target: "_blank", rel: "noopener noreferrer" }
-            : {})}
           className="text-brand-text underline underline-offset-4"
         >
           {children}

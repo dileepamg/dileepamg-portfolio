@@ -7,6 +7,7 @@ import ProcessStepItem, {
   stepId,
 } from "@/components/CaseStudy/ProcessStep";
 import RichText from "@/components/CaseStudy/RichText";
+import { ExternalLink } from "@/components/ExternalLink";
 import { CaseStudyPageSkeleton } from "@/components/loading/PageSkeletons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -390,41 +391,35 @@ async function CachedCaseStudyPage({
               <div className="flex flex-wrap gap-3">
                 {study.links.figma && (
                   <Button asChild>
-                    <a
+                    <ExternalLink
                       href={study.links.figma}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       aria-label={`${study.title} on Figma (opens in new tab)`}
                     >
                       <IconBrandFigma data-icon="inline-start" />
                       Open in Figma
-                    </a>
+                    </ExternalLink>
                   </Button>
                 )}
                 {study.links.behance && (
                   <Button asChild variant="outline">
-                    <a
+                    <ExternalLink
                       href={study.links.behance}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       aria-label={`${study.title} on Behance (opens in new tab)`}
                     >
                       <IconBrandBehance data-icon="inline-start" />
                       View on Behance
-                    </a>
+                    </ExternalLink>
                   </Button>
                 )}
                 {study.links.live && (
                   <Button asChild variant="outline">
-                    <a
+                    <ExternalLink
                       href={study.links.live}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       aria-label={`${study.title} live site (opens in new tab)`}
                     >
                       <LuExternalLink data-icon="inline-start" />
                       Live site
-                    </a>
+                    </ExternalLink>
                   </Button>
                 )}
               </div>
