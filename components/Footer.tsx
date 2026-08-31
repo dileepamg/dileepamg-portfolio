@@ -11,12 +11,37 @@ import { useSyncExternalStore } from "react";
  * from an effect does the same job but commits a second render to get there.
  */
 const getYear = () => new Date().getFullYear();
+const getServerYear = () => 2026;
 
 /** There is no external source to subscribe to, so the callback is a no-op. */
 const subscribeToNothing = () => () => {};
 
-export default function Footer() {
-  const year = useSyncExternalStore(subscribeToNothing, getYear, getYear);
+type FooterProps = {
+  copyrightName?: string;
+  sourceLabel?: string;
+  sourceUrl?: string;
+  inspirationLinks?: readonly {
+    label: string;
+    href: string;
+  }[];
+};
+
+const defaultInspirationLinks = [
+  { label: "Akhila", href: "https://akhilaariyachandra.com/" },
+  { label: "Ralph", href: "https://rcortiz.dev/" },
+];
+
+export default function Footer({
+  copyrightName = "Dileepa Mahanama Galmangoda",
+  sourceLabel = "GitHub",
+  sourceUrl = "https://github.com/dileepamg/dileepamg-portfolio",
+  inspirationLinks = defaultInspirationLinks,
+}: FooterProps) {
+  const year = useSyncExternalStore(
+    subscribeToNothing,
+    getYear,
+    getServerYear,
+  );
 
   // The background runs the full width of the viewport so the page closes on a
   // solid band, while the content stays inside the reading column with the
@@ -66,38 +91,34 @@ export default function Footer() {
           <p>
             Devs pls don&apos;t roast me{" 🥺 "}
             <a
-              href="https://github.com/dileepamg/dileepamg-portfolio"
+              href={sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="text-brand-text after:content-['_↗'] hover:underline"
             >
-              GitHub
+              {sourceLabel}
             </a>
           </p>
         </span>
         <span className="order-1 space-y-1 text-center text-xs sm:order-2 sm:text-right">
           <p className="text-ink-soft">
-            {year} &copy; Dileepa Mahanama Galmangoda
+            {year} &copy; {copyrightName}
           </p>
           <p>
             Thanks for the inspo{" 💙 "}
-            <a
-              href="https://akhilaariyachandra.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-ink underline transition-colors"
-            >
-              Akhila
-            </a>
-            {" & "}
-            <a
-              href="https://rcortiz.dev/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-ink underline transition-colors"
-            >
-              Ralph
-            </a>
+            {inspirationLinks.map((link, index) => (
+              <span key={link.href}>
+                {index > 0 && " & "}
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-ink underline transition-colors"
+                >
+                  {link.label}
+                </a>
+              </span>
+            ))}
           </p>
         </span>
       </div>

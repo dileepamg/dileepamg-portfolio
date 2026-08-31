@@ -4,7 +4,13 @@ import { cn } from "@/lib/utils";
 import CardFront from "@/public/lanyard/card-front.jpg";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 /**
  * The 3D scene pulls in three, rapier and a 2.4MB model. Loading it eagerly
@@ -52,13 +58,16 @@ const BADGE = {
  * The still badge, for readers who have asked for reduced motion. A lanyard
  * that drops, swings and then follows the pointer is exactly the unsolicited
  * movement the setting exists to stop, so they get the card and none of the
- * three.js payload. It is not used as a loading placeholder: swapping a flat
- * image for the canvas a moment later read as a flicker.
+ * three.js payload. It also keeps the badge visible while the WebGL scene
+ * loads, preventing the empty/jumping first frame.
  */
 function StillBadge({
   cardHeight,
   cardOffsetTop,
-}: (typeof BADGE)[keyof typeof BADGE]) {
+  frontImage,
+}: (typeof BADGE)[keyof typeof BADGE] & {
+  frontImage: string | typeof CardFront;
+}) {
   return (
     <div className="absolute inset-0 flex flex-col items-center">
       {/* Same pixel measurements the camera works from, so the still card
@@ -72,11 +81,11 @@ function StillBadge({
       />
       <div className="relative aspect-[0.716]" style={{ height: cardHeight }}>
         <Image
-          src={CardFront}
+          src={frontImage}
           alt=""
           fill
           sizes="(min-width: 1280px) 230px, 190px"
-          placeholder="blur"
+          placeholder={typeof frontImage === "string" ? "empty" : "blur"}
           className="rounded-[3%] object-contain"
         />
       </div>
@@ -92,48 +101,103 @@ function StillBadge({
  * which is what leaves the strap free to swing anywhere on screen without an
  * edge to be cut off against.
  */
-export default function ProfileLanyard({ className }: { className?: string }) {
-  const anchor = useRef<HTMLDivElement>(null);
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const [beside, setBeside] = useState(false);
-  const [navBar, setNavBar] = useState(false);
-  const [inView, setInView] = useState(true);
+type ProfileLanyardProps = {
+  className?: string;
+  frontImage?: string;
+  backImage?: string;
+};
 
-  useEffect(() => {
-    const queries = [
-      ["(prefers-reduced-motion: reduce)", setReducedMotion] as const,
-      [BREAKPOINT.split, setBeside] as const,
-      [BREAKPOINT.navBar, setNavBar] as const,
-    ];
-
-    const teardown = queries.map(([query, set]) => {
+function useMediaQuery(query: string) {
+  const subscribe = useCallback(
+    (notify: () => void) => {
       const media = window.matchMedia(query);
-      const sync = () => set(media.matches);
+      media.addEventListener("change", notify);
+      return () => media.removeEventListener("change", notify);
+    },
+    [query],
+  );
+  const getSnapshot = useCallback(
+    () => window.matchMedia(query).matches,
+    [query],
+  );
+  const getServerSnapshot = useCallback(() => false, []);
 
-      sync();
-      media.addEventListener("change", sync);
-      return () => media.removeEventListener("change", sync);
-    });
+  return useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
+}
 
-    return () => teardown.forEach((off) => off());
+export default function ProfileLanyard({
+  className,
+  frontImage = "/lanyard/card-front.jpg",
+  backImage = "/lanyard/card-back.jpg",
+}: ProfileLanyardProps) {
+  const anchor = useRef<HTMLDivElement>(null);
+  const reducedMotion = useMediaQuery(
+    "(prefers-reduced-motion: reduce)",
+  );
+  const beside = useMediaQuery(BREAKPOINT.split);
+  const navBar = useMediaQuery(BREAKPOINT.navBar);
+  const [sceneReady, setSceneReady] = useState(false);
+  // Soft navigations back to home can leave a disposed WebGL/Rapier world.
+  // Mount the canvas only after commit, and remount it if readiness stalls.
+  const [canvasMount, setCanvasMount] = useState<{
+    enabled: boolean;
+    key: number;
+  }>({ enabled: false, key: 0 });
+  const retryCount = useRef(0);
+
+  const handleSceneReady = useCallback(() => {
+    retryCount.current = 0;
+    setSceneReady(true);
+  }, []);
+  const handleSceneUnavailable = useCallback(() => {
+    setSceneReady(false);
   }, []);
 
-  // A canvas the size of the viewport is not free to redraw, and it stays
-  // mounted for the whole page, so it is stood down once this element is well
-  // clear of the screen. The margin is generous enough that it is running
-  // again — and has moved the camera — before any of it could be seen.
   useEffect(() => {
-    const element = anchor.current;
-    if (!element) return;
+    if (reducedMotion) {
+      setCanvasMount({ enabled: false, key: 0 });
+      setSceneReady(false);
+      retryCount.current = 0;
+      return;
+    }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
-      { rootMargin: "400px" },
-    );
+    setSceneReady(false);
+    retryCount.current = 0;
+    setCanvasMount({ enabled: false, key: 0 });
 
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
+    const enableTimer = window.setTimeout(() => {
+      setCanvasMount((current) => ({
+        enabled: true,
+        key: current.key + 1,
+      }));
+    }, 0);
+
+    return () => {
+      window.clearTimeout(enableTimer);
+      setCanvasMount((current) => ({ ...current, enabled: false }));
+      setSceneReady(false);
+    };
+  }, [reducedMotion]);
+
+  useEffect(() => {
+    if (reducedMotion || !canvasMount.enabled || sceneReady) return;
+    if (retryCount.current >= 2) return;
+
+    const retryTimer = window.setTimeout(() => {
+      retryCount.current += 1;
+      setSceneReady(false);
+      setCanvasMount((current) => ({
+        enabled: true,
+        key: current.key + 1,
+      }));
+    }, 2500);
+
+    return () => window.clearTimeout(retryTimer);
+  }, [canvasMount.enabled, canvasMount.key, reducedMotion, sceneReady]);
 
   const badge = beside
     ? BADGE.beside
@@ -148,17 +212,31 @@ export default function ProfileLanyard({ className }: { className?: string }) {
       aria-label="Dileepa Galmangoda's ID badge, hanging from a lanyard"
       className={cn("absolute inset-0", className)}
     >
-      {reducedMotion ? (
-        <StillBadge {...badge} />
-      ) : (
+      <div
+        className={cn(
+          "transition-opacity duration-300",
+          reducedMotion || !sceneReady
+            ? "opacity-100"
+            : "pointer-events-none opacity-0",
+        )}
+      >
+        <StillBadge {...badge} frontImage={frontImage} />
+      </div>
+      {!reducedMotion && canvasMount.enabled && (
         <Lanyard
+          key={canvasMount.key}
+          className={cn(
+            "transition-opacity duration-300",
+            sceneReady ? "opacity-100" : "opacity-0",
+          )}
           anchorRef={anchor}
-          active={inView}
           {...badge}
-          frontImage="/lanyard/card-front.jpg"
-          backImage="/lanyard/card-back.jpg"
+          frontImage={frontImage}
+          backImage={backImage}
           bandColor={BAND_COLOR}
           lanyardWidth={0.85}
+          onReady={handleSceneReady}
+          onUnavailable={handleSceneUnavailable}
         />
       )}
     </div>

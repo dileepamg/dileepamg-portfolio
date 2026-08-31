@@ -3,7 +3,15 @@
 import DecryptedText from "@/components/ui/shadcn-io/decrypted-text";
 import { useState } from "react";
 
-export default function WelcomeText() {
+type WelcomeTextProps = {
+  latin?: string;
+  sinhala?: string;
+};
+
+export default function WelcomeText({
+  latin = "Ayubowan",
+  sinhala = "ආයුබෝවන්",
+}: WelcomeTextProps) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -12,7 +20,7 @@ export default function WelcomeText() {
       onMouseLeave={() => setHovered(false)}
     >
       <DecryptedText
-        text={hovered ? "ආයුබෝවන්" : "Ayubowan"}
+        text={hovered ? sinhala : latin}
         speed={70}
         maxIterations={15}
         sequential={true}

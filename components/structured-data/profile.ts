@@ -6,27 +6,40 @@ const PERSON_ID = `${SITE_URL}#person`;
 const WEBSITE_ID = `${SITE_URL}#website`;
 const WEBPAGE_ID = `${PAGE_URL}#webpage`;
 
-export function getProfileStructuredData() {
+type ProfileStructuredDataInput = {
+  fullName: string;
+  givenName: string;
+  familyName: string;
+  imageUrl: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  sameAs: readonly string[];
+  siteName: string;
+};
+
+export function getProfileStructuredData(
+  profile: ProfileStructuredDataInput,
+) {
   const person: WithContext<Person> = {
     "@context": "https://schema.org",
     "@type": "Person",
     "@id": PERSON_ID,
-    name: "Dileepa Mahanama Galmangoda",
-    givenName: "Dileepa",
-    familyName: "Galmangoda",
+    name: profile.fullName,
+    givenName: profile.givenName,
+    familyName: profile.familyName,
     url: SITE_URL,
     image: {
       "@type": "ImageObject",
-      url: `${SITE_URL}/dileepa-g.png`,
-      width: "550",
-      height: "550",
-      caption: "Dileepa Mahanama Galmangoda",
+      url: profile.imageUrl,
+      ...(profile.imageWidth
+        ? { width: String(profile.imageWidth) }
+        : {}),
+      ...(profile.imageHeight
+        ? { height: String(profile.imageHeight) }
+        : {}),
+      caption: profile.fullName,
     },
-    sameAs: [
-      "https://www.linkedin.com/in/dileepa-galmangoda",
-      "https://github.com/dileepamg",
-      "https://www.behance.net/dileepamg",
-    ],
+    sameAs: [...profile.sameAs],
     mainEntityOfPage: { "@id": WEBPAGE_ID },
   };
 
@@ -35,7 +48,7 @@ export function getProfileStructuredData() {
     "@type": "WebSite",
     "@id": WEBSITE_ID,
     url: SITE_URL,
-    name: "Dileepa Galmangoda | Portfolio",
+    name: profile.siteName,
     publisher: { "@id": PERSON_ID },
   };
 

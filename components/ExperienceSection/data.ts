@@ -4,8 +4,20 @@ import tracifiedLogo from "./tracified.png";
 import villvayLogoDark from "./villvay-dark.png";
 import villvayLogoLight from "./villvay-light.png";
 import zMessengerLogo from "./zmessenger.png";
+import type { StaticImageData } from "next/image";
 
-export const experiences = [
+export type CareerPosition = {
+  role: string;
+  companylogoLight: StaticImageData;
+  companyLogoDark: StaticImageData;
+  company: string;
+  link: string;
+  year: string;
+  responsibility: readonly string[];
+  techStacks: readonly string[];
+};
+
+export const experiences: readonly CareerPosition[] = [
   {
     role: "Senior UI/UX Designer",
     companylogoLight: villvayLogoLight,
@@ -103,6 +115,4 @@ export const experiences = [
       "Adobe After Effects",
     ],
   },
-] as const;
-
-export type CareerPosition = (typeof experiences)[number];
+];

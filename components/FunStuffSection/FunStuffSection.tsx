@@ -10,9 +10,22 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { splitGrid } from "@/lib/layout";
 import { cn } from "@/lib/utils";
 import Video from "next-video";
-import { videos } from "./videos";
 
-export default function FunStuffSection() {
+type FunStuffSectionProps = {
+  videos: readonly {
+    id: string;
+    title: string;
+    src: string;
+  }[];
+  heading?: string;
+  description?: string;
+};
+
+export default function FunStuffSection({
+  videos,
+  heading = "Some Fun Motion Stuff",
+  description = "A few playful motion experiments I made along the way.",
+}: FunStuffSectionProps) {
   return (
     <section id="fun" className="scroll-mt-28">
       <Accordion type="single" collapsible>
@@ -24,8 +37,8 @@ export default function FunStuffSection() {
               with a chevron that shadcn already nudges to match it. */}
           <AccordionTrigger className="group items-center pt-0 [&>svg]:hidden">
             <SectionHeading
-              title="Some Fun Motion Stuff"
-              description="A few playful motion experiments I made along the way."
+              title={heading}
+              description={description}
             />
             <span className={buttonVariants({ variant: "outline" })}>
               <span className="group-data-[state=open]:hidden">View</span>
@@ -44,6 +57,7 @@ export default function FunStuffSection() {
                   >
                     <Video
                       src={video.src}
+                      aria-label={video.title}
                       slot="media"
                       theme={ReelplayTheme}
                       className="h-full w-full object-cover"

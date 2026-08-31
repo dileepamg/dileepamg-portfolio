@@ -1,5 +1,9 @@
-import { caseStudies } from "@/components/WorkSection/caseStudies";
 import { absoluteUrl } from "@/lib/site";
+import { metadataClient } from "@/sanity/lib/client";
+import {
+  BLOG_POSTS_QUERY,
+  CASE_STUDY_SLUGS_QUERY,
+} from "@/sanity/lib/queries";
 import type { MetadataRoute } from "next";
 
 /**
@@ -11,7 +15,12 @@ import type { MetadataRoute } from "next";
  * from the content itself, and a build timestamp would tell crawlers every page
  * changed on every deploy, which is worse than saying nothing.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [caseStudies, posts] = await Promise.all([
+    metadataClient.fetch(CASE_STUDY_SLUGS_QUERY),
+    metadataClient.fetch(BLOG_POSTS_QUERY),
+  ]);
+
   return [
     {
       url: absoluteUrl("/"),
@@ -22,6 +31,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: absoluteUrl(`/work/${study.slug}`),
       changeFrequency: "yearly" as const,
       priority: 0.8,
+    })),
+    {
+      url: absoluteUrl("/blog"),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    ...posts.map((post) => ({
+      url: absoluteUrl(`/blog/${post.slug}`),
+      lastModified: post._updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
   ];
 }

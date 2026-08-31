@@ -8,17 +8,25 @@ import {
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { useState } from "react";
-import { experiences } from "./data";
+import type { CareerPosition } from "./data";
 import ExperienceCard from "./ExperienceCard";
 
-export default function ExperienceSection() {
+type ExperienceSectionProps = {
+  experiences: readonly CareerPosition[];
+  heading?: string;
+};
+
+export default function ExperienceSection({
+  experiences,
+  heading = "Professional Experience",
+}: ExperienceSectionProps) {
   const [showAll, setShowAll] = useState(false);
   return (
     <section id="experience" className="scroll-mt-28">
       <Accordion type="single" collapsible defaultValue="item-1">
         <AccordionItem value="item-1" className="border-b-0">
           <AccordionTrigger className="pt-0 transition-opacity hover:opacity-70 [&>svg]:size-6">
-            <SectionHeading title="Professional Experience" />
+            <SectionHeading title={heading} />
           </AccordionTrigger>
           <AccordionContent>
             <div className="pb-4">
