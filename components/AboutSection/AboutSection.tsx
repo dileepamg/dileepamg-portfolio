@@ -1,4 +1,5 @@
 import ProfileLanyard from "@/components/AboutSection/ProfileLanyard";
+import { ExternalLink } from "@/components/ExternalLink";
 import { Button } from "@/components/ui/button";
 import WelcomeText from "@/components/WelcomeText";
 import { resolveSocialIcon } from "@/lib/social-icons";
@@ -110,17 +111,18 @@ export default function AboutSection({
                   size="icon"
                   shape="pill"
                 >
-                  <a
-                    href={href}
-                    {...(external
-                      ? { target: "_blank", rel: "noopener noreferrer" }
-                      : {})}
-                    aria-label={
-                      external ? `${label} (opens in new tab)` : label
-                    }
-                  >
-                    <Icon className="size-5" />
-                  </a>
+                  {external ? (
+                    <ExternalLink
+                      href={href}
+                      aria-label={`${label} (opens in new tab)`}
+                    >
+                      <Icon className="size-5" />
+                    </ExternalLink>
+                  ) : (
+                    <a href={href} aria-label={label}>
+                      <Icon className="size-5" />
+                    </a>
+                  )}
                 </Button>
               );
             })}

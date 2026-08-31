@@ -1,5 +1,6 @@
 "use client";
 
+import { ExternalLink } from "@/components/ExternalLink";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { LuArrowUpRight } from "react-icons/lu";
@@ -44,10 +45,8 @@ export default function ExperienceCard({ position }: ExperienceCardProps) {
                 <p className="text-ink text-xl font-semibold">
                   {position.role}
                 </p>
-                <a
+                <ExternalLink
                   href={position.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   aria-label={`${position.company} (opens in new tab)`}
                   className="text-ink-soft hover:text-ink w-fit transition-colors"
                 >
@@ -57,7 +56,7 @@ export default function ExperienceCard({ position }: ExperienceCardProps) {
                       <LuArrowUpRight />
                     </span>
                   </p>
-                </a>
+                </ExternalLink>
               </div>
             </div>
             <div className="text-ink-faint flex justify-between text-sm font-medium tabular-nums md:justify-end md:gap-4">

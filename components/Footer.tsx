@@ -1,4 +1,6 @@
 "use client";
+
+import { ExternalLink } from "@/components/ExternalLink";
 import { columnClass, columnPadding } from "@/lib/layout";
 import { cn } from "@/lib/utils";
 import { useSyncExternalStore } from "react";
@@ -61,43 +63,35 @@ export default function Footer({
         <span className="order-2 space-y-1 text-center text-xs sm:order-1 sm:text-left">
           <p>
             Built with{" "}
-            <a
+            <ExternalLink
               href="https://nextjs.org/"
-              target="_blank"
-              rel="noopener noreferrer"
               className="text-brand-text hover:underline"
             >
               Next.js
-            </a>
+            </ExternalLink>
             {", "}
-            <a
+            <ExternalLink
               href="https://tailwindcss.com/"
-              target="_blank"
-              rel="noopener noreferrer"
               className="text-brand-text hover:underline"
             >
               Tailwind
-            </a>
+            </ExternalLink>
             {", "}
-            <a
+            <ExternalLink
               href="https://ui.shadcn.com/"
-              target="_blank"
-              rel="noopener noreferrer"
               className="text-brand-text hover:underline"
             >
               shadcn/ui
-            </a>
+            </ExternalLink>
           </p>
           <p>
             Devs pls don&apos;t roast me{" 🥺 "}
-            <a
+            <ExternalLink
               href={sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
               className="text-brand-text after:content-['_↗'] hover:underline"
             >
               {sourceLabel}
-            </a>
+            </ExternalLink>
           </p>
         </span>
         <span className="order-1 space-y-1 text-center text-xs sm:order-2 sm:text-right">
@@ -109,14 +103,12 @@ export default function Footer({
             {inspirationLinks.map((link, index) => (
               <span key={link.href}>
                 {index > 0 && " & "}
-                <a
+                <ExternalLink
                   href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="hover:text-ink underline transition-colors"
                 >
                   {link.label}
-                </a>
+                </ExternalLink>
               </span>
             ))}
           </p>
