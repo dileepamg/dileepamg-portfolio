@@ -183,6 +183,16 @@ export function mapCaseStudy(
       : {}),
     ...(study.challenge ? { challenge: study.challenge } : {}),
     ...(study.outcome ? { outcome: study.outcome } : {}),
+    ...(study.scope
+      ? {
+          scope: {
+            summary: study.scope.summary,
+            ...(study.scope.responsibilities
+              ? { responsibilities: study.scope.responsibilities }
+              : {}),
+          },
+        }
+      : {}),
     ...(study.personas
       ? {
           personas: study.personas.map(
@@ -194,19 +204,31 @@ export function mapCaseStudy(
           ),
         }
       : {}),
-    ...(study.process
+    ...(study.chapters
       ? {
-          process: study.process.map((step, stepIndex) => ({
-            phase: stegaClean(step.phase),
-            title: step.title,
-            body: step.body,
-            ...(step.takeaways ? { takeaways: step.takeaways } : {}),
-            ...(step.media
+          chapters: study.chapters.map((chapter, chapterIndex) => ({
+            // Cleaned: the anchor is written into an `id` attribute, where the
+            // invisible characters stega adds for click to edit would leave it
+            // no longer matching the link that points at it.
+            ...(chapter.id ? { id: stegaClean(chapter.id) } : {}),
+            title: chapter.title,
+            ...(chapter.lede ? { lede: chapter.lede } : {}),
+            ...(chapter.list
               ? {
-                  media: step.media.map((media, mediaIndex) =>
+                  list: {
+                    ...(chapter.list.ordered ? { ordered: true } : {}),
+                    items: chapter.list.items,
+                  },
+                }
+              : {}),
+            body: chapter.body,
+            ...(chapter.decisions ? { decisions: chapter.decisions } : {}),
+            ...(chapter.media
+              ? {
+                  media: chapter.media.map((media, mediaIndex) =>
                     mapCaseStudyMedia(
                       media,
-                      `${study.slug}.process.${stepIndex}.media.${mediaIndex}`,
+                      `${study.slug}.chapters.${chapterIndex}.media.${mediaIndex}`,
                     ),
                   ),
                 }

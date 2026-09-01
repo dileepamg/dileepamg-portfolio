@@ -152,22 +152,31 @@ export type CaseStudy = {
   }>;
   challenge?: string;
   outcome?: string;
+  scope?: {
+    summary: string;
+    responsibilities?: Array<string>;
+  };
   personas?: Array<{
     label: string;
     title: string;
     description: string;
     _key: string;
   }>;
-  process?: Array<{
-    phase: "Discover" | "Define" | "Ideate" | "Design" | "Validate";
+  chapters?: Array<{
+    id?: string;
     title: string;
+    lede?: string;
+    list?: {
+      ordered?: boolean;
+      items: Array<string>;
+    };
     body: Array<string>;
     media?: Array<
       {
         _key: string;
       } & CaseStudyMedia
     >;
-    takeaways?: Array<string>;
+    decisions?: Array<string>;
     _key: string;
   }>;
   gallery?: Array<
@@ -291,11 +300,8 @@ export type SiteSettings = {
     jobTitle: string;
     bio: string;
     profileImage?: ImageWithAlt;
-    lanyardFront?: ImageWithAlt;
-    lanyardBack?: ImageWithAlt;
   };
   email?: string;
-  scheduleUrl?: string;
   resume?: {
     asset?: SanityFileAssetReference;
     media?: unknown;
@@ -505,7 +511,7 @@ export type AllSanitySchemaTypes =
 
 // Source: sanity/lib/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[  _type == "siteSettings" && _id == "siteSettings"][0]{  ...,  author {    ...,    profileImage {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},    lanyardFront {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},    lanyardBack {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }}  },  resume {    ...,    asset->{url, originalFilename, mimeType}  },  defaultSeo {    ...,    image {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }}  }}
+// Query: *[  _type == "siteSettings" && _id == "siteSettings"][0]{  ...,  author {    ...,    profileImage {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }}  },  resume {    ...,    asset->{url, originalFilename, mimeType}  },  defaultSeo {    ...,    image {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }}  }}
 export type SITE_SETTINGS_QUERY_RESULT = {
   _id: "siteSettings";
   _type: "siteSettings";
@@ -536,37 +542,8 @@ export type SITE_SETTINGS_QUERY_RESULT = {
         } | null;
       } | null;
     } | null;
-    lanyardFront: {
-      alt: string;
-      caption: string | null;
-      crop: SanityImageCrop | null;
-      hotspot: SanityImageHotspot | null;
-      asset: {
-        _id: string;
-        url: string;
-        metadata: {
-          dimensions: SanityImageDimensions | null;
-          lqip: string | null;
-        } | null;
-      } | null;
-    } | null;
-    lanyardBack: {
-      alt: string;
-      caption: string | null;
-      crop: SanityImageCrop | null;
-      hotspot: SanityImageHotspot | null;
-      asset: {
-        _id: string;
-        url: string;
-        metadata: {
-          dimensions: SanityImageDimensions | null;
-          lqip: string | null;
-        } | null;
-      } | null;
-    } | null;
   };
   email?: string;
-  scheduleUrl?: string;
   resume: {
     asset: {
       url: string;
@@ -739,7 +716,7 @@ export type CASE_STUDIES_QUERY_RESULT = Array<{
 
 // Source: sanity/lib/queries.ts
 // Variable: CASE_STUDY_QUERY
-// Query: *[  _type == "caseStudy" &&  hidden != true] | order(order asc) {  ...,  "slug": slug.current,  cardMedia {  _key,  kind,  image {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  orientation,  embedUrl,  embedTitle,  poster {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  aspect,  caption},  heroMedia {  _key,  kind,  image {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  orientation,  embedUrl,  embedTitle,  poster {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  aspect,  caption},  process[]{    ...,    media[] {  _key,  kind,  image {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  orientation,  embedUrl,  embedTitle,  poster {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  aspect,  caption}  },  gallery[] {  _key,  kind,  image {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  orientation,  embedUrl,  embedTitle,  poster {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  aspect,  caption},  seo {    ...,    image {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }}  }}
+// Query: *[  _type == "caseStudy" &&  hidden != true] | order(order asc) {  ...,  "slug": slug.current,  cardMedia {  _key,  kind,  image {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  orientation,  embedUrl,  embedTitle,  poster {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  aspect,  caption},  heroMedia {  _key,  kind,  image {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  orientation,  embedUrl,  embedTitle,  poster {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  aspect,  caption},  chapters[]{    ...,    media[] {  _key,  kind,  image {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  orientation,  embedUrl,  embedTitle,  poster {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  aspect,  caption}  },  gallery[] {  _key,  kind,  image {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  orientation,  embedUrl,  embedTitle,  poster {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }},  aspect,  caption},  seo {    ...,    image {  alt,  caption,  crop,  hotspot,  asset->{    _id,    url,    metadata {      dimensions,      lqip    }  }}  }}
 export type CASE_STUDY_QUERY_RESULT = Array<{
   _id: string;
   _type: "caseStudy";
@@ -841,15 +818,24 @@ export type CASE_STUDY_QUERY_RESULT = Array<{
   }>;
   challenge?: string;
   outcome?: string;
+  scope?: {
+    summary: string;
+    responsibilities?: Array<string>;
+  };
   personas?: Array<{
     label: string;
     title: string;
     description: string;
     _key: string;
   }>;
-  process: Array<{
-    phase: "Define" | "Design" | "Discover" | "Ideate" | "Validate";
+  chapters: Array<{
+    id?: string;
     title: string;
+    lede?: string;
+    list?: {
+      ordered?: boolean;
+      items: Array<string>;
+    };
     body: Array<string>;
     media: Array<{
       _key: string;
@@ -888,7 +874,7 @@ export type CASE_STUDY_QUERY_RESULT = Array<{
       aspect: string | null;
       caption: string | null;
     }> | null;
-    takeaways?: Array<string>;
+    decisions?: Array<string>;
     _key: string;
   }> | null;
   gallery: Array<{
@@ -1279,12 +1265,12 @@ export type BLOG_POST_QUERY_RESULT = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[\n  _type == "siteSettings" && _id == "siteSettings"\n][0]{\n  ...,\n  author {\n    ...,\n    profileImage {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n    lanyardFront {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n    lanyardBack {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n  },\n  resume {\n    ...,\n    asset->{url, originalFilename, mimeType}\n  },\n  defaultSeo {\n    ...,\n    image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n  }\n}': SITE_SETTINGS_QUERY_RESULT;
+    '*[\n  _type == "siteSettings" && _id == "siteSettings"\n][0]{\n  ...,\n  author {\n    ...,\n    profileImage {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n  },\n  resume {\n    ...,\n    asset->{url, originalFilename, mimeType}\n  },\n  defaultSeo {\n    ...,\n    image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n  }\n}': SITE_SETTINGS_QUERY_RESULT;
     '*[\n  _type == "homePage" && _id == "homePage"\n][0]{\n  ...,\n  seo {\n    ...,\n    image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n  }\n}': HOME_PAGE_QUERY_RESULT;
     '*[\n  _type == "siteSettings" && _id == "siteSettings"\n][0]{\n  resume {\n    downloadName,\n    asset->{url, mimeType, originalFilename}\n  }\n}': RESUME_QUERY_RESULT;
     '*[\n  _type == "caseStudy" &&\n  hidden != true &&\n  defined(slug.current)\n] | order(order asc) {\n  "slug": slug.current\n}': CASE_STUDY_SLUGS_QUERY_RESULT;
     '*[\n  _type == "caseStudy" &&\n  hidden != true &&\n  defined(slug.current)\n] | order(order asc) {\n  _id,\n  title,\n  pageTitle,\n  "slug": slug.current,\n  previousSlugs,\n  summary,\n  description,\n  tags,\n  role,\n  year,\n  order,\n  cardMedia {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n}\n}': CASE_STUDIES_QUERY_RESULT;
-    '*[\n  _type == "caseStudy" &&\n  hidden != true\n] | order(order asc) {\n  ...,\n  "slug": slug.current,\n  cardMedia {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n},\n  heroMedia {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n},\n  process[]{\n    ...,\n    media[] {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n}\n  },\n  gallery[] {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n},\n  seo {\n    ...,\n    image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n  }\n}': CASE_STUDY_QUERY_RESULT;
+    '*[\n  _type == "caseStudy" &&\n  hidden != true\n] | order(order asc) {\n  ...,\n  "slug": slug.current,\n  cardMedia {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n},\n  heroMedia {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n},\n  chapters[]{\n    ...,\n    media[] {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n}\n  },\n  gallery[] {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n},\n  seo {\n    ...,\n    image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n  }\n}': CASE_STUDY_QUERY_RESULT;
     '*[\n  _type == "externalProject" &&\n  hidden != true\n] | order(order asc) {\n  _id,\n  title,\n  description,\n  url,\n  order,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n}': EXTERNAL_PROJECTS_QUERY_RESULT;
     '*[\n  _type == "experience"\n] | order(order asc) {\n  _id,\n  role,\n  company,\n  companyUrl,\n  dateLabel,\n  responsibilities,\n  skills,\n  order,\n  logoLight {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  logoDark {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n}': EXPERIENCES_QUERY_RESULT;
     '*[\n  _type == "motionItem" &&\n  hidden != true\n] | order(order asc) {\n  _id,\n  title,\n  muxPlaybackId,\n  order,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n}': MOTION_ITEMS_QUERY_RESULT;

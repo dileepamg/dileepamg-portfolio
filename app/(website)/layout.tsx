@@ -78,6 +78,9 @@ export default async function WebsiteLayout({
       fullName: settings.author.fullName,
       givenName: settings.author.givenName,
       familyName: settings.author.familyName,
+      jobTitle: cleanSanityString(settings.author.jobTitle),
+      description: cleanSanityString(settings.author.bio),
+      ...(settings.email ? { email: cleanSanityString(settings.email) } : {}),
       imageUrl:
         profileImage?.asset?.url ?? `${SITE_URL}/dileepa-g.png`,
       imageWidth: dimensions?.width,

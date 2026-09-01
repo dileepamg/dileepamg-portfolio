@@ -72,14 +72,6 @@ export const siteSettingsType = defineType({
           name: "profileImage",
           type: "imageWithAlt",
         }),
-        defineField({
-          name: "lanyardFront",
-          type: "imageWithAlt",
-        }),
-        defineField({
-          name: "lanyardBack",
-          type: "imageWithAlt",
-        }),
       ],
       validation: (Rule) => Rule.required(),
     }),
@@ -87,12 +79,6 @@ export const siteSettingsType = defineType({
       name: "email",
       type: "email",
       group: "contact",
-    }),
-    defineField({
-      name: "scheduleUrl",
-      type: "url",
-      group: "contact",
-      validation: (Rule) => Rule.uri({ scheme: ["https"] }),
     }),
     defineField({
       name: "resume",

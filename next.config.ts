@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   cacheLife: { default: sanity },
   reactCompiler: true,
   reactStrictMode: true,
+  // The version banner tells a scanner which framework and release to look
+  // up known issues for, and buys nothing in return.
+  poweredByHeader: false,
   images: {
     remotePatterns: [
       {
@@ -34,6 +37,14 @@ const nextConfig: NextConfig = {
           // Stop the browser second-guessing a declared Content-Type, which is
           // what turns an uploaded or mistyped asset into a script.
           { key: "X-Content-Type-Options", value: "nosniff" },
+          // Two years, subdomains included. The site is HTTPS only, so the
+          // first plain request a browser would otherwise make on a hostile
+          // network is the one worth removing. Ignored over HTTP, so a local
+          // http run is unaffected.
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
           // Send the full URL only to this origin. Other sites get the origin
           // alone, so a case study slug never rides along to a third party.
           {

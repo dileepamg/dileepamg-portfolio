@@ -115,7 +115,7 @@ const components: PortableTextComponents = {
               width={dimensions.width}
               height={dimensions.height}
               placeholder="blur"
-              sizes="(min-width: 1463px) 960px, (min-width: 640px) 66vw, 90vw"
+              sizes="(min-width: 1281px) 832px, (min-width: 640px) 66vw, 90vw"
               className="h-auto w-full"
             />
           </div>

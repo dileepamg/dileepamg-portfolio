@@ -61,8 +61,18 @@
   /* How wide the reading column is allowed to get. The column is a percentage
      of the viewport up to this point and then stops, so it never narrows as
      the screen widens. Change this one value to retune the column on large
-     screens; the frame rails read the same width and follow automatically. */
-  --reading-max: 64rem;
+     screens; the frame rails read the same width and follow automatically.
+
+     The cap only binds above --reading-max / 0.7 of viewport, so this decides
+     where the column stops growing on a laptop or a monitor, not what a phone
+     sees. At 56rem the content box is 832px, which keeps body copy near 90
+     characters a line instead of 105, and still leaves the two-up panels
+     ~404px a side against the ~300px floor lib/layout.ts sets.
+
+     The `sizes` hints in MediaFrame, CaseStudyCard, WorkSection and the blog
+     are derived from this number and have to move with it, or the page
+     fetches images wider than the box it paints them into. */
+  --reading-max: 56rem;
 }
 
 .dark {
@@ -93,6 +103,12 @@
 
 :root {
   --rule: var(--hairline);
+
+  /* Registration guides: the marks offset around the portrait. The hairline
+     the page grid is drawn in disappears at that length, and --ink-faint at
+     full strength reads as a drawn border rather than a guide, so this sits
+     between the two. Derived from --ink-faint, so it follows the theme. */
+  --guide: color-mix(in srgb, var(--ink-faint) 55%, transparent);
 
   /* Hatch fill for the gutters. Pinned to the viewport so the stripes stay
      put while the page scrolls and the margin reads as a fixed edge rather
@@ -238,6 +254,25 @@
    ========================================================================== */
 
 @theme {
+  /* The check mark that lands when an address is copied. Small and quick:
+     it confirms something already finished, so a slow flourish would only be
+     in the way. Guarded by `motion-safe:` at the call site. */
+  --animate-copy-pop: copy-pop 220ms ease-out;
+
+  @keyframes copy-pop {
+    0% {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    60% {
+      transform: scale(1.12);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
   /* Prose: one ratio across the three sizes body copy is ever set at. */
   --text-sm--line-height: 1.6;
   --text-base--line-height: 1.6;
@@ -269,6 +304,35 @@
   );
   background-size: var(--pattern-size) var(--pattern-size);
   background-attachment: fixed;
+}
+
+/* Registration guides: the hairlines offset around the portrait.
+
+   Real utilities rather than a four-times-repeated arbitrary
+   `bg-[linear-gradient(...)]` value, which was unreadable at the call site.
+
+   Flat across the middle and fading only near the tips: a plain two-stop fade
+   peaks at the centre, which reads as a line that thickens there. The strength
+   is in --guide, and it is the number to change: below about half of
+   --ink-faint a 1px line at this length disappears entirely. */
+@utility guide-x {
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    var(--guide) 22%,
+    var(--guide) 78%,
+    transparent
+  );
+}
+
+@utility guide-y {
+  background-image: linear-gradient(
+    to bottom,
+    transparent,
+    var(--guide) 22%,
+    var(--guide) 78%,
+    transparent
+  );
 }
 
 /* ==========================================================================

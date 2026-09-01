@@ -16,7 +16,6 @@ This is the codebase behind my personal portfolio website: [https://dileepa.desi
 | CMS             | [Sanity](https://www.sanity.io/) via [next-sanity](https://github.com/sanity-io/next-sanity) (live content, draft mode, Studio)       |
 | Styling         | [Tailwind CSS v4](https://tailwindcss.com/)                                                                                          |
 | Components      | [shadcn/ui](https://ui.shadcn.com/) on [Radix](https://www.radix-ui.com/) primitives                                                 |
-| 3D              | [React Three Fiber](https://docs.pmnd.rs/react-three-fiber), Rapier physics (profile lanyard)                                        |
 | Motion          | [Motion](https://motion.dev/)                                                                                                        |
 | Video           | [next-video](https://next-video.dev/) with [Mux](https://www.mux.com/), played through [media-chrome](https://www.media-chrome.org/) |
 | Theming         | [next-themes](https://github.com/pacocoursey/next-themes)                                                                            |
@@ -132,7 +131,7 @@ sanity/
 
 scripts/               One-off migration and blog seed scripts
 lib/                   Layout constants, reading time, site helpers
-public/                Static assets (lanyard model, OG image, …)
+public/                Static assets (profile image, resume PDF, …)
 videos/                next-video sources and Mux manifests
 ```
 
@@ -179,13 +178,15 @@ The site follows Sanity’s recommended patterns for draft mode, live preview, a
 - GROQ queries use parameterized slugs; portable text renders through React (no raw HTML sink).
 - Remote images are restricted to `cdn.sanity.io`.
 - `.env*` files are gitignored; `.env.example` contains no secrets.
-- Security headers (`X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`) are set in `next.config.ts`.
+- Security headers (`Strict-Transport-Security`, `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`) are set in `next.config.ts`, and `poweredByHeader` is off.
+- The `/resume` filename comes from the CMS and is stripped to header-safe characters before it reaches `Content-Disposition`.
 
 **Operational notes**
 
 - Use a **Viewer-only** read token for previews. Never deploy `SANITY_API_WRITE_TOKEN`.
 - Treat Studio preview URLs as confidential; rotate the read token if one leaks.
 - CMS link fields are editor-trusted. Hardening with runtime URL allowlists is optional defense-in-depth.
+- `pnpm audit` is not empty. The remaining advisories are all in build-time tooling (the `next-video` AWS SDK and the Sanity Studio toolchain) and none sit in the deployed request path.
 
 A full branch security review found **no medium, high, or critical issues** exploitable by unauthenticated external attackers in the current Sanity migration.
 

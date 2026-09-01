@@ -188,14 +188,6 @@ async function migrateSettings() {
     path.join(root, "public", "dileepa-g.png"),
     "Dileepa Mahanama Galmangoda",
   );
-  const lanyardFront = await optionalImage(
-    path.join(root, "public", "lanyard", "card-front.jpg"),
-    "Front of Dileepa Galmangoda's ID badge",
-  );
-  const lanyardBack = await optionalImage(
-    path.join(root, "public", "lanyard", "card-back.jpg"),
-    "Back of Dileepa Galmangoda's ID badge",
-  );
   const resumeFile = path.join(
     root,
     "public",
@@ -215,13 +207,10 @@ async function migrateSettings() {
       givenName: "Dileepa",
       familyName: "Galmangoda",
       jobTitle: "UI/UX Designer & Creative Generalist",
-      bio: "I design digital experiences that make every interface feel like it already understands what the user is trying to do. My work moves between shaping flows, refining designs, building prototypes and using AI-assisted workflows to explore ideas and test directions. I’m currently open to new design opportunities and collaborations.",
+      bio: "I design digital experiences through interfaces that feel like they already understand what you’re trying to do. I’m currently open to new opportunities.",
       ...(profileImage ? { profileImage } : {}),
-      ...(lanyardFront ? { lanyardFront } : {}),
-      ...(lanyardBack ? { lanyardBack } : {}),
     },
     email: "dileepagalmangoda@gmail.com",
-    scheduleUrl: "https://calendar.app.google/3QVZ8AywYnCyzrpLA",
     resume: {
       _type: "file",
       asset: { _type: "reference", _ref: resumeAsset._id },
@@ -327,22 +316,24 @@ async function migrateCaseStudies() {
       ? await caseStudyMedia(study.heroMedia, `${study.slug}:hero`)
       : undefined;
 
-    const process = study.process
+    const chapters = study.chapters
       ? await Promise.all(
-          study.process.map(async (step, stepIndex) => ({
+          study.chapters.map(async (chapter, chapterIndex) => ({
             _type: "object",
-            _key: keyFor(study.slug, "process", stepIndex),
-            phase: step.phase,
-            title: step.title,
-            body: step.body,
-            ...(step.takeaways ? { takeaways: step.takeaways } : {}),
-            ...(step.media
+            _key: keyFor(study.slug, "chapter", chapterIndex),
+            ...(chapter.id ? { id: chapter.id } : {}),
+            title: chapter.title,
+            ...(chapter.lede ? { lede: chapter.lede } : {}),
+            ...(chapter.list ? { list: chapter.list } : {}),
+            body: chapter.body,
+            ...(chapter.decisions ? { decisions: chapter.decisions } : {}),
+            ...(chapter.media
               ? {
                   media: await Promise.all(
-                    step.media.map((media, mediaIndex) =>
+                    chapter.media.map((media, mediaIndex) =>
                       caseStudyMedia(
                         media,
-                        `${study.slug}:process:${stepIndex}:${mediaIndex}`,
+                        `${study.slug}:chapter:${chapterIndex}:${mediaIndex}`,
                       ),
                     ),
                   ),
@@ -385,6 +376,7 @@ async function migrateCaseStudies() {
         : {}),
       ...(study.challenge ? { challenge: study.challenge } : {}),
       ...(study.outcome ? { outcome: study.outcome } : {}),
+      ...(study.scope ? { scope: study.scope } : {}),
       ...(study.personas
         ? {
             personas: study.personas.map((persona, index) => ({
@@ -394,7 +386,7 @@ async function migrateCaseStudies() {
             })),
           }
         : {}),
-      ...(process ? { process } : {}),
+      ...(chapters ? { chapters } : {}),
       ...(gallery ? { gallery } : {}),
       ...(study.reflection ? { reflection: study.reflection } : {}),
       ...(study.disclaimer ? { disclaimer: study.disclaimer } : {}),
@@ -477,16 +469,47 @@ async function migrateMotionItems() {
   }
 }
 
+const steps = {
+  settings: migrateSettings,
+  caseStudies: migrateCaseStudies,
+  externalProjects: migrateExternalProjects,
+  experience: migrateExperience,
+  motionItems: migrateMotionItems,
+};
+
+/**
+ * Every write here is a `createOrReplace`, so a step overwrites whatever is in
+ * the dataset with what the local data files say. That is fine for content the
+ * files still own, and destructive for anything since edited in Studio, which
+ * this repo's `siteSettings` and `homePage` have been. `--only=caseStudies`
+ * limits a run to the documents you actually mean to replace.
+ */
+function selectedSteps() {
+  const flag = process.argv.find((arg) => arg.startsWith("--only="));
+  if (!flag) return Object.keys(steps);
+
+  const names = flag.slice("--only=".length).split(",").filter(Boolean);
+  const unknown = names.filter((name) => !(name in steps));
+  if (unknown.length > 0) {
+    throw new Error(
+      `Unknown --only step(s): ${unknown.join(", ")}. ` +
+        `Available: ${Object.keys(steps).join(", ")}.`,
+    );
+  }
+
+  return names;
+}
+
 async function main() {
+  const names = selectedSteps();
   console.log(
-    `${dryRun ? "Checking" : "Migrating"} content for ${projectId}/${dataset}`,
+    `${dryRun ? "Checking" : "Migrating"} ${names.join(", ")} ` +
+      `for ${projectId}/${dataset}`,
   );
 
-  await migrateSettings();
-  await migrateCaseStudies();
-  await migrateExternalProjects();
-  await migrateExperience();
-  await migrateMotionItems();
+  for (const name of names) {
+    await steps[name]();
+  }
 
   console.log(
     dryRun

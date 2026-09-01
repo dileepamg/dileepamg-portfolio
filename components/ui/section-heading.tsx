@@ -10,10 +10,11 @@ type SectionHeadingProps = {
 /**
  * The header that opens every section.
  *
- * Rendered inside an `AccordionTrigger`, which itself sits inside the
- * accordion's heading element, so this contributes no heading and nothing
- * focusable of its own. The trigger owns both the semantics and the
- * interaction.
+ * A real `h2`, so the page has one heading level per level of structure: the
+ * name is the `h1`, each section is an `h2`, and the cards inside them are
+ * `h3`. It used to render spans because it sat inside an `AccordionTrigger`
+ * that owned the heading semantics; with the accordions gone it owns them
+ * itself.
  */
 export function SectionHeading({
   title,
@@ -21,17 +22,16 @@ export function SectionHeading({
   className,
 }: SectionHeadingProps) {
   return (
-    <span className={cn("flex w-full flex-col gap-1", className)}>
-      {/* Weight is set here rather than inherited from the trigger's
-          `font-medium`, so the title reads the same wherever it is used and
-          matches the card titles it sits above. */}
-      <span className="text-brand-text text-xl font-semibold md:text-2xl">
+    <div className={cn("flex flex-col gap-1", className)}>
+      <h2 className="text-brand-text text-2xl font-semibold md:text-3xl">
         {title}
-      </span>
+      </h2>
 
       {description && (
-        <span className="text-ink-soft text-sm font-normal">{description}</span>
+        <p className="text-ink-soft mt-1 text-sm font-normal text-pretty">
+          {description}
+        </p>
       )}
-    </span>
+    </div>
   );
 }

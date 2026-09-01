@@ -139,7 +139,7 @@ export default function Nav({
   };
 
   const linkClass =
-    "text-secondary-foreground/70 hover:text-secondary-foreground px-2 py-2 transition-colors";
+    "text-secondary-foreground/70 hover:text-secondary-foreground px-1.5 py-2 whitespace-nowrap transition-colors lg:px-2";
 
   return (
     <div
@@ -155,12 +155,16 @@ export default function Nav({
       )}
     >
       {/* Desktop Navigation */}
-      {/* Full-size type and padding do not fit the bar until the column is
-          wide enough to hold them, so both stay small through the tablet
-          range and step up at `lg`. */}
+      {/* Body size, the same 1rem the page sets its prose at, rather than the
+          `text-sm` the bar used to shrink to below `lg`. The bar is tightest
+          between `sm` and `md`, where the column holds about 410px, so the
+          links carry less horizontal padding there and take a little back at
+          `lg`. Spacing between them is the gap plus two paddings, so both are
+          kept small: the group should read as one set of links rather than
+          five separate ones spread across the bar. */}
       <nav
         className={cn(
-          "bg-secondary text-secondary-foreground relative hidden items-center gap-1 py-2.5 text-sm sm:flex lg:gap-4 lg:text-base",
+          "bg-secondary text-secondary-foreground relative hidden items-center gap-1 py-2.5 text-base sm:flex lg:gap-2",
           columnPadding,
         )}
       >

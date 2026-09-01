@@ -41,16 +41,18 @@ export default function ExperienceCard({ position }: ExperienceCardProps) {
                   className="hidden object-contain dark:block"
                 />
               </div>
+              {/* Card scale, the same one the work and blog cards use: title
+                  at text-lg, everything under it at text-sm, meta at text-xs.
+                  These were a step larger, which made a role read as loud as
+                  a section heading. */}
               <div className="flex flex-col">
-                <p className="text-ink text-xl font-semibold">
-                  {position.role}
-                </p>
+                <p className="text-ink text-lg font-medium">{position.role}</p>
                 <ExternalLink
                   href={position.link}
                   aria-label={`${position.company} (opens in new tab)`}
                   className="text-ink-soft hover:text-ink w-fit transition-colors"
                 >
-                  <p className="flex items-center text-base hover:underline">
+                  <p className="flex items-center text-sm hover:underline">
                     {position.company}
                     <span className="ml-1" aria-hidden="true">
                       <LuArrowUpRight />
@@ -59,14 +61,14 @@ export default function ExperienceCard({ position }: ExperienceCardProps) {
                 </ExternalLink>
               </div>
             </div>
-            <div className="text-ink-faint flex justify-between text-sm font-medium tabular-nums md:justify-end md:gap-4">
+            <div className="text-ink-faint flex justify-between text-xs font-medium tabular-nums md:justify-end md:gap-4">
               <span>{position.year}</span>
             </div>
           </div>
 
           <div className="text-ink-soft space-y-1 pt-2">
             {position.responsibility.map((item) => (
-              <p key={item} className="text-sm md:text-sm lg:text-base">
+              <p key={item} className="text-sm text-pretty">
                 • {item}
               </p>
             ))}

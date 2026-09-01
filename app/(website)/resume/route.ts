@@ -22,13 +22,20 @@ export async function GET() {
     ? cleanSanityString(settings.resume.downloadName)
     : asset.originalFilename ?? "Dileepa-Galmangoda-Resume.pdf";
 
+  // The filename reaches a response header, so it is reduced to characters
+  // that are safe in one: quotes would end the parameter early, and a CR or
+  // LF would be an attempt at a second header. Anything outside plain ASCII
+  // goes too, since a header is latin-1 and Response rejects the rest.
+  const safeName =
+    downloadName
+      .replace(/[^\x20-\x7e]/g, "")
+      .replace(/["\\]/g, "")
+      .trim() || "resume.pdf";
+
   return new Response(file.body, {
     headers: {
       "Content-Type": asset.mimeType || "application/pdf",
-      "Content-Disposition": `attachment; filename="${downloadName.replaceAll(
-        '"',
-        "",
-      )}"`,
+      "Content-Disposition": `attachment; filename="${safeName}"`,
       "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
     },
   });
