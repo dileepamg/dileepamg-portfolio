@@ -10,9 +10,21 @@ const dateFormatter = new Intl.DateTimeFormat("en", {
   timeZone: "UTC",
 });
 
-export function BlogPostCard({ post }: { post: BlogPostCardView }) {
+/**
+ * The card is used under an `h1` on /blog and under the section's `h2` on the
+ * home page, so the level it should sit at differs by page. Defaulting to 2
+ * keeps /blog correct without a prop.
+ */
+export function BlogPostCard({
+  post,
+  headingLevel = 2,
+}: {
+  post: BlogPostCardView;
+  headingLevel?: 2 | 3;
+}) {
   const href = `/blog/${post.slug}`;
   const headingId = `post-${post.slug}`;
+  const Heading = `h${headingLevel}` as "h2" | "h3";
 
   return (
     <article
@@ -34,7 +46,12 @@ export function BlogPostCard({ post }: { post: BlogPostCardView }) {
         />
       </Link>
 
-      <div className="flex flex-col gap-4 p-6">
+      {/* `flex-1` on both the body and the text block inside it: the article
+          is already a column, so growing these two hands the leftover height
+          to the excerpt and leaves the button on the card floor. Without it a
+          short excerpt parks its button halfway up while the card beside it
+          keeps its own at the bottom. */}
+      <div className="flex flex-1 flex-col gap-4 p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2">
             <time
@@ -61,15 +78,15 @@ export function BlogPostCard({ post }: { post: BlogPostCardView }) {
           ) : null}
         </div>
 
-        <div>
-          <h2 id={headingId} className="text-xl font-semibold">
+        <div className="flex-1">
+          <Heading id={headingId} className="text-lg font-medium text-pretty">
             <Link
               href={href}
               className="hover:text-brand-text transition-colors"
             >
               {post.title}
             </Link>
-          </h2>
+          </Heading>
           <p className="text-ink-soft mt-2 text-sm text-pretty">
             {post.excerpt}
           </p>

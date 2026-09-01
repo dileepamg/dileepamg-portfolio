@@ -174,7 +174,7 @@ async function CachedBlogPostPage({
                 </span>
               </div>
 
-              <h1 className="mt-4 max-w-4xl text-3xl text-pretty md:text-5xl">
+              <h1 className="mt-4 max-w-4xl text-2xl text-pretty md:text-3xl">
                 {post.title}
               </h1>
               <p className="text-brand-text mt-4 max-w-3xl text-lg font-medium text-pretty md:text-xl">
@@ -202,7 +202,7 @@ async function CachedBlogPostPage({
                 fill
                 priority
                 placeholder="blur"
-                sizes="(min-width: 1463px) 960px, (min-width: 640px) 66vw, 90vw"
+                sizes="(min-width: 1281px) 832px, (min-width: 640px) 66vw, 90vw"
                 className="object-cover object-center"
               />
             </div>

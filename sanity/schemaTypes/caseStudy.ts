@@ -132,6 +132,27 @@ export const caseStudyType = defineType({
       group: "story",
     }),
     defineField({
+      name: "scope",
+      title: "My role",
+      type: "object",
+      group: "story",
+      description:
+        "What you personally contributed. Keep the summary and the list from repeating each other.",
+      fields: [
+        defineField({
+          name: "summary",
+          type: "text",
+          rows: 3,
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: "responsibilities",
+          type: "array",
+          of: [defineArrayMember({ type: "string" })],
+        }),
+      ],
+    }),
+    defineField({
       name: "personas",
       type: "array",
       group: "story",
@@ -161,25 +182,57 @@ export const caseStudyType = defineType({
       ],
     }),
     defineField({
-      name: "process",
+      name: "chapters",
       type: "array",
       group: "story",
+      description:
+        "The story, in as many chapters as the project needs. They are numbered by position, so there is no fixed set of stages to fill.",
       of: [
         defineArrayMember({
           type: "object",
           fields: [
             defineField({
-              name: "phase",
+              name: "id",
+              title: "Anchor",
               type: "string",
-              options: {
-                list: ["Discover", "Define", "Ideate", "Design", "Validate"],
-              },
-              validation: (Rule) => Rule.required(),
+              description:
+                "Optional. Falls back to a slug of the title. Set it to keep a shared link working while the title is still being edited.",
+              validation: (Rule) =>
+                Rule.regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+                  name: "lowercase slug",
+                }),
             }),
             defineField({
               name: "title",
               type: "string",
               validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "lede",
+              type: "text",
+              rows: 3,
+              description:
+                "The chapter's argument in one line, set above the body.",
+            }),
+            defineField({
+              name: "list",
+              type: "object",
+              description:
+                "Optional. For the handful of things that are genuinely a list, such as the steps of a sequence. Use prose for everything else.",
+              fields: [
+                defineField({
+                  name: "ordered",
+                  type: "boolean",
+                  description: "Numbered rather than bulleted.",
+                  initialValue: false,
+                }),
+                defineField({
+                  name: "items",
+                  type: "array",
+                  of: [defineArrayMember({ type: "string" })],
+                  validation: (Rule) => Rule.required().min(1),
+                }),
+              ],
             }),
             defineField({
               name: "body",
@@ -193,12 +246,15 @@ export const caseStudyType = defineType({
               of: [defineArrayMember({ type: "caseStudyMedia" })],
             }),
             defineField({
-              name: "takeaways",
+              name: "decisions",
+              title: "Key decisions",
               type: "array",
+              description:
+                "Optional callout. Two to four decisions worth scanning. Leave it empty where the prose already makes the point.",
               of: [defineArrayMember({ type: "string" })],
             }),
           ],
-          preview: { select: { title: "title", subtitle: "phase" } },
+          preview: { select: { title: "title", subtitle: "lede" } },
         }),
       ],
     }),

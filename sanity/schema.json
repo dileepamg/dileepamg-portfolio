@@ -833,6 +833,32 @@
         },
         "optional": true
       },
+      "scope": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "object",
+          "attributes": {
+            "summary": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": false
+            },
+            "responsibilities": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "array",
+                "of": {
+                  "type": "string"
+                }
+              },
+              "optional": true
+            }
+          }
+        },
+        "optional": true
+      },
       "personas": {
         "type": "objectAttribute",
         "value": {
@@ -877,41 +903,19 @@
         },
         "optional": true
       },
-      "process": {
+      "chapters": {
         "type": "objectAttribute",
         "value": {
           "type": "array",
           "of": {
             "type": "object",
             "attributes": {
-              "phase": {
+              "id": {
                 "type": "objectAttribute",
                 "value": {
-                  "type": "union",
-                  "of": [
-                    {
-                      "type": "string",
-                      "value": "Discover"
-                    },
-                    {
-                      "type": "string",
-                      "value": "Define"
-                    },
-                    {
-                      "type": "string",
-                      "value": "Ideate"
-                    },
-                    {
-                      "type": "string",
-                      "value": "Design"
-                    },
-                    {
-                      "type": "string",
-                      "value": "Validate"
-                    }
-                  ]
+                  "type": "string"
                 },
-                "optional": false
+                "optional": true
               },
               "title": {
                 "type": "objectAttribute",
@@ -919,6 +923,39 @@
                   "type": "string"
                 },
                 "optional": false
+              },
+              "lede": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                },
+                "optional": true
+              },
+              "list": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "object",
+                  "attributes": {
+                    "ordered": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "boolean"
+                      },
+                      "optional": true
+                    },
+                    "items": {
+                      "type": "objectAttribute",
+                      "value": {
+                        "type": "array",
+                        "of": {
+                          "type": "string"
+                        }
+                      },
+                      "optional": false
+                    }
+                  }
+                },
+                "optional": true
               },
               "body": {
                 "type": "objectAttribute",
@@ -952,7 +989,7 @@
                 },
                 "optional": true
               },
-              "takeaways": {
+              "decisions": {
                 "type": "objectAttribute",
                 "value": {
                   "type": "array",
@@ -1700,35 +1737,12 @@
                 "name": "imageWithAlt"
               },
               "optional": true
-            },
-            "lanyardFront": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "inline",
-                "name": "imageWithAlt"
-              },
-              "optional": true
-            },
-            "lanyardBack": {
-              "type": "objectAttribute",
-              "value": {
-                "type": "inline",
-                "name": "imageWithAlt"
-              },
-              "optional": true
             }
           }
         },
         "optional": false
       },
       "email": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
-      "scheduleUrl": {
         "type": "objectAttribute",
         "value": {
           "type": "string"

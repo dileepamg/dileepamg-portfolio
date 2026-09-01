@@ -33,9 +33,7 @@ export const SITE_SETTINGS_QUERY = defineQuery(`*[
   ...,
   author {
     ...,
-    profileImage ${imageProjection},
-    lanyardFront ${imageProjection},
-    lanyardBack ${imageProjection}
+    profileImage ${imageProjection}
   },
   resume {
     ...,
@@ -101,7 +99,7 @@ export const CASE_STUDY_QUERY = defineQuery(`*[
   "slug": slug.current,
   cardMedia ${mediaProjection},
   heroMedia ${mediaProjection},
-  process[]{
+  chapters[]{
     ...,
     media[] ${mediaProjection}
   },

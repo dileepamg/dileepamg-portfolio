@@ -107,11 +107,6 @@ async function CachedHome({
               name={cleanSanityString(siteSettings.author.displayName)}
               jobTitle={cleanSanityString(siteSettings.author.jobTitle)}
               bio={cleanSanityString(siteSettings.author.bio)}
-              scheduleUrl={
-                siteSettings.scheduleUrl
-                  ? cleanSanityString(siteSettings.scheduleUrl)
-                  : "#"
-              }
               resumeDownloadName={
                 siteSettings.resume?.downloadName
                   ? cleanSanityString(siteSettings.resume.downloadName)
@@ -121,20 +116,17 @@ async function CachedHome({
               greetingSinhala={cleanSanityString(
                 homePage.greetingSinhala,
               )}
-              lanyardFront={
-                siteSettings.author.lanyardFront
+              profileImage={
+                siteSettings.author.profileImage
                   ? toStaticImageData(
-                      siteSettings.author.lanyardFront,
-                      `${siteSettings._id}.lanyardFront`,
+                      siteSettings.author.profileImage,
+                      `${siteSettings._id}.profileImage`,
                     )
                   : undefined
               }
-              lanyardBack={
-                siteSettings.author.lanyardBack
-                  ? toStaticImageData(
-                      siteSettings.author.lanyardBack,
-                      `${siteSettings._id}.lanyardBack`,
-                    )
+              profileImageAlt={
+                siteSettings.author.profileImage?.alt
+                  ? cleanSanityString(siteSettings.author.profileImage.alt)
                   : undefined
               }
               socials={(siteSettings.socialLinks ?? []).map(mapSanityLink)}

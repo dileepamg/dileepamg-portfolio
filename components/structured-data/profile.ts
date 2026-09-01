@@ -10,6 +10,11 @@ type ProfileStructuredDataInput = {
   fullName: string;
   givenName: string;
   familyName: string;
+  /** The role, as the site states it. */
+  jobTitle?: string;
+  /** The About section's opening line, which is the page's own summary. */
+  description?: string;
+  email?: string;
   imageUrl: string;
   imageWidth?: number;
   imageHeight?: number;
@@ -27,6 +32,11 @@ export function getProfileStructuredData(
     name: profile.fullName,
     givenName: profile.givenName,
     familyName: profile.familyName,
+    // Optional in the type because they are optional in the CMS, and a
+    // property present with an empty value is worse markup than one absent.
+    ...(profile.jobTitle ? { jobTitle: profile.jobTitle } : {}),
+    ...(profile.description ? { description: profile.description } : {}),
+    ...(profile.email ? { email: profile.email } : {}),
     url: SITE_URL,
     image: {
       "@type": "ImageObject",

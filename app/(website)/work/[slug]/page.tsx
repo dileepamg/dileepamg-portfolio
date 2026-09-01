@@ -2,10 +2,7 @@ import MediaFrame, {
   mediaGridClass,
   mediaSizes,
 } from "@/components/CaseStudy/MediaFrame";
-import ProcessStepItem, {
-  stepChipClass,
-  stepId,
-} from "@/components/CaseStudy/ProcessStep";
+import ChapterItem from "@/components/CaseStudy/Chapter";
 import RichText from "@/components/CaseStudy/RichText";
 import { ExternalLink } from "@/components/ExternalLink";
 import { CaseStudyPageSkeleton } from "@/components/loading/PageSkeletons";
@@ -266,6 +263,50 @@ async function CachedCaseStudyPage({
                 )}
               </div>
             )}
+
+            {/* ---------- What I did ----------
+              Full width under the pair above rather than a third column, so
+              the responsibilities can run two abreast instead of stacking
+              into a strip too narrow to read. */}
+            {study.scope && (
+              <section className={panelClass}>
+                <h2 className="text-xl font-semibold">My role</h2>
+                <p className="text-ink-soft mt-2 text-sm text-pretty lg:text-base">
+                  {study.scope.summary}
+                </p>
+
+                {study.scope.responsibilities &&
+                  study.scope.responsibilities.length > 0 && (
+                    <>
+                      {/* The list needs saying what it is. On its own under a
+                          paragraph it could be read as work the team did, or
+                          as features; naming it settles that it is the part I
+                          owned. A label rather than a heading, since it names
+                          the list under it and adds nothing to the outline
+                          that "My role" has not already said. */}
+                      <p className="text-brand-text mt-4 text-sm font-semibold tracking-wide">
+                        What I was responsible for
+                      </p>
+
+                      {/* Columns, not a two-column grid. A grid couples the
+                          two sides into shared rows, so one item that wrapped
+                          to a second line stretched its whole row and left a
+                          blank line beside it. Columns are independent: each
+                          packs its own items and the browser balances them. */}
+                      <ul className="text-ink-soft mt-2 gap-x-8 sm:columns-2">
+                        {study.scope.responsibilities.map((item) => (
+                          <li
+                            key={item}
+                            className="mb-1 text-sm break-inside-avoid text-pretty"
+                          >
+                            • {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+              </section>
+            )}
           </Band>
 
           <Band className={cn(columnPadding, "space-y-8")}>
@@ -303,40 +344,23 @@ async function CachedCaseStudyPage({
           </Band>
 
           <Band className={cn(columnPadding, "space-y-8")}>
-            {/* ---------- Process ---------- */}
-            {study.process && study.process.length > 0 && (
+            {/* ---------- Chapters ----------
+              Numbered by position and named by the project, so a study runs
+              for as many chapters as its story needs rather than filling a
+              fixed set of stages. */}
+            {study.chapters && study.chapters.length > 0 && (
               <section className="space-y-6">
-                <h2 className={sectionHeadingClass}>How it came together</h2>
-
-                {/* Jump links, so a long page stays navigable. */}
-                <nav aria-label="Process steps">
-                  <ol className="flex flex-wrap gap-2">
-                    {study.process.map((step, index) => (
-                      <li key={step.title}>
-                        <a
-                          href={`#${stepId(index, step.title)}`}
-                          className={cn(
-                            "hover:border-brand hover:bg-brand hover:text-brand-ink flex items-center gap-2 px-3 py-1.5 text-xs font-medium transition-colors",
-                            stepChipClass,
-                          )}
-                        >
-                          <span className="tabular-nums">
-                            {String(index + 1).padStart(2, "0")}
-                          </span>
-                          <span>{step.phase}</span>
-                        </a>
-                      </li>
-                    ))}
-                  </ol>
-                </nav>
+                <h2 className={sectionHeadingClass}>
+                  How I approached the product
+                </h2>
 
                 <ol className="space-y-8">
-                  {study.process.map((step, index) => (
-                    <ProcessStepItem
-                      key={step.title}
-                      step={step}
+                  {study.chapters.map((chapter, index) => (
+                    <ChapterItem
+                      key={chapter.title}
+                      chapter={chapter}
                       index={index}
-                      isLast={index === study.process!.length - 1}
+                      isLast={index === study.chapters!.length - 1}
                     />
                   ))}
                 </ol>

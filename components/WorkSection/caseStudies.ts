@@ -59,24 +59,46 @@ export type CaseStudyMedia =
     };
 
 /**
- * Phases label each step of the process spine. Steps render in array order;
- * reuse a phase as often as you need.
+ * One chapter of a project's story.
+ *
+ * Chapters are numbered by position and are deliberately not tied to a fixed
+ * set of phases. A project gets as many as its story needs, named after what
+ * actually happened on it, so two case studies built from this same type can
+ * read nothing like each other.
+ *
+ * Written to be skimmable in layers: the title says what the chapter covers,
+ * the lede gives its argument in one line, and the decisions callout holds the
+ * conclusions. Someone reading only those three should still follow the work.
  */
-export type ProcessPhase =
-  | "Discover"
-  | "Define"
-  | "Ideate"
-  | "Design"
-  | "Validate";
-
-export type ProcessStep = {
-  phase: ProcessPhase;
+export type CaseStudyChapter = {
+  /**
+   * Anchor for the chapter, used for direct links. Falls back to a slug of
+   * the title, so set it where the URL should stay put while the wording is
+   * still being worked on.
+   */
+  id?: string;
   title: string;
-  /** One string per paragraph. Keep it to two. */
+  /** The chapter in one line, set above the body. */
+  lede?: string;
+  /**
+   * Sits between the lede and the body, for the handful of things that are
+   * genuinely a list. Steps in a sequence read far better numbered than
+   * strung through a sentence; use prose for everything else.
+   */
+  list?: {
+    ordered?: boolean;
+    items: readonly string[];
+  };
+  /** One string per paragraph. Two or three short ones beat one long one. */
   body: readonly string[];
   media?: readonly CaseStudyMedia[];
-  /** Pulled out into a highlighted callout. The "so what" of the step. */
-  takeaways?: readonly string[];
+  /**
+   * Pulled out into a highlighted callout. Two to four decisions worth
+   * scanning on their own. Leave it off where the prose already makes the
+   * point: every chapter carrying one turns the page into a stack of
+   * identical cards.
+   */
+  decisions?: readonly string[];
 };
 
 export type CaseStudy = {
@@ -117,14 +139,23 @@ export type CaseStudy = {
 
   /** Facts panel: Role, Platform, Tools. */
   overview?: readonly { label: string; value: string }[];
-  /** The problem, in two or three sentences. Shown before the process. */
+  /** The problem, in two or three sentences. Shown before the chapters. */
   challenge?: string;
   /** What changed as a result. Shown beside the challenge. */
   outcome?: string;
+  /**
+   * What you personally did, shown under the challenge and outcome. Keep the
+   * summary and the list from repeating each other: the summary places the
+   * work, the list names its parts.
+   */
+  scope?: {
+    summary: string;
+    responsibilities?: readonly string[];
+  };
   /** Who the work was for. Rendered as a row of small boxes. */
   personas?: readonly { label: string; title: string; description: string }[];
-  /** The numbered design-process spine. */
-  process?: readonly ProcessStep[];
+  /** The numbered chapters. As many as the project needs. */
+  chapters?: readonly CaseStudyChapter[];
   /** Anything that did not fit the narrative. Final screens, explorations. */
   gallery?: readonly CaseStudyMedia[];
   /** Honest closing note. What you'd revisit, what you learned. */
@@ -175,6 +206,21 @@ export const caseStudies: readonly CaseStudy[] = [
     outcome:
       "A live iOS and Android app that carries the store's ordering workflow onto a phone, with scanning, contracted pricing, branch stock and account history all a few taps apart.",
 
+    scope: {
+      summary:
+        "I was the designer on the mobile app, working from the existing storefront through to the built product and staying with it after release.",
+      responsibilities: [
+        "UX research for the mobile app",
+        "Product flows and information architecture",
+        "Adapting the storefront experience to mobile",
+        "Prototyping and detailed UI",
+        "Design system and component work",
+        "Accessibility across the ordering flows and shared components",
+        "Working with the development team through the build",
+        "Implementation review and post-launch refinement",
+      ],
+    },
+
     personas: [
       {
         label: "Ordering",
@@ -190,26 +236,32 @@ export const caseStudies: readonly CaseStudy[] = [
       },
     ],
 
-    process: [
+    chapters: [
       {
-        phase: "Discover",
-        title: "Auditing the store the app had to carry",
+        id: "buying-model",
+        title: "Understanding how customers actually buy",
+        lede: "The website already did everything the app needed to do, so I treated it as the spec rather than a layout to shrink.",
         body: [
-          "The website already did everything: the full catalog, contracted pricing, shopping lists, order history and branch availability. It was effectively the specification, so I worked through it as a customer and noted which parts a phone had to keep intact and which only worked because a desktop has room to spare.",
-          "Three findings shaped everything after it. Buyers search by item or manufacturer number rather than by name, because the catalog carries products with long, similar names. Prices change by unit and by quantity tier. Availability only means something once it is tied to a branch and a stock count.",
+          "Working through the store as a customer showed what a phone could not drop. Buyers identify products by item and manufacturer number, because the catalog is full of names that differ by a word or two.",
+          "Prices change with the unit and the quantity tier. Stock only means something at a named branch, and contracted pricing changes the price itself once you sign in.",
+          "None of that is an observation about the old site. Each one is a constraint: separate a number from the thing qualifying it and the screen gets easier to read and worse to buy from.",
         ],
-        takeaways: [
-          "Treat the existing site as the specification, not as a layout to copy.",
-          "Identify products by number wherever they appear, because the names repeat.",
-          "Never show a price without its unit, or stock without its branch.",
+        decisions: [
+          "Treat the storefront as a source of product requirements, not a layout to shrink.",
+          "Carry item and manufacturer numbers through the whole buying journey.",
+          "Never show a price without the unit it applies to.",
+          "Never show stock without the branch it sits in.",
         ],
       },
       {
-        phase: "Define",
-        title: "Deciding what home leads with",
+        id: "mobile-experience",
+        title: "Deciding what belongs on mobile",
+        lede: "Everyone opens the app on the same screen, but not everyone arrives with the same thing behind them.",
         body: [
-          "Everyone opens the app on the same screen, but not everyone arrives for the same thing. Someone with an account already has history and agreed prices to work from. A first time visitor has a catalog thousands of products deep and no way into it yet. Home resolves differently depending on which of those is true.",
-          "Signed in, the account has plenty to offer straight away, so shopping lists, recent orders and purchased items sit above the category grid, with contracted pricing carried through the catalog and support reachable from the same screen. Compact rows keep all of it in view without pushing browsing out of reach. Signed out there is no history to show, so categories take the top of the page and one prompt names what an account adds: your pricing, past purchases and order status.",
+          "An existing account brings shopping lists, past orders and agreed pricing. A first visit brings a catalog thousands of products deep and no way into it.",
+          "So home resolves differently. Signed in, account tools sit above the category grid in compact rows. Signed out, categories lead and one prompt names what an account adds. Blocking the catalog behind a sign in wall would have been easier to build and worse to use.",
+          "Two things earned a native treatment rather than a port. Buyers usually have the product or its packaging in hand, so barcode scanning sits inside the search bar as a way of searching. Mobile only discounts got their own tab, because a reason to open the app should not be something you scroll past.",
+          "Neither came from the website, since neither problem exists on a desktop. The buying workflow had to survive the move. The page structure did not.",
         ],
         media: [
           {
@@ -229,30 +281,30 @@ export const caseStudies: readonly CaseStudy[] = [
               "Signed out: the catalog leads, and one prompt says what signing in unlocks.",
           },
         ],
-        takeaways: [
-          "Let each state lead with what it can actually offer.",
-          "Keep account tools compact so they do not crowd out browsing.",
-          "Ask for sign-in by naming what it unlocks, not by blocking the catalog.",
+        decisions: [
+          "Let each account state lead with what it can actually offer.",
+          "Make scanning a way of searching, not a secondary feature.",
+          "Organise the screen around tasks instead of desktop page sections.",
         ],
       },
       {
-        phase: "Ideate",
-        title: "Rebuilding the page structure for one screen",
+        id: "purchase-flow",
+        title: "Designing around the buying decision",
+        lede: "Desktop can show identifiers, pricing, configuration and stock side by side. On a phone they compete for one column, so I ordered them around the sequence a buyer actually moves through.",
+        list: {
+          ordered: true,
+          items: [
+            "Confirm this is the right item.",
+            "Work out what it costs per unit, and at what quantity.",
+            "Configure the variation.",
+            "Check the relevant branch has it.",
+            "Add it to the cart.",
+          ],
+        },
         body: [
-          "On the website a product sits on one wide page with everything visible at once. A phone cannot do that, so rather than shrink the layout I sorted the same information by the decision it supports. Search identifies an item, list cards let you compare, the product page resolves the purchase, and Add to Cart stays pinned because it is what the rest leads to.",
-          "Two things earned a native treatment rather than a direct port. Buyers usually have the product or its packaging in hand, so barcode scanning sits inside search instead of behind a menu. Mobile only discounts got their own tab, because a reason to open the app should not be buried on the home screen.",
-        ],
-        takeaways: [
-          "Sort information by decision instead of shrinking the desktop layout.",
-          "Treat scanning as a core search method, not an extra.",
-        ],
-      },
-      {
-        phase: "Design",
-        title: "Sequencing a dense product page",
-        body: [
-          "The desktop product page shows identifiers, pricing, configuration and availability side by side. On a phone they have to be sequenced, so I ordered them the way the decision is actually made: confirm the item and its numbers, review unit and quantity tier pricing, configure the variant, check named branch availability and backorders, then add to cart.",
-          "Configuration keeps both routes the website offers. Buyers who know the part number can select it directly, and everyone else can build the item from options, with an explicit “OR select options” divider between the two. Struck through combinations explain what is unavailable without hiding valid ones.",
+          "Configuration keeps both routes the website offers. Someone holding a part number selects it directly, and everyone else builds the item from options, with an explicit “OR select options” divider between the two.",
+          "Combinations that do not exist stay on screen struck through. A chip that vanishes looks like a bug, while a disabled one tells you the finish is not made in that size.",
+          "Add to Cart is pinned, so the thing the page is for never scrolls away. Specifications, documents and related items sit behind Show More. Nothing the website offered was dropped, it just stopped arriving all at once.",
         ],
         media: [
           {
@@ -272,20 +324,22 @@ export const caseStudies: readonly CaseStudy[] = [
               "Visual categories make unfamiliar hardware faster to recognize.",
           },
         ],
-        takeaways: [
+        decisions: [
           "Support both part led and option led selection.",
-          "Disable invalid combinations instead of hiding them.",
-          "Progressively disclose secondary details.",
+          "Disable unavailable combinations rather than hiding them.",
+          "Keep secondary detail one tap away instead of in the main flow.",
         ],
       },
       {
-        phase: "Validate",
-        title: "Refining it on real devices",
+        id: "after-launch",
+        title: "Refining the product on real devices",
+        lede: "The app shipped on iOS and Android, and the design work carried on from there.",
         body: [
-          "After launch on iOS and Android I reviewed the app on real hardware rather than trusting Figma alone. The product page needed the most iteration, because pricing, options, stock and purchasing actions all compete for the same narrow column.",
-          "I tightened the pricing rows, the option controls and the stock block until the page stayed precise without feeling crowded. Secondary detail stayed reachable behind Show More rather than being cut, so nothing the website offered went missing.",
+          "I went through the built product on physical devices rather than signing off from Figma. A pricing block that looks balanced in an artboard can read as a wall of numbers on a handset held at arm's length.",
+          "The product page needed the most work, which was no surprise. It carries more of the product logic than anything else in the app.",
+          "Pricing rows were tightened, option controls resized and respaced, and the stock block reworked so the branch and the count read as one thing rather than two competing ones. Other dense screens took smaller adjustments of the same kind.",
+          "None of it came from cutting content. The detail a buyer occasionally needs stayed behind Show More, one tap away rather than in the way.",
         ],
-        takeaways: ["Revisit the most complex screen after launch."],
       },
     ],
 
@@ -358,6 +412,20 @@ export const caseStudies: readonly CaseStudy[] = [
     outcome:
       "A focused platform where people can find verified care and trained practitioners can be discovered for their expertise.",
 
+    scope: {
+      summary:
+        "I designed the directory and the pages around it, from how someone searches to what a practitioner's profile has to prove, along with the provider side workflows in the admin.",
+      responsibilities: [
+        "Search, filtering and the discovery model",
+        "Result cards and provider profiles",
+        "Account creation and onboarding",
+        "Design system: shared tokens and components",
+        "Accessibility to WCAG 2.2 AA",
+        "Provider management workflows in the practitioner dashboard",
+        "Stakeholder walkthroughs and design iteration",
+      ],
+    },
+
     personas: [
       {
         label: "Finding care",
@@ -373,47 +441,52 @@ export const caseStudies: readonly CaseStudy[] = [
       },
     ],
 
-    process: [
+    chapters: [
       {
-        phase: "Discover",
-        title: "Mapping trust on both sides",
+        id: "trust-problem",
+        title: "Understanding what makes a provider credible",
+        lede: "General healthcare directories make distance, insurance and next available appointment easy to compare. Menopause expertise is not.",
         body: [
-          "The platform grew from the movement around The M Factor documentary. I audited general healthcare directories as a patient and found that proximity and availability were easy to compare, but menopause expertise was often reduced to an unverified line in a bio.",
-          "Verification became the link between both audiences. People needed confidence in the listings, while qualified practitioners needed their training to stand out. That decision shaped the search controls, result cards, and provider profiles.",
+          "It usually appears as a line someone wrote about themselves, with nothing behind it. That gap runs both ways: a patient cannot tell trained from interested, and a practitioner who has done the training has no way to be found for it.",
+          "Verification closes both, which meant it could not sit on a profile as a badge you notice after already choosing. It had to be in the search controls, on the result cards and in the profile, wherever it can still change who someone contacts.",
+          "The audience shaped the interface too. Comfortable reading was a requirement rather than a compliance pass at the end, so type sizes, contrast and how much text sits on a screen were settled early.",
         ],
-        takeaways: [
-          "Support symptoms, specialties, and names in search.",
-          "Design for comfortable reading, not minimum compliance.",
-          "Make verification meaningful to patients and practitioners.",
+        decisions: [
+          "Let people search by symptom as well as by specialist or name.",
+          "Make verification useful inside the decision, not decorative on the profile.",
+          "Treat comfortable reading as a requirement, not a final check.",
         ],
       },
       {
-        phase: "Define",
-        title: "Defining the booking decision",
+        id: "decision-model",
+        title: "Deciding what someone needs to know before choosing care",
+        lede: "Before any screens, I wrote down the questions someone has to answer before they will contact anybody.",
+        list: {
+          items: [
+            "Does this person treat what I am experiencing?",
+            "Are they specifically trained in menopause care?",
+            "Can I reach them, in person or remotely?",
+            "Do they speak my language?",
+            "Do they take my insurance?",
+            "Are they accepting patients at all?",
+          ],
+        },
         body: [
-          "Before designing screens, I mapped the questions someone needs answered: Does this provider treat my symptoms? Do they have specific training in menopause care? Can I access them in person or remotely? Do they speak my language, accept my insurance, and take new patients?",
-          "I then placed each detail at the point where it changes a decision. Filters narrow the field, result cards surface reasons to include or exclude a provider, and profiles hold the detail needed before making contact.",
-        ],
-        takeaways: [
-          "Match information depth to decision stage.",
-          "Remove details that do not narrow or close a decision.",
+          "That list is the structure of the product. Each question belongs where its answer can still change what happens next, and that place is different for each one.",
+          "Insurance and language rule providers out in bulk, so they sit in the filters. Whether someone is accepting patients rules them out too, but only once you are looking at a specific person, so it sits on the card.",
+          "Treatment areas, licensed states, telehealth coverage and credentials are what you read after narrowing to a few names, so they sit in the profile.",
+          "Getting that wrong in either direction costs something. Too much detail too early turns a result card into a page nobody scans. Too little means opening six profiles to find five are closed to new patients.",
         ],
       },
       {
-        phase: "Ideate",
-        title: "Shaping the discovery model",
+        id: "discovery",
+        title: "Building search around symptoms, trust and access",
+        lede: "Browsing by category assumes you already know what you are looking for. Most people arriving here can describe what is happening to them, not name the practitioner who handles it.",
         body: [
-          "I compared leading with search against browsing by category. Search won because many people arrive with symptoms, not a diagnosis or specialist type. The map became a second view of the same filtered results because distance can rule out an otherwise suitable provider.",
-          "For account creation, I limited personalization to location, preferred language, and up to five areas of focus. That was enough to improve the first results without turning onboarding into medical paperwork.",
-        ],
-        takeaways: ["Use list and map as two views of one result set."],
-      },
-      {
-        phase: "Design",
-        title: "Designing for confident choices",
-        body: [
-          "The filter model covers specialty, certification, service modality, language, and cultural focus. I placed Verified Providers above the groups as a primary control, turning trust into a deliberate search choice rather than a badge noticed later.",
-          "Cards show the facts most important to a decision, including whether a provider accepts new patients. Profiles then add treatment areas, languages, licensed states, telehealth coverage, insurance, payment, and credentials in priority order. Shared tokens and components keep the directory, content hub, and marketing pages consistent and meet WCAG 2.2 AA.",
+          "So the homepage leads with search and takes symptoms as a starting point. From there the filters narrow: specialty, certification, service modality, language and cultural focus, with Verified Providers above the groups as a primary control rather than inside one. That makes trust something you search on.",
+          "Distance behaves differently, because it rules a provider out for reasons that have nothing to do with their expertise. The map is a second view of the same filtered set rather than a separate mode with its own results, so switching views never changes who you are looking at.",
+          "Cards carry what decides whether a name is worth opening, including whether the provider is accepting new patients. Profiles go deeper: treatment areas, languages, licensed states, telehealth coverage, insurance, payment and credentials.",
+          "Onboarding asks three things: location, preferred language and up to five areas of focus. It could have asked for much more and produced better first results, but a directory that opens with a medical questionnaire loses the person before it helps them.",
         ],
         media: [
           {
@@ -436,21 +509,22 @@ export const caseStudies: readonly CaseStudy[] = [
               "Access and coverage details lead; contact and booking stay visible.",
           },
         ],
-        takeaways: [
-          "Make trust filterable.",
-          "Show availability on result cards.",
-          "Use one system across discovery and content.",
+        decisions: [
+          "Keep the list and the map as two views of one result set.",
+          "Make verification filterable rather than decorative.",
+          "Show availability on the card, before the profile.",
+          "Keep onboarding personalisation deliberately light.",
         ],
       },
       {
-        phase: "Validate",
-        title: "Testing the most complex flow",
+        id: "critical-flow",
+        title: "Testing the part of the product carrying the most logic",
+        lede: "Explore All Providers is where the whole product meets: the filters, the result cards, the hierarchy inside them, the list and map views, and every route into a profile.",
         body: [
-          "Stakeholder walkthroughs focused on Explore All Providers because it brings the filter model, result cards, and list and map views together. It exposed issues with the information hierarchy earlier than simpler pages.",
-          "Each round refined the filter language, what a card must reveal at a glance, and how much profile detail to preview before asking someone to open it.",
-        ],
-        takeaways: [
-          "Review the flow carrying the most product logic most often.",
+          "Walking through it with stakeholders surfaced problems that a page with a single job never would, so it took repeated rounds while simpler pages took one.",
+          "Each round moved the same few things. Filter labels were rewritten where a term meant one thing to a clinician and another to a patient. Card hierarchy shifted as it became clearer which line people read first.",
+          "Preview information went up and down until a card said enough to rule a provider in or out without turning into a profile in miniature. That settled what the profile itself had to hold.",
+          "Spreading that attention evenly across the product would have wasted most of it. Pages with one job were settled in a pass. This was the flow where being wrong cost something.",
         ],
       },
     ],
@@ -497,7 +571,7 @@ export const caseStudies: readonly CaseStudy[] = [
     ],
 
     reflection:
-      "The practitioner dashboard uses [Filament](https://filamentphp.com/), which constrained how provider management and applications could be customized. I worked within its components and plugins rather than designing screens the framework could not support, keeping the workflow practical to build and maintain.",
+      "The practitioner dashboard is built on [Filament](https://filamentphp.com/), which sets real limits on how provider management and application review can be arranged. I designed those workflows from the components and plugins the framework already ships rather than drawing an ideal admin that would have needed custom development to exist and maintenance to survive.",
 
     disclaimer:
       "All brand names, trademarks and product imagery shown here remain the property of their respective owners and clients. This work was produced during my time at [Villvay Systems](https://villvay.com) and is shown for portfolio purposes only.",

@@ -89,7 +89,7 @@ async function CachedBlogPage({
             </nav>
 
             <header className="mt-8">
-              <h1 className="text-3xl md:text-4xl">Blog</h1>
+              <h1 className="text-2xl md:text-3xl">Blog</h1>
               <p className="text-ink-soft mt-3 max-w-2xl text-pretty">
                 Stories from things I build in my spare time with friends.
               </p>

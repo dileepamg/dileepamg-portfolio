@@ -26,17 +26,8 @@ function PageShell({ children }: { children: React.ReactNode }) {
 function HeadingSkeleton({ description = false }: { description?: boolean }) {
   return (
     <div aria-hidden className="flex flex-col gap-3">
-      <Skeleton className="h-8 w-56 md:h-9 md:w-72" />
+      <Skeleton className="h-8 w-56 md:h-10 md:w-72" />
       {description && <Skeleton className="h-5 w-full max-w-xl" />}
-    </div>
-  );
-}
-
-function ActionSkeletons() {
-  return (
-    <div aria-hidden className="flex flex-wrap gap-4">
-      <Skeleton className="h-10 w-36" />
-      <Skeleton className="h-10 w-36" />
     </div>
   );
 }
@@ -65,9 +56,9 @@ function WorkCardSkeleton() {
 
 function ProjectCardSkeleton() {
   return (
-    <div aria-hidden className="border-rule bg-paper border">
+    <div aria-hidden className="border-rule bg-paper border p-6 md:p-8">
       <Skeleton className="aspect-[4/3] w-full rounded-none" />
-      <div className="flex flex-col gap-4 p-6">
+      <div className="mt-6 flex flex-col gap-4 md:mt-8">
         <Skeleton className="h-7 w-4/5" />
         <div className="hidden flex-col gap-2 sm:flex">
           <Skeleton className="h-4 w-full" />
@@ -110,25 +101,29 @@ export function HomePageSkeleton() {
           topCrosses={false}
           className={cn(columnPadding, "pt-32 md:pt-40")}
         >
-          <div className="flex flex-col items-start gap-8 xl:flex-row">
-            <div className="order-2 flex min-w-0 flex-1 flex-col gap-4 xl:order-1">
-              <Skeleton className="h-10 w-64 md:w-80" />
-              <Skeleton className="h-7 w-72 max-w-full" />
-              <div className="mt-4 flex flex-col gap-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-11/12" />
-                <Skeleton className="h-4 w-4/5" />
-              </div>
-              <ActionSkeletons />
-              <div className="mt-2 flex gap-3">
-                {Array.from({ length: 5 }, (_, index) => (
-                  <Skeleton key={index} className="size-10 rounded-full" />
-                ))}
+          {/* Three rails: identity, the sentence, and the tilted photo. */}
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,12rem)_minmax(0,1fr)_auto]">
+            {/* Name over two lines, at the section headings' size. */}
+            <div className="flex flex-col">
+              <Skeleton className="h-8 w-28 md:h-9" />
+              <Skeleton className="mt-1 h-8 w-40 max-w-full md:h-9" />
+              <Skeleton className="mt-3 h-4 w-44 max-w-full" />
+              <div className="mt-5 flex flex-col gap-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-4 w-28" />
               </div>
             </div>
-            <div className="order-1 flex h-[300px] w-full items-center justify-center sm:h-[350px] xl:order-2 xl:min-h-[375px] xl:w-[380px]">
-              <Skeleton className="h-[280px] aspect-[0.716] sm:h-[300px] xl:h-[345px]" />
+
+            <div className="flex min-w-0 flex-col gap-2">
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-3/5" />
+              <Skeleton className="mt-4 h-4 w-4/5" />
+              <Skeleton className="h-4 w-3/5" />
+            </div>
+
+            <div className="order-first lg:order-none lg:pt-1">
+              <Skeleton className="aspect-square w-28 rotate-3 rounded-none sm:w-32" />
             </div>
           </div>
         </Band>
@@ -278,17 +273,16 @@ export function CaseStudyPageSkeleton() {
               <PanelSkeleton />
               <PanelSkeleton />
             </div>
+            {/* The role panel, full width under the pair. */}
+            <PanelSkeleton />
           </div>
         </Band>
 
         <Band className={columnPadding}>
           <div className="flex flex-col gap-6">
             <Skeleton className="h-9 w-64" />
-            <div className="flex gap-2">
-              <Skeleton className="h-8 w-28" />
-              <Skeleton className="h-8 w-28" />
-              <Skeleton className="h-8 w-28" />
-            </div>
+            {/* Chapters run straight under the heading: they carry their own
+                numbers, so there is no jump-link row above them. */}
             <PanelSkeleton />
             <PanelSkeleton />
           </div>

@@ -32,7 +32,7 @@ export default function CaseStudyCard({ study }: CaseStudyCardProps) {
         >
           <MediaFrame
             media={media}
-            sizes="(min-width: 1463px) 480px, (min-width: 1024px) 33vw, 90vw"
+            sizes="(min-width: 1281px) 416px, (min-width: 1024px) 33vw, 90vw"
           />
         </Link>
 
