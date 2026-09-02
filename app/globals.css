@@ -58,21 +58,16 @@
   --frame-radius: 0px;
   --radius: 0.375rem;
 
-  /* How wide the reading column is allowed to get. The column is a percentage
-     of the viewport up to this point and then stops, so it never narrows as
-     the screen widens. Change this one value to retune the column on large
-     screens; the frame rails read the same width and follow automatically.
+  /* --reading-max, the width of the reading column, is not declared here.
+     It is published onto the document by app/layout.tsx from READING_MAX_REM
+     in lib/layout.ts, because the image `sizes` hints have to be computed
+     from the same number and TypeScript cannot read a custom property out of
+     a stylesheet. Change it there and the column, the frame rails and every
+     srcset hint move together.
 
-     The cap only binds above --reading-max / 0.7 of viewport, so this decides
-     where the column stops growing on a laptop or a monitor, not what a phone
-     sees. At 56rem the content box is 832px, which keeps body copy near 90
-     characters a line instead of 105, and still leaves the two-up panels
-     ~404px a side against the ~300px floor lib/layout.ts sets.
-
-     The `sizes` hints in MediaFrame, CaseStudyCard, WorkSection and the blog
-     are derived from this number and have to move with it, or the page
-     fetches images wider than the box it paints them into. */
-  --reading-max: 56rem;
+     The cap only binds above --reading-max / 0.7 of viewport, so it decides
+     where the column stops growing on a laptop or a monitor, not what a
+     phone sees. */
 }
 
 .dark {
@@ -102,7 +97,21 @@
    ========================================================================== */
 
 :root {
-  --rule: var(--hairline);
+  /* The line the whole notebook is drawn in: section dividers, the annotated
+     grid in the About block, and the outline of every card and frame.
+
+     Half the strength of --hairline, and translucent rather than a flat grey,
+     which is what tailwindcss.com draws its own ruled grid in: `bg-gray-950/5`
+     on light, `bg-white/10` on dark. Measured against #fafafa our old value
+     (#e4e4e7, about 11% ink) was twice as dark as the reference, and at the
+     length these lines run — right across the viewport — twice as dark reads
+     as a drawn border rather than a ruling.
+
+     Alpha, not a hex, for the same reason theirs is: these lines cross paper,
+     the surface behind it and the hatch in the gutters, and a fixed grey has
+     to pick one of those to be correct against. --hairline stays where it is
+     and keeps its job on form controls, which have to be findable. */
+  --rule: color-mix(in oklab, var(--ink) 5%, transparent);
 
   /* Registration guides: the marks offset around the portrait. The hairline
      the page grid is drawn in disappears at that length, and --ink-faint at
@@ -127,6 +136,11 @@
 }
 
 .dark {
+  /* Light ink on a dark ground loses more to the background than dark ink on
+     a light one, so the rules double rather than halve — `dark:bg-white/10`
+     against the `bg-gray-950/5` above, the same pair the reference uses. */
+  --rule: color-mix(in oklab, var(--ink) 10%, transparent);
+
   --pattern-fg: color-mix(in oklab, var(--ink) 10%, transparent);
 }
 

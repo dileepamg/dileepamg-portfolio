@@ -4,6 +4,7 @@ import Link from "next/link";
 import { cardDescriptionClass, cardTitleClass } from "./cardStyles";
 import { LuArrowRight } from "react-icons/lu";
 import { type CaseStudy } from "./caseStudies";
+import { imageSizes } from "@/lib/layout";
 
 type CaseStudyCardProps = {
   study: CaseStudy;
@@ -32,7 +33,7 @@ export default function CaseStudyCard({ study }: CaseStudyCardProps) {
         >
           <MediaFrame
             media={media}
-            sizes="(min-width: 1281px) 416px, (min-width: 1024px) 33vw, 90vw"
+            sizes={imageSizes.caseStudyCard}
           />
         </Link>
 

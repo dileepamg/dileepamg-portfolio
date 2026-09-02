@@ -52,10 +52,7 @@ async function DynamicHome() {
   return <CachedHome {...options} />;
 }
 
-async function CachedHome({
-  perspective,
-  stega,
-}: DynamicFetchOptions) {
+async function CachedHome({ perspective, stega }: DynamicFetchOptions) {
   "use cache";
 
   const [
@@ -105,7 +102,6 @@ async function CachedHome({
           >
             <AboutSection
               name={cleanSanityString(siteSettings.author.displayName)}
-              jobTitle={cleanSanityString(siteSettings.author.jobTitle)}
               bio={cleanSanityString(siteSettings.author.bio)}
               resumeDownloadName={
                 siteSettings.resume?.downloadName
@@ -113,9 +109,7 @@ async function CachedHome({
                   : "Dileepa-Galmangoda-Resume.pdf"
               }
               greetingLatin={cleanSanityString(homePage.greetingLatin)}
-              greetingSinhala={cleanSanityString(
-                homePage.greetingSinhala,
-              )}
+              greetingSinhala={cleanSanityString(homePage.greetingSinhala)}
               profileImage={
                 siteSettings.author.profileImage
                   ? toStaticImageData(

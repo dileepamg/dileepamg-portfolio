@@ -4,7 +4,7 @@ import { JsonLd } from "@/components/structured-data/JsonLd";
 import { getBlogPostStructuredData } from "@/components/structured-data/blogPost";
 import { Badge } from "@/components/ui/badge";
 import { Band } from "@/components/ui/band";
-import { columnClass, columnPadding } from "@/lib/layout";
+import { columnClass, columnPadding, imageSizes } from "@/lib/layout";
 import { estimateReadingMinutes } from "@/lib/reading-time";
 import { AUTHOR_NAME } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -202,7 +202,7 @@ async function CachedBlogPostPage({
                 fill
                 priority
                 placeholder="blur"
-                sizes="(min-width: 1281px) 832px, (min-width: 640px) 66vw, 90vw"
+                sizes={imageSizes.content}
                 className="object-cover object-center"
               />
             </div>

@@ -7,6 +7,17 @@ function LoadingLabel() {
   return <span className="sr-only">Loading page content</span>;
 }
 
+/**
+ * The hairline at the top of a band in the About block.
+ *
+ * A copy of `bandRule` in AboutSection rather than a shared import, the same
+ * way `Band` keeps its own: importing it would pull that whole module — image
+ * loader, client components and all — into a fallback whose only job is to
+ * hold the shape for a moment. If the rules there change, change them here.
+ */
+const aboutBandRule =
+  "relative before:bg-rule before:absolute before:top-0 before:left-[-100vw] before:h-px before:w-[200vw]";
+
 function PageShell({ children }: { children: React.ReactNode }) {
   return (
     <div
@@ -34,10 +45,7 @@ function HeadingSkeleton({ description = false }: { description?: boolean }) {
 
 function WorkCardSkeleton() {
   return (
-    <div
-      aria-hidden
-      className="border-rule bg-paper border p-6 md:p-8"
-    >
+    <div aria-hidden className="border-rule bg-paper border p-6 md:p-8">
       <div className="flex flex-col gap-6 lg:flex-row-reverse lg:gap-8">
         <Skeleton className="aspect-video w-full lg:w-1/2 lg:shrink-0" />
         <div className="flex min-w-0 flex-1 flex-col justify-center gap-4">
@@ -56,13 +64,21 @@ function WorkCardSkeleton() {
 
 function ProjectCardSkeleton() {
   return (
-    <div aria-hidden className="border-rule bg-paper border p-6 md:p-8">
+    // `flex flex-1 flex-col` on the card and the block inside it, the same way
+    // the real one is built: the two cards share a grid row, and without it
+    // the shorter one's button would float instead of sitting at the bottom.
+    <div
+      aria-hidden
+      className="border-rule bg-paper flex flex-col border p-6 md:p-8"
+    >
       <Skeleton className="aspect-[4/3] w-full rounded-none" />
-      <div className="mt-6 flex flex-col gap-4 md:mt-8">
-        <Skeleton className="h-7 w-4/5" />
-        <div className="hidden flex-col gap-2 sm:flex">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
+      <div className="mt-6 flex flex-1 flex-col gap-4 md:mt-8">
+        <div className="flex-1">
+          <Skeleton className="h-7 w-4/5" />
+          <div className="mt-4 hidden flex-col gap-2 sm:flex">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+          </div>
         </div>
         <Skeleton className="h-10 w-full" />
       </div>
@@ -101,29 +117,83 @@ export function HomePageSkeleton() {
           topCrosses={false}
           className={cn(columnPadding, "pt-32 md:pt-40")}
         >
-          {/* Three rails: identity, the sentence, and the tilted photo. */}
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,12rem)_minmax(0,1fr)_auto]">
-            {/* Name over two lines, at the section headings' size. */}
-            <div className="flex flex-col">
-              <Skeleton className="h-8 w-28 md:h-9" />
-              <Skeleton className="mt-1 h-8 w-40 max-w-full md:h-9" />
-              <Skeleton className="mt-3 h-4 w-44 max-w-full" />
-              <div className="mt-5 flex flex-col gap-2">
-                <Skeleton className="h-4 w-32" />
-                <Skeleton className="h-4 w-28" />
-              </div>
+          {/* One column of ruled bands with the photo beside them, mirroring
+              AboutSection: an annotation band, then the element it names,
+              each closing on a rule. Same grid template and the same 200vw
+              bars, so the lines are already in place at the same heights and
+              the swap to the real thing does not move them. */}
+          <div className="grid gap-x-16 gap-y-0 lg:grid-cols-[minmax(0,37.5rem)_10.5rem]">
+            {/* The name. No rule above it: the section opens on the label. */}
+            <div
+              className={cn(
+                aboutBandRule,
+                "flex flex-col justify-end pt-6 before:hidden lg:col-start-1 lg:row-start-1",
+              )}
+            >
+              <Skeleton className="h-3 w-40" />
+            </div>
+            <div className={cn(aboutBandRule, "lg:col-start-1 lg:row-start-2")}>
+              <Skeleton className="h-8 w-64 max-w-full md:h-9" />
             </div>
 
-            <div className="flex min-w-0 flex-col gap-2">
+            {/* The lead sentence, three lines at the capped column width. */}
+            <div
+              className={cn(
+                aboutBandRule,
+                "flex flex-col justify-end pt-6 lg:col-start-1 lg:row-start-3",
+              )}
+            >
+              <Skeleton className="h-3 w-48" />
+            </div>
+            <div
+              className={cn(
+                aboutBandRule,
+                "flex min-w-0 flex-col gap-2 lg:col-start-1 lg:row-start-4",
+              )}
+            >
               <Skeleton className="h-6 w-full" />
               <Skeleton className="h-6 w-full" />
-              <Skeleton className="h-6 w-3/5" />
-              <Skeleton className="mt-4 h-4 w-4/5" />
+              <Skeleton className="h-6 w-2/5" />
+            </div>
+
+            {/* The contact lines. */}
+            <div
+              className={cn(
+                aboutBandRule,
+                "flex flex-col justify-end pt-6 lg:col-start-1 lg:row-start-5",
+              )}
+            >
+              <Skeleton className="h-3 w-36" />
+            </div>
+            <div
+              className={cn(
+                aboutBandRule,
+                "flex min-w-0 flex-col gap-2 lg:col-start-1 lg:row-start-6",
+              )}
+            >
+              <Skeleton className="h-4 w-4/5" />
               <Skeleton className="h-4 w-3/5" />
             </div>
 
-            <div className="order-first lg:order-none lg:pt-1">
-              <Skeleton className="aspect-square w-28 rotate-3 rounded-none sm:w-32" />
+            {/* A band of air, so the button gets a rule of its own directly
+                above it rather than one hard against the contact lines. */}
+            <div
+              className={cn(aboutBandRule, "h-6 lg:col-start-1 lg:row-start-7")}
+            />
+            <div
+              className={cn(
+                aboutBandRule,
+                "flex items-end lg:col-start-1 lg:row-start-8",
+                "after:bg-rule after:absolute after:bottom-0 after:left-[-100vw] after:h-px after:w-[200vw]",
+              )}
+            >
+              <Skeleton className="h-10 w-44" />
+            </div>
+
+            {/* Spanning the name down to the lead, and left-aligned with the
+                type until it crosses to the far column at `lg`. */}
+            <div className="order-first flex pb-6 lg:order-none lg:col-start-2 lg:row-start-2 lg:row-end-5 lg:justify-end lg:pr-1 lg:pb-0">
+              <Skeleton className="aspect-square w-28 rotate-3 rounded-none sm:w-32 lg:h-full lg:w-auto lg:min-w-0" />
             </div>
           </div>
         </Band>
@@ -175,17 +245,22 @@ export function HomePageSkeleton() {
 
 function BlogCardSkeleton() {
   return (
-    <div aria-hidden className="border-rule bg-paper border">
+    // Same equal-height build as the real card: the body takes the leftover
+    // height and the text block inside it pushes the button to the bottom, so
+    // two cards of unequal copy still line their buttons up.
+    <div aria-hidden className="border-rule bg-paper flex flex-col border">
       <Skeleton className="aspect-video w-full rounded-none" />
-      <div className="flex flex-col gap-4 p-6">
-        <div className="flex gap-2">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-5 w-20" />
-        </div>
-        <Skeleton className="h-7 w-4/5" />
-        <div className="flex flex-col gap-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
+      <div className="flex flex-1 flex-col gap-4 p-6">
+        <div className="flex-1">
+          <div className="flex gap-2">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-5 w-20" />
+          </div>
+          <Skeleton className="mt-4 h-7 w-4/5" />
+          <div className="mt-4 flex flex-col gap-2">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+          </div>
         </div>
         <Skeleton className="h-10 w-32" />
       </div>
@@ -253,10 +328,7 @@ export function CaseStudyPageSkeleton() {
       <div className="bg-hatch relative z-10 flex flex-col gap-8 pb-12">
         <Band
           topRule={false}
-          className={cn(
-            columnPadding,
-            "flex flex-col gap-8 pt-32 md:pt-40",
-          )}
+          className={cn(columnPadding, "flex flex-col gap-8 pt-32 md:pt-40")}
         >
           <BackLinkSkeleton />
           <HeroSkeleton />
@@ -294,10 +366,7 @@ export function CaseStudyPageSkeleton() {
 
 function ArticleBodySkeleton() {
   return (
-    <div
-      aria-hidden
-      className="mx-auto flex max-w-3xl flex-col gap-5"
-    >
+    <div aria-hidden className="mx-auto flex max-w-3xl flex-col gap-5">
       <Skeleton className="h-5 w-full" />
       <Skeleton className="h-5 w-full" />
       <Skeleton className="h-5 w-5/6" />
@@ -318,10 +387,7 @@ export function BlogPostPageSkeleton() {
       <div className="bg-hatch relative z-10 flex flex-col gap-8 pb-12">
         <Band
           topCrosses={false}
-          className={cn(
-            columnPadding,
-            "flex flex-col gap-8 pt-32 md:pt-40",
-          )}
+          className={cn(columnPadding, "flex flex-col gap-8 pt-32 md:pt-40")}
         >
           <BackLinkSkeleton />
           <HeroSkeleton article />

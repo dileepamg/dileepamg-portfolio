@@ -39,11 +39,7 @@ export default function Footer({
   sourceUrl = "https://github.com/dileepamg/dileepamg-portfolio",
   inspirationLinks = defaultInspirationLinks,
 }: FooterProps) {
-  const year = useSyncExternalStore(
-    subscribeToNothing,
-    getYear,
-    getServerYear,
-  );
+  const year = useSyncExternalStore(subscribeToNothing, getYear, getServerYear);
 
   // The background runs the full width of the viewport so the page closes on a
   // solid band, while the content stays inside the reading column with the
@@ -82,6 +78,13 @@ export default function Footer({
               className="text-brand-text hover:underline"
             >
               shadcn/ui
+            </ExternalLink>
+            {", "}
+            <ExternalLink
+              href="https://www.sanity.io/"
+              className="text-brand-text hover:underline"
+            >
+              Sanity
             </ExternalLink>
           </p>
           <p>
