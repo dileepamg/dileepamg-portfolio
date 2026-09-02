@@ -1,6 +1,8 @@
+import { READING_MAX_REM } from "@/lib/layout";
 import { cn } from "@/lib/utils";
 import { SITE_URL } from "@/lib/site";
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import {
   DM_Sans,
   Noto_Sans_Sinhala,
@@ -52,13 +54,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // `--reading-max` is published here rather than declared in globals.css so
+    // the column width has one home. `lib/layout.ts` owns the number, because
+    // the image `sizes` hints have to compute from it and a CSS custom
+    // property cannot be read from TypeScript.
     <html
       lang="en"
       className={cn("scroll-smooth", fontVariables)}
       suppressHydrationWarning
       data-scroll-behavior="smooth"
+      style={{ "--reading-max": `${READING_MAX_REM}rem` } as CSSProperties}
     >
-      <body className="bg-surface relative min-h-screen antialiased">
+      {/* `suppressHydrationWarning` because extensions write their own
+          attributes onto body before React hydrates — Grammarly adds
+          `data-gr-ext-installed`, ColorZilla adds `cz-shortcut-listen` — and
+          React counts those as a server/client mismatch it refuses to patch.
+          Nothing here renders differently on the two sides; the markup is
+          simply not ours alone by the time hydration runs.
+
+          It only covers this element's own attributes and text, not the tree
+          under it, so a real mismatch anywhere in the page still reports. */}
+      <body
+        className="bg-surface relative min-h-screen antialiased"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>

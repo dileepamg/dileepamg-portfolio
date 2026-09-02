@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import ExpandableImage from "./ExpandableImage";
 import PrototypeEmbed from "./PrototypeEmbed";
+import { imageSizes } from "@/lib/layout";
 
 /** The handset the mobile screens were drawn at. */
 export const PHONE_ASPECT = "430 / 960";
@@ -58,11 +59,9 @@ export default function MediaFrame({
   media,
   expandable = false,
   bordered = true,
-  // Full content width: the reading column less its padding. Both numbers come
-  // off --reading-max and move whenever it does: the breakpoint is where the
-  // cap starts binding (56rem / 0.7), the width is the capped column less its
-  // px-8 inset.
-  sizes = "(min-width: 1281px) 832px, (min-width: 640px) 66vw, 90vw",
+  // Full content width, derived from the column rather than measured against
+  // it. See `imageSizes` in lib/layout.ts.
+  sizes = imageSizes.content,
   priority = false,
   className,
 }: MediaFrameProps) {

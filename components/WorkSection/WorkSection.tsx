@@ -3,7 +3,7 @@ import { IconBrandBehance } from "@tabler/icons-react";
 import { LuExternalLink } from "react-icons/lu";
 import { ExternalLink } from "@/components/ExternalLink";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { splitGrid } from "@/lib/layout";
+import { imageSizes, splitGrid } from "@/lib/layout";
 import { cn } from "@/lib/utils";
 import type { StaticImageData } from "next/image";
 import type { CaseStudy } from "./caseStudies";
@@ -74,7 +74,7 @@ export default function WorkSection({
                     className="object-cover object-center"
                     fill
                     placeholder="blur"
-                    sizes="(min-width: 1281px) 336px, (min-width: 1024px) 26vw, (min-width: 640px) 58vw, 82vw"
+                    sizes={imageSizes.projectCard}
                   />
                 </ExternalLink>
 

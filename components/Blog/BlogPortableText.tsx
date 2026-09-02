@@ -6,6 +6,7 @@ import { stegaClean } from "@sanity/client/stega";
 import { toStaticImageData } from "@/sanity/lib/mappers";
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { imageSizes } from "@/lib/layout";
 
 type PostBody = NonNullable<
   NonNullable<BLOG_POST_QUERY_RESULT>["body"]
@@ -115,7 +116,7 @@ const components: PortableTextComponents = {
               width={dimensions.width}
               height={dimensions.height}
               placeholder="blur"
-              sizes="(min-width: 1281px) 832px, (min-width: 640px) 66vw, 90vw"
+              sizes={imageSizes.content}
               className="h-auto w-full"
             />
           </div>

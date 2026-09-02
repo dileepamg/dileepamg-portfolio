@@ -15,8 +15,12 @@ const buttonVariants = cva(
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40",
+        // `border-border`, not `border-rule`: the rules were halved to match
+        // the reference grid, and a control that faint stops reading as
+        // something you can press. Same split the reference makes, where the
+        // ruled grid is `gray-950/5` and buttons carry `gray-950/10`.
         outline:
-          "border-rule bg-background hover:border-brand hover:bg-brand hover:text-brand-ink border",
+          "border-border bg-background hover:border-brand hover:bg-brand hover:text-brand-ink border",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost:
