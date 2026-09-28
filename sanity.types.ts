@@ -641,11 +641,12 @@ export type HOME_PAGE_QUERY_RESULT = {
 
 // Source: sanity/lib/queries.ts
 // Variable: RESUME_QUERY
-// Query: *[  _type == "siteSettings" && _id == "siteSettings"][0]{  resume {    downloadName,    asset->{url, mimeType, originalFilename}  }}
+// Query: *[  _type == "siteSettings" && _id == "siteSettings"][0]{  resume {    downloadName,    asset->{_id, url, mimeType, originalFilename}  }}
 export type RESUME_QUERY_RESULT = {
   resume: {
     downloadName: string | null;
     asset: {
+      _id: string;
       url: string;
       mimeType: string;
       originalFilename: string | null;
@@ -1262,12 +1263,11 @@ export type BLOG_POST_QUERY_RESULT = {
 } | null;
 
 // Query TypeMap
-import "@sanity/client";
-declare module "@sanity/client" {
+declare global {
   interface SanityQueries {
     '*[\n  _type == "siteSettings" && _id == "siteSettings"\n][0]{\n  ...,\n  author {\n    ...,\n    profileImage {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n  },\n  resume {\n    ...,\n    asset->{url, originalFilename, mimeType}\n  },\n  defaultSeo {\n    ...,\n    image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n  }\n}': SITE_SETTINGS_QUERY_RESULT;
     '*[\n  _type == "homePage" && _id == "homePage"\n][0]{\n  ...,\n  seo {\n    ...,\n    image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n  }\n}': HOME_PAGE_QUERY_RESULT;
-    '*[\n  _type == "siteSettings" && _id == "siteSettings"\n][0]{\n  resume {\n    downloadName,\n    asset->{url, mimeType, originalFilename}\n  }\n}': RESUME_QUERY_RESULT;
+    '*[\n  _type == "siteSettings" && _id == "siteSettings"\n][0]{\n  resume {\n    downloadName,\n    asset->{_id, url, mimeType, originalFilename}\n  }\n}': RESUME_QUERY_RESULT;
     '*[\n  _type == "caseStudy" &&\n  hidden != true &&\n  defined(slug.current)\n] | order(order asc) {\n  "slug": slug.current\n}': CASE_STUDY_SLUGS_QUERY_RESULT;
     '*[\n  _type == "caseStudy" &&\n  hidden != true &&\n  defined(slug.current)\n] | order(order asc) {\n  _id,\n  title,\n  pageTitle,\n  "slug": slug.current,\n  previousSlugs,\n  summary,\n  description,\n  tags,\n  role,\n  year,\n  order,\n  cardMedia {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n}\n}': CASE_STUDIES_QUERY_RESULT;
     '*[\n  _type == "caseStudy" &&\n  hidden != true\n] | order(order asc) {\n  ...,\n  "slug": slug.current,\n  cardMedia {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n},\n  heroMedia {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n},\n  chapters[]{\n    ...,\n    media[] {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n}\n  },\n  gallery[] {\n  _key,\n  kind,\n  image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  orientation,\n  embedUrl,\n  embedTitle,\n  poster {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  aspect,\n  caption\n},\n  seo {\n    ...,\n    image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n  }\n}': CASE_STUDY_QUERY_RESULT;
@@ -1278,4 +1278,8 @@ declare module "@sanity/client" {
     '*[\n  _type == "post" &&\n  defined(slug.current) &&\n  publishedAt <= now()\n] | order(publishedAt desc) {\n  _id,\n  _updatedAt,\n  title,\n  "slug": slug.current,\n  excerpt,\n  publishedAt,\n  featured,\n  tags,\n  featuredImage {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  categories[]->{_id, title, "slug": slug.current},\n  body[]{\n    _type,\n    children[]{text},\n    title,\n    body,\n    code,\n    items[]{date, title, body}\n  }\n}': BLOG_POSTS_QUERY_RESULT;
     '*[\n  _type == "post" &&\n  slug.current == $slug &&\n  publishedAt <= now()\n][0]{\n  ...,\n  "slug": slug.current,\n  body[]{\n    ...,\n    _type == "imageWithAlt" => {\n      ...,\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions,\n          lqip\n        }\n      }\n    }\n  },\n  featuredImage {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n},\n  categories[]->{_id, title, "slug": slug.current},\n  relatedPosts[]->{\n    _id,\n    title,\n    "slug": slug.current,\n    excerpt,\n    publishedAt,\n    featuredImage {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n  },\n  seo {\n    ...,\n    image {\n  alt,\n  caption,\n  crop,\n  hotspot,\n  asset->{\n    _id,\n    url,\n    metadata {\n      dimensions,\n      lqip\n    }\n  }\n}\n  }\n}': BLOG_POST_QUERY_RESULT;
   }
+}
+// Lets @sanity/client releases that predate the global registry read it too
+declare module "@sanity/client" {
+  interface SanityQueries extends globalThis.SanityQueries {}
 }
