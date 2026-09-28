@@ -60,7 +60,7 @@ export const RESUME_QUERY = defineQuery(`*[
 ][0]{
   resume {
     downloadName,
-    asset->{url, mimeType, originalFilename}
+    asset->{_id, url, mimeType, originalFilename}
   }
 }`);
 

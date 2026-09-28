@@ -2,7 +2,7 @@ import { metadataClient } from "@/sanity/lib/client";
 import { cleanSanityString } from "@/sanity/lib/mappers";
 import { RESUME_QUERY } from "@/sanity/lib/queries";
 
-export async function GET() {
+export async function GET(request: Request) {
   const settings = await metadataClient.fetch(RESUME_QUERY);
   const asset = settings?.resume?.asset;
 
@@ -10,9 +10,21 @@ export async function GET() {
     return new Response("Resume not found", { status: 404 });
   }
 
-  const file = await fetch(asset.url, {
-    next: { revalidate: 3600 },
-  });
+  // /resume never changes while the file behind it does, so every request is
+  // checked against the current upload rather than served from a cache. A
+  // Sanity asset ID is derived from the file's contents, which makes it the
+  // ETag: while it holds, the answer is a 304 and the PDF is not sent again.
+  const etag = `"${asset._id}"`;
+  const cacheControl = "public, no-cache";
+
+  if (request.headers.get("if-none-match") === etag) {
+    return new Response(null, {
+      status: 304,
+      headers: { ETag: etag, "Cache-Control": cacheControl },
+    });
+  }
+
+  const file = await fetch(asset.url);
 
   if (!file.ok || !file.body) {
     return new Response("Resume is temporarily unavailable", { status: 502 });
@@ -36,7 +48,8 @@ export async function GET() {
     headers: {
       "Content-Type": asset.mimeType || "application/pdf",
       "Content-Disposition": `attachment; filename="${safeName}"`,
-      "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+      "Cache-Control": cacheControl,
+      ETag: etag,
     },
   });
 }
