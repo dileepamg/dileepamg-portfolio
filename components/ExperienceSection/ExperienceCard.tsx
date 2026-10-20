@@ -33,7 +33,9 @@ export default function ExperienceCard({
       className="group/exp border-rule border-b last:border-b-0"
     >
       <summary className="hover:bg-tint focus-visible:bg-tint -mx-3 grid grid-cols-[2.25rem_minmax(0,1fr)_auto] items-center gap-x-4 rounded-lg px-3 py-3.5 transition-colors outline-none sm:grid-cols-[2.25rem_minmax(0,1fr)_auto_auto]">
-        <span className="border-hairline relative size-9 shrink-0 overflow-hidden rounded-md border bg-white">
+        {/* White by day; at night the raised surface colour, which every
+            logo here still reads on (Villvay swaps to its white mark). */}
+        <span className="border-hairline dark:bg-surface-2 relative size-9 shrink-0 overflow-hidden rounded-md border bg-white">
           <Image
             src={position.companylogoLight}
             fill
