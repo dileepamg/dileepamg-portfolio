@@ -1,92 +1,104 @@
-"use client";
-
 import { ExternalLink } from "@/components/ExternalLink";
 import { Badge } from "@/components/ui/badge";
+import { rowMetaClass } from "@/components/ui/row";
 import Image from "next/image";
-import { LuArrowUpRight } from "react-icons/lu";
+import { LuArrowUpRight, LuChevronDown } from "react-icons/lu";
 import { type CareerPosition } from "./data";
 
 type ExperienceCardProps = {
   position: CareerPosition;
+  /** The current role opens by default; the rest stay folded. */
+  defaultOpen?: boolean;
 };
 
-export default function ExperienceCard({ position }: ExperienceCardProps) {
+/**
+ * One role, as a row that unfolds.
+ *
+ * A native `<details>`, so it works before any script has loaded, is keyboard
+ * and screen-reader operable for free, and still finds text inside it with
+ * the browser's find-in-page. The summary is the scannable part a recruiter
+ * reads down: who, where, when. The detail is one click away instead of being
+ * clipped behind a fade.
+ *
+ * The company link lives in the panel rather than in the summary, because a
+ * link inside a summary is a control inside a control.
+ */
+export default function ExperienceCard({
+  position,
+  defaultOpen = false,
+}: ExperienceCardProps) {
   return (
-    <div className="border-rule border-b p-6 last:border-b-0 md:p-8">
-      <div className="flex flex-col md:flex-row md:justify-between">
-        <div className="w-full">
-          <div className="flex flex-col items-start gap-1 pb-2 align-top md:justify-between xl:flex-row">
-            <div className="flex flex-col gap-3 md:flex-row">
-              {/* The box is a fixed 50px at every breakpoint, so `sizes` can
-                  say exactly that. Without it a `fill` image is assumed to be
-                  100vw wide and the browser fetches the largest candidate in
-                  the srcset, which for a logo this size is roughly twenty
-                  times the pixels it can show. */}
-              <div className="relative m-1 size-[50px] shrink-0">
-                <Image
-                  src={position.companylogoLight}
-                  fill
-                  sizes="50px"
-                  alt="Company Logo"
-                  placeholder="blur"
-                  className="object-contain dark:hidden"
-                />
+    <details
+      open={defaultOpen}
+      className="group/exp border-rule border-b last:border-b-0"
+    >
+      <summary className="hover:bg-tint focus-visible:bg-tint -mx-3 grid grid-cols-[2.25rem_minmax(0,1fr)_auto] items-center gap-x-4 rounded-lg px-3 py-3.5 transition-colors outline-none sm:grid-cols-[2.25rem_minmax(0,1fr)_auto_auto]">
+        <span className="border-hairline relative size-9 shrink-0 overflow-hidden rounded-md border bg-white">
+          <Image
+            src={position.companylogoLight}
+            fill
+            sizes="36px"
+            alt=""
+            placeholder="blur"
+            className="object-contain p-1 dark:hidden"
+          />
+          <Image
+            src={position.companyLogoDark}
+            fill
+            sizes="36px"
+            alt=""
+            placeholder="blur"
+            className="hidden object-contain p-1 dark:block"
+          />
+        </span>
 
-                <Image
-                  src={position.companyLogoDark}
-                  fill
-                  sizes="50px"
-                  alt="Company Logo"
-                  placeholder="blur"
-                  className="hidden object-contain dark:block"
-                />
-              </div>
-              {/* Card scale, the same one the work and blog cards use: title
-                  at text-lg, everything under it at text-sm, meta at text-xs.
-                  These were a step larger, which made a role read as loud as
-                  a section heading. */}
-              <div className="flex flex-col">
-                <p className="text-ink text-lg font-medium">{position.role}</p>
-                <ExternalLink
-                  href={position.link}
-                  aria-label={`${position.company} (opens in new tab)`}
-                  className="text-ink-soft hover:text-ink w-fit transition-colors"
-                >
-                  <p className="flex items-center text-sm hover:underline">
-                    {position.company}
-                    <span className="ml-1" aria-hidden="true">
-                      <LuArrowUpRight />
-                    </span>
-                  </p>
-                </ExternalLink>
-              </div>
-            </div>
-            <div className="text-ink-faint flex justify-between text-xs font-medium tabular-nums md:justify-end md:gap-4">
-              <span>{position.year}</span>
-            </div>
-          </div>
+        <span className="min-w-0">
+          <span className="text-ink block text-[0.9375rem] font-medium text-pretty">
+            {position.role}
+          </span>
+          <span className="text-ink-soft block text-sm text-pretty">
+            {position.company}
+          </span>
+          {/* On a phone the dates drop under the company rather than
+              squeezing the role into a narrow column. */}
+          <span className={`${rowMetaClass} mt-0.5 block sm:hidden`}>
+            {position.year}
+          </span>
+        </span>
 
-          <div className="text-ink-soft space-y-1 pt-2">
-            {position.responsibility.map((item) => (
-              <p key={item} className="text-sm text-pretty">
-                • {item}
-              </p>
-            ))}
-          </div>
+        <span className={`${rowMetaClass} hidden sm:block`}>
+          {position.year}
+        </span>
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            {position.techStacks.map((tech) => (
-              <Badge
-                key={tech}
-                variant="outline"
-                className="text-ink-faint mb-1 flex justify-center text-center whitespace-nowrap"
-              >
-                {tech}
-              </Badge>
-            ))}
-          </div>
+        <LuChevronDown
+          aria-hidden="true"
+          className="text-ink-faint size-4 transition-transform duration-300 group-open/exp:rotate-180 motion-reduce:transition-none"
+        />
+      </summary>
+
+      <div className="pt-1 pb-5 sm:pl-[3.25rem]">
+        <ul className="text-ink-soft marker:text-ink-faint list-disc space-y-1.5 pl-4 text-sm text-pretty">
+          {position.responsibility.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+
+        <div className="mt-4 flex flex-wrap items-center gap-1.5">
+          {position.techStacks.map((tech) => (
+            <Badge key={tech}>{tech}</Badge>
+          ))}
+          <ExternalLink
+            href={position.link}
+            className="text-ink-soft hover:text-ink text-xs ml-auto inline-flex items-center gap-0.5 underline-offset-4 transition-colors hover:underline"
+          >
+            {position.link
+              .replace(/^https?:\/\/(www\.)?/, "")
+              .replace(/\/$/, "")}
+            <LuArrowUpRight className="size-3" aria-hidden="true" />
+            <span className="sr-only">(opens in new tab)</span>
+          </ExternalLink>
         </div>
       </div>
-    </div>
+    </details>
   );
 }

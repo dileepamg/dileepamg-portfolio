@@ -58,12 +58,12 @@ export default function PrototypeEmbed({
         )}
 
         <span className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/45 p-4">
-          {/* The parent <button> owns the hover, so the morph is driven from
-              the group rather than from this element's own :hover. */}
+          {/* The parent <button> owns the hover, so the chip's hover state is
+              driven from the group rather than from its own :hover. */}
           <span
             className={cn(
-              buttonVariants({ variant: "secondary" }),
-              "group-hover:rounded-(--btn-radius)",
+              buttonVariants({ variant: "outline" }),
+              "group-hover:bg-surface-2 border-transparent",
             )}
           >
             <LuPlay />

@@ -1,13 +1,7 @@
 import type { CaseStudyChapter } from "@/components/WorkSection/caseStudies";
+import { imageSizes } from "@/lib/layout";
 import { cn } from "@/lib/utils";
 import MediaFrame, { mediaGridClass, mediaSizes } from "./MediaFrame";
-
-/**
- * The numbered marker: the node on the spine at desktop, and the inline number
- * beside the title on mobile. One constant so the two read as the same mark at
- * two sizes rather than as separate treatments.
- */
-const markerClass = "border-rule bg-paper text-brand-text border";
 
 /**
  * Anchor for a chapter.
@@ -17,7 +11,7 @@ const markerClass = "border-rule bg-paper text-brand-text border";
  * slugified, which stays readable in the URL bar and describes the section
  * rather than its position in a list.
  */
-function chapterId(chapter: CaseStudyChapter) {
+export function chapterId(chapter: CaseStudyChapter) {
   return (
     chapter.id ??
     chapter.title
@@ -29,16 +23,17 @@ function chapterId(chapter: CaseStudyChapter) {
 
 type ChapterItemProps = {
   chapter: CaseStudyChapter;
-  index: number;
-  isLast: boolean;
 };
 
-export default function ChapterItem({
-  chapter,
-  index,
-  isLast,
-}: ChapterItemProps) {
-  const number = String(index + 1).padStart(2, "0");
+/**
+ * One chapter of a case study.
+ *
+ * Unboxed: the heading and a generous gap above are enough to mark where a
+ * chapter starts, and dropping the card frame gives the text and
+ * the screenshots the full width of the column. The lede is set a size up in
+ * full ink so someone skimming headings and ledes alone still gets the story.
+ */
+export default function ChapterItem({ chapter }: ChapterItemProps) {
   const id = chapterId(chapter);
   const isPhoneSet = chapter.media?.every(
     (item) => item.kind === "image" && item.orientation === "portrait",
@@ -46,118 +41,76 @@ export default function ChapterItem({
   const ListTag = chapter.list?.ordered ? "ol" : "ul";
 
   return (
-    <li id={id} className="relative scroll-mt-28 md:pl-24">
-      {/* Connector running down to the next chapter. */}
-      {!isLast && (
-        <span
-          aria-hidden="true"
-          className="border-rule absolute top-16 bottom-[-2rem] left-8 hidden border-l border-dashed md:block"
-        />
+    <li id={id} className="scroll-mt-24">
+      <h3 className="text-lg sm:text-xl">{chapter.title}</h3>
+
+      {chapter.lede && (
+        <p className="text-ink mt-2 text-[1.0625rem] text-pretty">{chapter.lede}</p>
       )}
 
-      {/* Numbered node, desktop only. It becomes an inline number on mobile. */}
-      <div
-        className={cn(
-          "absolute top-0 left-0 hidden h-16 w-16 items-center justify-center md:flex",
-          markerClass,
-        )}
-      >
-        <span className="text-2xl font-semibold tabular-nums">{number}</span>
-      </div>
-
-      <div className="border-rule bg-paper border p-6 md:p-8">
-        {/* The number sits beside the title rather than above it, so a chapter
-            opens on its heading at every width. */}
-        <div className="flex items-start gap-3">
-          <span
-            aria-hidden="true"
-            className={cn(
-              "flex h-8 w-8 shrink-0 items-center justify-center text-sm font-semibold tabular-nums md:hidden",
-              markerClass,
-            )}
-          >
-            {number}
-          </span>
-          <h3 className="text-xl font-semibold md:text-2xl">{chapter.title}</h3>
-        </div>
-
-        {/* The chapter's argument in one line. Sized between the heading and
-            the body so a reader skimming headings still catches it. */}
-        {chapter.lede && (
-          <p className="text-brand-text mt-3 text-base font-medium text-pretty md:text-lg">
-            {chapter.lede}
-          </p>
-        )}
-
-        {chapter.list && chapter.list.items.length > 0 && (
-          <ListTag
-            className={cn(
-              "text-ink-soft marker:text-brand-text mt-4 space-y-1.5 pl-5 text-sm text-pretty lg:text-base",
-              chapter.list.ordered
-                ? "list-decimal marker:font-medium marker:tabular-nums"
-                : "list-disc",
-            )}
-          >
-            {chapter.list.items.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ListTag>
-        )}
-
-        <div className="text-ink-soft mt-4 space-y-3">
-          {chapter.body.map((paragraph) => (
-            <p key={paragraph} className="text-sm text-pretty lg:text-base">
-              {paragraph}
-            </p>
+      {chapter.list && chapter.list.items.length > 0 && (
+        <ListTag
+          className={cn(
+            "text-ink-soft marker:text-ink-faint mt-4 space-y-1.5 pl-5 text-pretty",
+            chapter.list.ordered
+              ? "list-decimal marker:text-sm"
+              : "list-disc",
+          )}
+        >
+          {chapter.list.items.map((item) => (
+            <li key={item}>{item}</li>
           ))}
-        </div>
+        </ListTag>
+      )}
 
-        {chapter.media && chapter.media.length > 0 && (
-          <div className={cn("mt-5", mediaGridClass(chapter.media))}>
-            {chapter.media.map((item, mediaIndex) => {
-              // An odd count would leave a lone item stranded in one column,
-              // so the pairs come first and the odd one out runs full width.
-              // Phone screens keep their own layout and are never stretched.
-              const isFeatured =
-                !isPhoneSet &&
-                chapter.media!.length % 2 === 1 &&
-                mediaIndex === chapter.media!.length - 1;
-
-              return (
-                <MediaFrame
-                  key={item.kind === "image" ? item.alt : item.src}
-                  media={item}
-                  expandable
-                  className={cn(isFeatured && "md:col-span-2")}
-                  sizes={
-                    isFeatured
-                      ? "(min-width: 1536px) 40vw, (min-width: 768px) 60vw, 90vw"
-                      : mediaSizes(chapter.media!)
-                  }
-                />
-              );
-            })}
-          </div>
-        )}
-
-        {chapter.decisions && chapter.decisions.length > 0 && (
-          <div className="border-rule bg-brand/5 mt-6 border p-5">
-            {/* A label rather than a heading: it names the list under it, and
-                putting it in the outline would add a level per chapter that
-                says nothing the chapter title has not already said. */}
-            <p className="text-brand-text text-sm font-semibold tracking-wide">
-              Key decisions
-            </p>
-            <ul className="text-ink-soft mt-2 space-y-1">
-              {chapter.decisions.map((decision) => (
-                <li key={decision} className="text-sm text-pretty">
-                  • {decision}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+      <div className="text-ink-soft mt-4 space-y-4">
+        {chapter.body.map((paragraph) => (
+          <p key={paragraph} className="text-pretty">
+            {paragraph}
+          </p>
+        ))}
       </div>
+
+      {chapter.media && chapter.media.length > 0 && (
+        <div className={cn("mt-8", mediaGridClass(chapter.media))}>
+          {chapter.media.map((item, mediaIndex) => {
+            // An odd count would leave a lone item stranded in one column,
+            // so the pairs come first and the odd one out runs full width.
+            // Phone screens keep their own layout and are never stretched.
+            const isFeatured =
+              !isPhoneSet &&
+              chapter.media!.length % 2 === 1 &&
+              mediaIndex === chapter.media!.length - 1;
+
+            return (
+              <MediaFrame
+                key={item.kind === "image" ? item.alt : item.src}
+                media={item}
+                expandable
+                className={cn(isFeatured && "md:col-span-2")}
+                sizes={
+                  isFeatured ? imageSizes.content : mediaSizes(chapter.media!)
+                }
+              />
+            );
+          })}
+        </div>
+      )}
+
+      {/* A quiet box: a tint and a soft corner set the decisions apart from
+          the story around them, with no rule or accent edge competing. */}
+      {chapter.decisions && chapter.decisions.length > 0 && (
+        <div className="bg-surface-2 rounded-frame mt-8 px-5 py-4 sm:px-6 sm:py-5">
+          <h4 className="text-ink text-[0.9375rem] font-semibold">
+            Key decisions
+          </h4>
+          <ul className="text-ink-soft marker:text-ink-faint mt-2 list-disc space-y-1.5 pl-5 text-[0.9375rem] text-pretty">
+            {chapter.decisions.map((decision) => (
+              <li key={decision}>{decision}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </li>
   );
 }

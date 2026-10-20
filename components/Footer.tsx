@@ -1,16 +1,15 @@
 "use client";
 
 import { ExternalLink } from "@/components/ExternalLink";
-import { columnClass, columnPadding } from "@/lib/layout";
+import { columnClass } from "@/lib/layout";
 import { cn } from "@/lib/utils";
 import { useSyncExternalStore } from "react";
 
 /**
  * The server and the browser can disagree about the date here: the server
  * renders on its own clock, and its output can be cached from well before the
- * reader arrives. Reading through a store is the sanctioned way to render one
- * value on the server and a freshly read one in the browser; correcting it
- * from an effect does the same job but commits a second render to get there.
+ * reader arrives. Reading through a store renders one value on the server and
+ * a freshly read one in the browser, without a second render from an effect.
  */
 const getYear = () => new Date().getFullYear();
 const getServerYear = () => 2026;
@@ -33,6 +32,16 @@ const defaultInspirationLinks = [
   { label: "Ralph", href: "https://rcortiz.dev/" },
 ];
 
+const builtWith = [
+  { label: "Next.js", href: "https://nextjs.org/" },
+  { label: "Tailwind", href: "https://tailwindcss.com/" },
+  { label: "shadcn/ui", href: "https://ui.shadcn.com/" },
+  { label: "Sanity", href: "https://www.sanity.io/" },
+];
+
+const footerLink =
+  "text-ink-soft hover:text-brand-text underline decoration-rule underline-offset-4 transition-colors hover:decoration-current";
+
 export default function Footer({
   copyrightName = "Dileepa Mahanama Galmangoda",
   sourceLabel = "GitHub",
@@ -41,81 +50,48 @@ export default function Footer({
 }: FooterProps) {
   const year = useSyncExternalStore(subscribeToNothing, getYear, getServerYear);
 
-  // The background runs the full width of the viewport so the page closes on a
-  // solid band, while the content stays inside the reading column with the
-  // rest of the site.
   return (
-    <footer
-      id="footer"
-      className="border-rule bg-surface-2 dark:bg-secondary relative z-10 w-full border-t"
-    >
-      <div
-        className={cn(
-          columnClass,
-          columnPadding,
-          "text-ink-faint mx-auto flex flex-col-reverse items-center justify-center gap-4 py-10 md:flex-row md:justify-between",
-        )}
-      >
-        <span className="order-2 space-y-1 text-center text-xs sm:order-1 sm:text-left">
-          <p>
+    <footer id="footer" className="mt-24 pb-10 md:mt-32">
+      <div className={cn(columnClass)}>
+        <div className="border-rule text-ink-faint grid gap-2 border-t pt-8 text-center text-xs sm:grid-cols-2 sm:gap-x-8 sm:text-left">
+          <p className="order-1 sm:order-none">
             Built with{" "}
-            <ExternalLink
-              href="https://nextjs.org/"
-              className="text-brand-text hover:underline"
-            >
-              Next.js
-            </ExternalLink>
-            {", "}
-            <ExternalLink
-              href="https://tailwindcss.com/"
-              className="text-brand-text hover:underline"
-            >
-              Tailwind
-            </ExternalLink>
-            {", "}
-            <ExternalLink
-              href="https://ui.shadcn.com/"
-              className="text-brand-text hover:underline"
-            >
-              shadcn/ui
-            </ExternalLink>
-            {", "}
-            <ExternalLink
-              href="https://www.sanity.io/"
-              className="text-brand-text hover:underline"
-            >
-              Sanity
-            </ExternalLink>
+            {builtWith.map((item, index) => (
+              <span key={item.href}>
+                {index > 0 && ", "}
+                <ExternalLink href={item.href} className={footerLink}>
+                  {item.label}
+                </ExternalLink>
+              </span>
+            ))}
           </p>
-          <p>
-            Devs pls don&apos;t roast me{" 🥺 "}
-            <ExternalLink
-              href={sourceUrl}
-              className="text-brand-text after:content-['_↗'] hover:underline"
-            >
-              {sourceLabel}
-            </ExternalLink>
-          </p>
-        </span>
-        <span className="order-1 space-y-1 text-center text-xs sm:order-2 sm:text-right">
-          <p className="text-ink-soft">
+          <p className="order-5 sm:order-none sm:text-right">
             {year} &copy; {copyrightName}
           </p>
-          <p>
-            Thanks for the inspo{" 💙 "}
+          <p className="order-2 sm:order-none">
+            Devs pls don&apos;t roast me.{" "}
+            <ExternalLink href={sourceUrl} className={footerLink}>
+              {sourceLabel} ↗
+            </ExternalLink>
+          </p>
+          {/* On a phone the lines stack: a rule splits what the site is
+              built with from who it thanks and whose it is. */}
+          <span
+            aria-hidden="true"
+            className="bg-rule order-3 my-2 h-px w-full sm:hidden"
+          />
+          <p className="order-4 sm:order-none sm:text-right">
+            Thanks for the inspo:{" "}
             {inspirationLinks.map((link, index) => (
               <span key={link.href}>
                 {index > 0 && " & "}
-                <ExternalLink
-                  href={link.href}
-                  className="hover:text-ink underline transition-colors"
-                >
+                <ExternalLink href={link.href} className={footerLink}>
                   {link.label}
                 </ExternalLink>
               </span>
             ))}
           </p>
-        </span>
+        </div>
       </div>
     </footer>
   );

@@ -6,4 +6,4 @@
  * drifting apart the first time one is edited.
  */
 export const inlineLink =
-  "text-ink hover:text-brand-text underline underline-offset-4 transition-colors";
+  "text-brand-text decoration-brand-text/35 hover:decoration-brand-text underline underline-offset-4 transition-colors";

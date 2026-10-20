@@ -1,17 +1,20 @@
-import { Button } from "@/components/ui/button";
-import { IconBrandBehance } from "@tabler/icons-react";
-import { LuExternalLink } from "react-icons/lu";
 import { ExternalLink } from "@/components/ExternalLink";
-import { SectionHeading } from "@/components/ui/section-heading";
-import { imageSizes, splitGrid } from "@/lib/layout";
+import {
+  accentLinkClass,
+  SectionHeading,
+} from "@/components/ui/section-heading";
+import {
+  RowChip,
+  rowClass,
+  rowDescriptionClass,
+  rowTitleClass,
+} from "@/components/ui/row";
+import { imageSizes, ratioOf } from "@/lib/layout";
 import { cn } from "@/lib/utils";
-import type { StaticImageData } from "next/image";
+import Image, { type StaticImageData } from "next/image";
+import { LuArrowUpRight } from "react-icons/lu";
 import type { CaseStudy } from "./caseStudies";
 import CaseStudyCard from "./CaseStudyCard";
-import { cardDescriptionClass, cardTitleClass } from "./cardStyles";
-
-
-import Image from "next/image";
 
 type WorkSectionProps = {
   caseStudies: readonly CaseStudy[];
@@ -24,102 +27,92 @@ type WorkSectionProps = {
   heading?: string;
 };
 
+const BEHANCE_PROFILE = "https://www.behance.net/dileepamg";
+
+/**
+ * Two tiers of work, weighted by what they prove.
+ *
+ * The case studies are the argument for hiring: they lead, image first, and
+ * sit side by side so the pair reads as one body of work. The Behance pieces are supporting
+ * evidence, so they drop to compact rows: still one click away, but no
+ * longer competing with the studies for the same amount of attention.
+ */
 export default function WorkSection({
   caseStudies,
   projects,
   heading = "Featured Work",
 }: WorkSectionProps) {
   return (
-    <section id="work" className="scroll-mt-28">
-      <SectionHeading title={heading} />
+    <section id="work" aria-labelledby="work-heading">
+      <SectionHeading id="work-heading" title={heading} />
 
-      <div className="mt-6 space-y-8">
-        {caseStudies.map((study) => (
-          <CaseStudyCard key={study.title} study={study} />
+      {/* Side by side from `md`, so both studies are seen in one look. */}
+      <div className="grid gap-x-6 gap-y-12 md:grid-cols-2">
+        {caseStudies.map((study, index) => (
+          <CaseStudyCard
+            key={study.slug}
+            study={study}
+            priority={index === 0}
+          />
         ))}
-
-        <div className={cn(splitGrid, "gap-8")}>
-          {projects.map((project) => {
-            const headingId = `project-${project.title
-              .toLowerCase()
-              .replace(/[^a-z0-9]+/g, "-")}`;
-
-            const behanceHref = project.behance;
-
-            return (
-              <article
-                key={project.title}
-                aria-labelledby={headingId}
-                className="group border-rule bg-paper hover:border-brand/50 flex flex-col border p-6 transition-colors md:p-8"
-              >
-                {/* Inset by the card's own padding and framed in its own
-                    border, the way the case study cards hold their media. The
-                    padding steps at `md` with theirs, so the two shapes of
-                    card in this one list keep the same inner margin at every
-                    width rather than diverging by 8px past the breakpoint. */}
-                <ExternalLink
-                  href={behanceHref}
-                  aria-label={`View ${project.title} on Behance (opens in new tab)`}
-                  className="border-rule relative block aspect-[4/3] w-full overflow-hidden border"
-                >
-                  {/* `fill` + `sizes`, not `width`/`height`. The card is
-                            fluid, so a declared intrinsic width is a fiction:
-                            it made Next build a srcset around 200px and serve
-                            a 256px file into a box that is 454px wide on
-                            desktop and 650px at the widest single-column
-                            width. */}
-                  <Image
-                    src={project.image}
-                    alt={project.title}
-                    className="object-cover object-center"
-                    fill
-                    placeholder="blur"
-                    sizes={imageSizes.projectCard}
-                  />
-                </ExternalLink>
-
-                <div className="mt-6 flex flex-1 flex-col gap-4 md:mt-8">
-                  <div className="flex-1">
-                    <h3 id={headingId} className={cardTitleClass}>
-                      <ExternalLink
-                        href={behanceHref}
-                        className="hover:text-brand-text transition-colors"
-                      >
-                        {project.title}
-                      </ExternalLink>
-                    </h3>
-                    <p className={cn(cardDescriptionClass, "hidden sm:block")}>
-                      {project.description}
-                    </p>
-                  </div>
-
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="w-full justify-start"
-                  >
-                    <ExternalLink href={behanceHref}>
-                      <IconBrandBehance data-icon="inline-start" />
-                      View on Behance
-                      <LuExternalLink className="ml-auto transition-transform group-hover:translate-x-1" />
-                    </ExternalLink>
-                  </Button>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-
-        <div className="flex justify-center">
-          <Button asChild variant="outline">
-            <ExternalLink href="https://www.behance.net/dileepamg">
-              <IconBrandBehance data-icon="inline-start" />
-              View more on Behance
-              <LuExternalLink data-icon="inline-end" />
-            </ExternalLink>
-          </Button>
-        </div>
       </div>
+
+      {projects.length > 0 && (
+        <ul className="border-rule mt-12 border-t pt-4">
+          {projects.map((project) => (
+            <li
+              key={project.title}
+              className={cn(
+                rowClass,
+                "grid-cols-[6rem_minmax(0,1fr)] sm:grid-cols-[8rem_minmax(0,1fr)_auto]",
+              )}
+            >
+              <div
+                className="border-rule bg-surface-2 relative overflow-hidden rounded-md border"
+                style={{ aspectRatio: ratioOf(project.image) }}
+              >
+                <Image
+                  src={project.image}
+                  alt=""
+                  fill
+                  placeholder="blur"
+                  sizes={imageSizes.rowThumb}
+                  className="object-cover"
+                />
+              </div>
+              <div className="min-w-0">
+                <h3 className={rowTitleClass}>
+                  <ExternalLink
+                    href={project.behance}
+                    aria-label={`${project.title}, on Behance (opens in new tab)`}
+                    className="stretched-link"
+                  >
+                    {project.title}
+                  </ExternalLink>
+                </h3>
+                <p className={cn(rowDescriptionClass, "line-clamp-2")}>
+                  {project.description}
+                </p>
+              </div>
+              <RowChip className="hidden sm:inline-flex">
+                Behance
+                <LuArrowUpRight className="size-3" />
+              </RowChip>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <p className="mt-4">
+        <ExternalLink
+          href={BEHANCE_PROFILE}
+          className={cn(accentLinkClass, "text-sm")}
+        >
+          View more on Behance
+          <LuArrowUpRight className="size-3.5" aria-hidden="true" />
+          <span className="sr-only">(opens in new tab)</span>
+        </ExternalLink>
+      </p>
     </section>
   );
 }

@@ -3,10 +3,7 @@ import { BlogSection } from "@/components/Blog/BlogSection";
 import ExperienceSection from "@/components/ExperienceSection";
 import FunStuffSection from "@/components/FunStuffSection";
 import { HomePageSkeleton } from "@/components/loading/PageSkeletons";
-import { Band } from "@/components/ui/band";
 import WorkSection from "@/components/WorkSection";
-import { columnClass, columnPadding } from "@/lib/layout";
-import { cn } from "@/lib/utils";
 import {
   type DynamicFetchOptions,
   getDynamicFetchOptions,
@@ -89,91 +86,75 @@ async function CachedHome({ perspective, stega }: DynamicFetchOptions) {
   const posts = blogDocuments.slice(0, 2).map(mapBlogPostCard);
   const videos = motionDocuments.map(mapMotionItem);
   return (
-    <div className="relative flex min-h-screen flex-col">
-      <main className={cn(columnClass, "relative mx-auto flex-1")}>
-        {/* The hatch shows through the gaps between bands, turning each gap
-            into a channel with a rule on both sides rather than one shared
-            divider. */}
-        <div className="bg-hatch relative z-10 space-y-8">
-          {/* Extra top padding clears the fixed nav. */}
-          <Band
-            topCrosses={false}
-            className={cn(columnPadding, "pt-32 md:pt-40")}
-          >
-            <AboutSection
-              name={cleanSanityString(siteSettings.author.displayName)}
-              bio={cleanSanityString(siteSettings.author.bio)}
-              resumeDownloadName={
-                siteSettings.resume?.downloadName
-                  ? cleanSanityString(siteSettings.resume.downloadName)
-                  : "Dileepa-Galmangoda-Resume.pdf"
-              }
-              greetingLatin={cleanSanityString(homePage.greetingLatin)}
-              greetingSinhala={cleanSanityString(homePage.greetingSinhala)}
-              profileImage={
-                siteSettings.author.profileImage
-                  ? toStaticImageData(
-                      siteSettings.author.profileImage,
-                      `${siteSettings._id}.profileImage`,
-                    )
-                  : undefined
-              }
-              profileImageAlt={
-                siteSettings.author.profileImage?.alt
-                  ? cleanSanityString(siteSettings.author.profileImage.alt)
-                  : undefined
-              }
-              socials={(siteSettings.socialLinks ?? []).map(mapSanityLink)}
-            />
-          </Band>
-          <Band className={columnPadding}>
-            <WorkSection
-              caseStudies={caseStudies}
-              projects={projects}
-              heading={cleanSanityString(homePage.workHeading)}
-            />
-          </Band>
-          <Band className={columnPadding}>
-            <ExperienceSection
-              experiences={experiences}
-              heading={cleanSanityString(homePage.experienceHeading)}
-            />
-          </Band>
-          <Band className={columnPadding}>
-            <BlogSection
-              posts={posts}
-              heading={
-                homePage.blogHeading
-                  ? cleanSanityString(homePage.blogHeading)
-                  : undefined
-              }
-              description={
-                homePage.blogDescription
-                  ? cleanSanityString(homePage.blogDescription)
-                  : undefined
-              }
-            />
-          </Band>
-          {/* Last band before the footer, so its bottom rule is the end of the
-              page rather than a division between two sections, and nothing meets
-              it there for a registration mark to mark. */}
-          <Band bottomCrosses={false} className={columnPadding}>
-            <FunStuffSection
-              videos={videos}
-              heading={
-                homePage.motionHeading
-                  ? cleanSanityString(homePage.motionHeading)
-                  : undefined
-              }
-              description={
-                homePage.motionDescription
-                  ? cleanSanityString(homePage.motionDescription)
-                  : undefined
-              }
-            />
-          </Band>
-        </div>
-      </main>
-    </div>
+    // One column of sections with air between them and nothing else: no
+    // boxes, no rules between sections. Each section opens on its own title,
+    // so a moderate gap is enough to separate one from the next.
+    <main id="main" className="page-grid flex-1 gap-y-14 sm:gap-y-16">
+      <AboutSection
+        name={cleanSanityString(siteSettings.author.displayName)}
+        givenName={
+          siteSettings.author.givenName
+            ? cleanSanityString(siteSettings.author.givenName)
+            : undefined
+        }
+        bio={cleanSanityString(siteSettings.author.bio)}
+        resumeDownloadName={
+          siteSettings.resume?.downloadName
+            ? cleanSanityString(siteSettings.resume.downloadName)
+            : "Dileepa-Galmangoda-Resume.pdf"
+        }
+        greetingLatin={cleanSanityString(homePage.greetingLatin)}
+        greetingSinhala={cleanSanityString(homePage.greetingSinhala)}
+        profileImage={
+          siteSettings.author.profileImage
+            ? toStaticImageData(
+                siteSettings.author.profileImage,
+                `${siteSettings._id}.profileImage`,
+              )
+            : undefined
+        }
+        profileImageAlt={
+          siteSettings.author.profileImage?.alt
+            ? cleanSanityString(siteSettings.author.profileImage.alt)
+            : undefined
+        }
+        socials={(siteSettings.socialLinks ?? []).map(mapSanityLink)}
+      />
+      <WorkSection
+        caseStudies={caseStudies}
+        projects={projects}
+        heading={cleanSanityString(homePage.workHeading)}
+      />
+      <ExperienceSection
+        experiences={experiences}
+        heading={cleanSanityString(homePage.experienceHeading)}
+      />
+      <BlogSection
+        posts={posts}
+        heading={
+          homePage.blogHeading
+            ? cleanSanityString(homePage.blogHeading)
+            : undefined
+        }
+        description={
+          homePage.blogDescription
+            ? cleanSanityString(homePage.blogDescription)
+            : undefined
+        }
+      />
+      <FunStuffSection
+        videos={videos}
+        heading={
+          homePage.motionHeading
+            ? cleanSanityString(homePage.motionHeading)
+            : undefined
+        }
+        description={
+          homePage.motionDescription
+            ? cleanSanityString(homePage.motionDescription)
+            : undefined
+        }
+      />
+    </main>
   );
 }

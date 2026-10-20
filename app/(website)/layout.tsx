@@ -5,12 +5,8 @@ import { JsonLd } from "@/components/structured-data/JsonLd";
 import { getProfileStructuredData } from "@/components/structured-data/profile";
 import { StudioVisualEditing } from "@/components/StudioVisualEditing";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SiteFrame } from "@/components/ui/site-frame";
 import { SITE_URL } from "@/lib/site";
-import {
-  SanityLive,
-  sanityFetchMetadata,
-} from "@/sanity/lib/live";
+import { SanityLive, sanityFetchMetadata } from "@/sanity/lib/live";
 import { SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
 import { cleanSanityString, mapSanityLink } from "@/sanity/lib/mappers";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -25,8 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
     query: SITE_SETTINGS_QUERY,
     perspective: "published",
   });
-  const title =
-    settings?.defaultSeo.title ?? "Dileepa Mahanama Galmangoda";
+  const title = settings?.defaultSeo.title ?? "Dileepa Mahanama Galmangoda";
   const description =
     settings?.defaultSeo.description ??
     "Senior UI/UX Designer & Creative Generalist from Sri Lanka. Specializing in product design, visual design, and motion to build engaging digital experiences.";
@@ -81,8 +76,7 @@ export default async function WebsiteLayout({
       jobTitle: cleanSanityString(settings.author.jobTitle),
       description: cleanSanityString(settings.author.bio),
       ...(settings.email ? { email: cleanSanityString(settings.email) } : {}),
-      imageUrl:
-        profileImage?.asset?.url ?? `${SITE_URL}/dileepa-g.png`,
+      imageUrl: profileImage?.asset?.url ?? `${SITE_URL}/dileepa-g.png`,
       imageWidth: dimensions?.width,
       imageHeight: dimensions?.height,
       sameAs: (settings.socialLinks ?? [])
@@ -98,14 +92,14 @@ export default async function WebsiteLayout({
   return (
     <>
       {jsonLd && <JsonLd data={jsonLd} />}
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="light"
-        enableSystem={false}
-        disableTransitionOnChange
-      >
+      <ThemeProvider attribute="class" disableTransitionOnChange>
         <div className="flex min-h-screen flex-col">
-          <SiteFrame />
+          <a
+            href="#main"
+            className="bg-ink text-paper rounded-md sr-only z-50 px-3 py-2 text-sm font-medium focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+          >
+            Skip to content
+          </a>
           <Nav
             brandLabel={
               settings?.brandLabel

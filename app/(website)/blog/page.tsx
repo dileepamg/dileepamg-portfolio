@@ -1,8 +1,5 @@
-import { BlogPostCard } from "@/components/Blog/BlogPostCard";
+import { BlogPostTile } from "@/components/Blog/BlogPostCard";
 import { BlogIndexSkeleton } from "@/components/loading/PageSkeletons";
-import { Band } from "@/components/ui/band";
-import { columnClass, columnPadding, splitGrid } from "@/lib/layout";
-import { cn } from "@/lib/utils";
 import {
   type DynamicFetchOptions,
   getDynamicFetchOptions,
@@ -18,13 +15,11 @@ import { LuArrowLeft } from "react-icons/lu";
 
 export const metadata: Metadata = {
   title: "Blog",
-  description:
-    "Stories from things I build in my spare time with friends.",
+  description: "Stories from things I build in my spare time with friends.",
   alternates: { canonical: "/blog" },
   openGraph: {
     title: "Blog",
-    description:
-      "Stories from things I build in my spare time with friends.",
+    description: "Stories from things I build in my spare time with friends.",
     type: "website",
     url: "/blog",
     images: ["/opengraph-image.png"],
@@ -32,8 +27,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Blog",
-    description:
-      "Stories from things I build in my spare time with friends.",
+    description: "Stories from things I build in my spare time with friends.",
     images: ["/opengraph-image.png"],
   },
 };
@@ -56,10 +50,7 @@ async function DynamicBlogPage() {
   return <CachedBlogPage {...options} />;
 }
 
-async function CachedBlogPage({
-  perspective,
-  stega,
-}: DynamicFetchOptions) {
+async function CachedBlogPage({ perspective, stega }: DynamicFetchOptions) {
   "use cache";
 
   const { data: documents } = await sanityFetch({
@@ -71,46 +62,39 @@ async function CachedBlogPage({
   const posts = documents.map(mapBlogPostCard);
 
   return (
-    <div className="relative">
-      <main className={cn(columnClass, "relative mx-auto")}>
-        <div className="bg-hatch relative z-10 space-y-8 pb-12">
-          <Band
-            topCrosses={false}
-            className={cn(columnPadding, "pt-32 md:pt-40")}
-          >
-            <nav aria-label="Breadcrumb">
-              <Link
-                href="/"
-                className="text-ink-soft hover:text-brand-text inline-flex items-center gap-2 text-sm font-medium transition-colors"
-              >
-                <LuArrowLeft />
-                Back to Home
-              </Link>
-            </nav>
+    <main id="main" className="page-grid flex-1">
+      <nav aria-label="Breadcrumb" className="pt-6 sm:pt-8">
+        <Link
+          href="/"
+          className="text-brand-text inline-flex items-center gap-1.5 text-xs underline-offset-4 hover:underline"
+        >
+          <LuArrowLeft className="size-3.5" aria-hidden="true" />
+          Back to Home
+        </Link>
+      </nav>
 
-            <header className="mt-8">
-              <h1 className="text-2xl md:text-3xl">Blog</h1>
-              <p className="text-ink-soft mt-3 max-w-2xl text-pretty">
-                Stories from things I build in my spare time with friends.
-              </p>
-            </header>
-          </Band>
+      <header className="mt-4">
+        <h1 className="text-[1.875rem] leading-tight tracking-[-0.02em] sm:text-[2.25rem]">
+          Blog
+        </h1>
+        <p className="text-ink-soft mt-2 text-lg text-pretty">
+          Stories from things I build in my spare time with friends.
+        </p>
+      </header>
 
-          <Band bottomCrosses={false} className={columnPadding}>
-            {posts.length > 0 ? (
-              <div className={cn(splitGrid, "gap-8")}>
-                {posts.map((post) => (
-                  <BlogPostCard key={post.id} post={post} />
-                ))}
-              </div>
-            ) : (
-              <p className="text-ink-soft py-8">
-                The first article is being prepared.
-              </p>
-            )}
-          </Band>
-        </div>
-      </main>
-    </div>
+      <div className="mt-8">
+        {posts.length > 0 ? (
+          <div className="grid gap-x-6 gap-y-10 md:grid-cols-2">
+            {posts.map((post) => (
+              <BlogPostTile key={post.id} post={post} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-ink-soft py-8">
+            The first article is being prepared.
+          </p>
+        )}
+      </div>
+    </main>
   );
 }

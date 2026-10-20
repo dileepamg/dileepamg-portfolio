@@ -27,18 +27,26 @@ export function mediaGridClass(items: readonly CaseStudyMedia[]) {
     return "grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3";
   }
 
-  return "grid gap-x-4 gap-y-8 lg:grid-cols-2";
+  return "grid gap-x-4 gap-y-8 md:grid-cols-2";
 }
 
-/** Matches the widths `mediaGridClass` lays out. */
-export function mediaSizes(items: readonly CaseStudyMedia[]) {
+/**
+ * Matches the widths `mediaGridClass` lays out, inside the reading column.
+ * Pass `wide` for a grid that has broken out to the wide track.
+ */
+export function mediaSizes(
+  items: readonly CaseStudyMedia[],
+  { wide = false }: { wide?: boolean } = {},
+) {
   if (items.every(isPortrait)) {
     if (items.length === 1) return "280px";
-    if (items.length === 2) return "(min-width: 640px) 30vw, 45vw";
-    return "(min-width: 768px) 20vw, 45vw";
+    if (items.length === 2) return "(min-width: 800px) 360px, 48vw";
+    return wide
+      ? "(min-width: 1152px) 350px, (min-width: 768px) 31vw, 48vw"
+      : "(min-width: 800px) 240px, (min-width: 768px) 31vw, 48vw";
   }
 
-  return "(min-width: 1024px) 32vw, (min-width: 640px) 65vw, 90vw";
+  return wide ? imageSizes.wideHalf : imageSizes.contentHalf;
 }
 
 type MediaFrameProps = {
@@ -48,8 +56,6 @@ type MediaFrameProps = {
    * Leave it off inside a card, where the whole card is already a link.
    */
   expandable?: boolean;
-  /** Set false inside a card that already has its own border. */
-  bordered?: boolean;
   sizes?: string;
   priority?: boolean;
   className?: string;
@@ -58,7 +64,6 @@ type MediaFrameProps = {
 export default function MediaFrame({
   media,
   expandable = false,
-  bordered = true,
   // Full content width, derived from the column rather than measured against
   // it. See `imageSizes` in lib/layout.ts.
   sizes = imageSizes.content,
@@ -88,8 +93,7 @@ export default function MediaFrame({
       ) : (
         <div
           className={cn(
-            "relative w-full overflow-hidden",
-            bordered && "border-rule border",
+            "border-rule border bg-surface-2 rounded-frame relative w-full overflow-hidden",
             !aspect && "aspect-video",
           )}
           style={aspect ? { aspectRatio: aspect } : undefined}
@@ -116,7 +120,7 @@ export default function MediaFrame({
       )}
 
       {media.caption && (
-        <figcaption className="text-ink-soft mt-2 text-sm">
+        <figcaption className="text-ink-faint mt-2.5 text-xs text-pretty">
           {media.caption}
         </figcaption>
       )}

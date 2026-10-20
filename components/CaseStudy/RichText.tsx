@@ -1,4 +1,5 @@
 import { ExternalLink } from "@/components/ExternalLink";
+import { inlineLink } from "@/lib/link-styles";
 import type { ReactNode } from "react";
 
 /**
@@ -21,7 +22,7 @@ export default function RichText({ children }: { children: string }) {
       <ExternalLink
         key={match.index}
         href={match[2]}
-        className="text-brand-text hover:underline"
+        className={inlineLink}
       >
         {match[1]}
       </ExternalLink>,

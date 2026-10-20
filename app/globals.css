@@ -11,63 +11,55 @@
    ========================================================================== */
 
 :root {
-  /* Accent. --brand fills solid surfaces, --brand-ink is the text that sits
-     on top of them, and --brand-text is the accent used as text or as a rule
-     directly on the page, where a fill has no chance to carry the contrast. */
+  /* Accent. Kept deliberately scarce: links, focus, selection and the odd
+     marker. --brand fills solid surfaces, --brand-ink is the text that sits on
+     top of them, and --brand-text is the accent used as text directly on the
+     page, where a fill has no chance to carry the contrast. */
   --brand: #1f2de6;
   --brand-ink: #ffffff;
   --brand-text: #1f2de6;
 
-  /* Paper and ink. --surface is the page behind the reading column; --paper
-     is the column itself, so the frame reads as a sheet laid on a desk. */
-  --paper: #ffffff;
-  --surface: #fafafa;
-  --surface-2: #f4f4f5;
-  /* Three ink weights, with one rule: --ink for headings, --ink-soft for
-     every piece of running prose (body copy, card and section descriptions,
-     captions), --ink-faint only for micro-labels such as uppercase eyebrows,
-     dates, badges and fine print. Prose never uses --ink-faint, or descriptions end up
-     lighter than the paragraphs beside them. */
-  --ink: #101216;
-  --ink-soft: #2b2f36;
-  --ink-faint: #52565e;
+  /* Paper and ink. A warm off-white rather than a white, so the page reads as
+     paper and photography sits on it without glaring. The inks lean a touch
+     green, the same family as the paper, rather than a neutral grey. */
+  --paper: #fbfaf7;
+  --surface: #fbfaf7;
+  --surface-2: #f2f1ec;
 
-  /* The ruled lines. Every border in the design is this one colour. */
-  --hairline: #e4e4e7;
+  /* Three ink weights, with one rule: --ink for headings and anything that
+     has to be read first, --ink-soft for running prose, --ink-faint for
+     metadata (dates, labels, captions). All three clear 4.5:1 on --paper and
+     on --surface-2, so --ink-faint is safe at 12px. */
+  --ink: #1d211e;
+  --ink-soft: #464d48;
+  --ink-faint: #656c67;
+
+  /* Borders on controls and frames: present enough to be found. */
+  --hairline: #e3e1da;
 
   --danger: #b42318;
   --danger-ink: #ffffff;
 
-  /* Typography. --font-heading is split out so a second face can be dropped
-     in for headings later without touching the body text.
-
-     These are deliberately named differently from the Tailwind theme keys
-     they feed (--font-display, --font-logo, --font-sinhala). Reusing a theme
-     key here makes `@theme inline` emit `--x: var(--x)`, a reference cycle. */
+  /* Typography. Named differently from the Tailwind theme keys they feed
+     (--font-sans, --font-mono, ...): reusing a theme key here makes
+     `@theme inline` emit `--x: var(--x)`, a reference cycle. */
   --font-body: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-wordmark: var(--font-sedgewickAve), cursive;
+  /* Code in articles only; every other word on the site is DM Sans. */
+  --font-code: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, monospace;
   --font-si: var(--font-notoSansSinhala), sans-serif;
 }
 
 :root {
-  /* Geometry. Frames are square so the page reads as one continuous ruled
-     grid; only the controls sitting inside them get a radius. Named
-     --frame-radius rather than --radius-frame for the same reason as the
-     fonts above: --radius-frame is the Tailwind theme key it feeds. */
-  --frame-radius: 0px;
-  --radius: 0.375rem;
+  /* Geometry. Media and cards get a soft corner; controls a slightly
+     tighter one, so a button inside a card never looks rounder than it. */
+  --frame-radius: 0.75rem;
+  --radius: 0.5rem;
 
-  /* --reading-max, the width of the reading column, is not declared here.
-     It is published onto the document by app/layout.tsx from READING_MAX_REM
-     in lib/layout.ts, because the image `sizes` hints have to be computed
-     from the same number and TypeScript cannot read a custom property out of
-     a stylesheet. Change it there and the column, the frame rails and every
-     srcset hint move together.
-
-     The cap only binds above --reading-max / 0.7 of viewport, so it decides
-     where the column stops growing on a laptop or a monitor, not what a
-     phone sees. */
+  /* --reading-max and --wide-max, the two column widths, are not declared
+     here. app/layout.tsx publishes them from lib/layout.ts, because the image
+     `sizes` hints have to be computed from the same numbers and TypeScript
+     cannot read a custom property out of a stylesheet. */
 }
 
 .dark {
@@ -75,73 +67,39 @@
      the text weight lifts further to hold its contrast ratio. */
   --brand: #4954ff;
   --brand-ink: #ffffff;
-  --brand-text: #929aff;
+  --brand-text: #9aa2ff;
 
-  --paper: #0b0b0c;
-  --surface: #08080a;
-  --surface-2: #17171a;
-  --ink: #ededef;
-  --ink-soft: #c8c8d0;
-  --ink-faint: #9b9ba4;
+  --paper: #111315;
+  --surface: #111315;
+  --surface-2: #1a1d20;
+  --ink: #eef0ef;
+  --ink-soft: #b9c0bc;
+  --ink-faint: #8f9893;
 
-  --hairline: #26262a;
+  --hairline: #2b3034;
 
   --danger: #e96359;
-  --danger-ink: #0b0b0c;
+  --danger-ink: #111315;
 }
 
 /* ==========================================================================
-   2. NOTEBOOK
-   The grid language: hairline rules, dashed rails and the diagonal hatch
-   that fills the margins either side of the reading column.
+   2. LINES
    ========================================================================== */
 
 :root {
-  /* The line the whole notebook is drawn in: section dividers, the annotated
-     grid in the About block, and the outline of every card and frame.
+  /* The divider between rows and sections. Translucent rather than a flat
+     grey, so it is correct over paper, over a tinted row and over a photo. */
+  --rule: color-mix(in oklab, var(--ink) 9%, transparent);
 
-     Half the strength of --hairline, and translucent rather than a flat grey,
-     which is what tailwindcss.com draws its own ruled grid in: `bg-gray-950/5`
-     on light, `bg-white/10` on dark. Measured against #fafafa our old value
-     (#e4e4e7, about 11% ink) was twice as dark as the reference, and at the
-     length these lines run — right across the viewport — twice as dark reads
-     as a drawn border rather than a ruling.
-
-     Alpha, not a hex, for the same reason theirs is: these lines cross paper,
-     the surface behind it and the hatch in the gutters, and a fixed grey has
-     to pick one of those to be correct against. --hairline stays where it is
-     and keeps its job on form controls, which have to be findable. */
-  --rule: color-mix(in oklab, var(--ink) 5%, transparent);
-
-  /* Registration guides: the marks offset around the portrait. The hairline
-     the page grid is drawn in disappears at that length, and --ink-faint at
-     full strength reads as a drawn border rather than a guide, so this sits
-     between the two. Derived from --ink-faint, so it follows the theme. */
-  --guide: color-mix(in srgb, var(--ink-faint) 55%, transparent);
-
-  /* Hatch fill for the gutters. Pinned to the viewport so the stripes stay
-     put while the page scrolls and the margin reads as a fixed edge rather
-     than a moving texture. */
-  --pattern-fg: color-mix(in oklab, var(--ink) 7%, transparent);
-  --pattern-size: 10px;
-
-  /* The hatch runs in a fixed band either side of the reading column rather
-     than across the whole page, so the texture reads as a marked-up margin
-     and everything beyond it stays quiet. */
-  --gutter-width: 2.5rem;
-
-  /* Corner nodes: the small accent squares pinned to a frame's corners. */
-  --node-size: 5px;
-  --node-color: var(--brand);
+  /* The wash a row takes on hover and focus. */
+  --tint: color-mix(in oklab, var(--ink) 4.5%, transparent);
 }
 
 .dark {
   /* Light ink on a dark ground loses more to the background than dark ink on
-     a light one, so the rules double rather than halve — `dark:bg-white/10`
-     against the `bg-gray-950/5` above, the same pair the reference uses. */
-  --rule: color-mix(in oklab, var(--ink) 10%, transparent);
-
-  --pattern-fg: color-mix(in oklab, var(--ink) 10%, transparent);
+     a light one, so the rules strengthen rather than weaken. */
+  --rule: color-mix(in oklab, var(--ink) 12%, transparent);
+  --tint: color-mix(in oklab, var(--ink) 6%, transparent);
 }
 
 /* ==========================================================================
@@ -163,10 +121,9 @@
   --primary: var(--brand);
   --primary-foreground: var(--brand-ink);
 
-  /* Solid chrome (nav). Tailwind's `neutral-800` / `neutral-50`. Fixed
-     across themes so the bar stays the same dark surface on light and dark. */
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
+  /* The inverse surface: tooltips, code blocks, the prototype play chip. */
+  --secondary: var(--ink);
+  --secondary-foreground: var(--paper);
 
   --muted: var(--surface-2);
   --muted-foreground: var(--ink-faint);
@@ -180,12 +137,6 @@
   --border: var(--hairline);
   --input: var(--hairline);
   --ring: var(--brand);
-
-  --chart-1: var(--brand);
-  --chart-2: #05e17a;
-  --chart-3: #facc00;
-  --chart-4: #ff4d50;
-  --chart-5: #7a83ff;
 }
 
 /* ==========================================================================
@@ -213,11 +164,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
 
   /* Design-language aliases, so sections read as intent rather than as a
      lookup into the shadcn palette. */
@@ -228,49 +174,37 @@
   --color-ink-soft: var(--ink-soft);
   --color-ink-faint: var(--ink-faint);
   --color-rule: var(--rule);
-  --color-pattern: var(--pattern-fg);
+  --color-tint: var(--tint);
+  --color-hairline: var(--hairline);
   --color-brand: var(--brand);
   --color-brand-ink: var(--brand-ink);
   --color-brand-text: var(--brand-text);
 
   --font-sans: var(--font-body);
   --font-display: var(--font-heading);
-  --font-logo: var(--font-wordmark);
+  --font-mono: var(--font-code);
   --font-sinhala: var(--font-si);
 
-  /* The button morph. Fast out of the gate, settling slowly, so the corner
-     change reads as the shape relaxing rather than as a linear tween. */
-  --ease-morph: cubic-bezier(0.2, 0.9, 0.25, 1);
-
-  --spacing-gutter: var(--gutter-width);
+  /* One curve for everything that moves: quick to start, slow to settle. */
+  --ease-out-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   --radius-frame: var(--frame-radius);
-  --radius-sm: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) + 2px);
-  --radius-xl: calc(var(--radius) + 6px);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
 /* ==========================================================================
    4b. TYPE SCALE
    Line height is set per font size rather than per element, so every piece of
-   text on the site derives it from the size it already has, including across
-   breakpoints, where a `md:text-lg` picks up the matching leading with no
-   second class to remember.
-
-   Every value is unitless, so it is a ratio of the element's own font size.
-   A fixed length (`leading-8`) does not scale: the same 2rem would follow
-   16px text up to 18px at `sm`, and the block would tighten as it grew.
-
-   Prose sizes share one ratio so paragraphs read identically whatever size
-   they are set at. Display sizes tighten as they grow, because long headings
-   set at loose leading drift apart.
+   text derives it from the size it already has, including across breakpoints.
+   All unitless, so each is a ratio of the element's own size.
    ========================================================================== */
 
 @theme {
-  /* The check mark that lands when an address is copied. Small and quick:
-     it confirms something already finished, so a slow flourish would only be
-     in the way. Guarded by `motion-safe:` at the call site. */
+  /* The check mark that lands when an address is copied. Guarded by
+     `motion-safe:` at the call site. */
   --animate-copy-pop: copy-pop 220ms ease-out;
 
   @keyframes copy-pop {
@@ -287,67 +221,76 @@
     }
   }
 
-  /* Prose: one ratio across the three sizes body copy is ever set at. */
+  /* Metadata: 11–12px mono runs that should stay compact. */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1.45;
+  --text-xs--line-height: 1.5;
+
+  /* Prose: one ratio across the sizes body copy is set at. */
   --text-sm--line-height: 1.6;
-  --text-base--line-height: 1.6;
+  --text-base--line-height: 1.65;
   --text-lg--line-height: 1.6;
 
-  /* Labels, badges and fine print: short runs that should stay compact. */
-  --text-xs--line-height: 1.45;
-
-  /* Display. */
+  /* Display: tightens as it grows. */
   --text-xl--line-height: 1.4;
   --text-2xl--line-height: 1.3;
   --text-3xl--line-height: 1.2;
-  --text-4xl--line-height: 1.15;
-  --text-5xl--line-height: 1.1;
+  --text-4xl--line-height: 1.1;
+  --text-5xl--line-height: 1.05;
 }
 
 /* ==========================================================================
    5. UTILITIES
    ========================================================================== */
 
-/* The 45° hatch that fills the margins beside the reading column. */
-@utility bg-hatch {
-  background-image: repeating-linear-gradient(
-    315deg,
-    var(--pattern-fg) 0,
-    var(--pattern-fg) 1px,
-    transparent 0,
-    transparent 50%
-  );
-  background-size: var(--pattern-size) var(--pattern-size);
-  background-attachment: fixed;
+/* The page grid. Every child sits in the reading column by default; a child
+   marked `bleed-wide` breaks out to the wide track, and `bleed-full` to the
+   viewport. The side tracks are what is left over, with a floor of the page
+   gutter so nothing ever touches the edge of a phone screen. */
+@utility page-grid {
+  --gutter: 1.25rem;
+  display: grid;
+  /* Rows take the height of their content. The page's <main> stretches to
+     fill the window, and a grid left to the default would hand that spare
+     height out between its rows, opening gaps on short pages. */
+  align-content: start;
+  grid-template-columns:
+    [full-start] minmax(var(--gutter), 1fr)
+    [wide-start] minmax(0, calc((var(--wide-max) - var(--reading-max)) / 2))
+    [content-start] min(100% - var(--gutter) * 2, var(--reading-max))
+    [content-end] minmax(0, calc((var(--wide-max) - var(--reading-max)) / 2))
+    [wide-end] minmax(var(--gutter), 1fr) [full-end];
+
+  & > * {
+    grid-column: content;
+    min-width: 0;
+  }
+
+  @media (width >= 40rem) {
+    --gutter: 2rem;
+  }
 }
 
-/* Registration guides: the hairlines offset around the portrait.
-
-   Real utilities rather than a four-times-repeated arbitrary
-   `bg-[linear-gradient(...)]` value, which was unreadable at the call site.
-
-   Flat across the middle and fading only near the tips: a plain two-stop fade
-   peaks at the centre, which reads as a line that thickens there. The strength
-   is in --guide, and it is the number to change: below about half of
-   --ink-faint a 1px line at this length disappears entirely. */
-@utility guide-x {
-  background-image: linear-gradient(
-    to right,
-    transparent,
-    var(--guide) 22%,
-    var(--guide) 78%,
-    transparent
-  );
+@utility bleed-wide {
+  grid-column: wide !important;
 }
 
-@utility guide-y {
-  background-image: linear-gradient(
-    to bottom,
-    transparent,
-    var(--guide) 22%,
-    var(--guide) 78%,
-    transparent
-  );
+@utility bleed-full {
+  grid-column: full !important;
 }
+
+/* A link that covers its whole card, so the card is one target without
+   nesting interactive elements. The card needs `relative`. */
+@utility stretched-link {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+  }
+}
+
 
 /* ==========================================================================
    6. BASE
@@ -359,47 +302,25 @@
   }
 
   html {
-    /* Bands draw their dividers as 200vw bars, which overflow the document
-       box. Clipped here as well as on the body, or the page gains a
-       horizontal scrollbar. */
-    @apply overflow-x-clip;
-
-    /* Hold the scrollbar's track open at all times.
-       Opening a dialog locks scrolling on the body, which takes the scrollbar
-       away and widens the viewport by its width. Radix pads the body to
-       compensate, but that padding cannot reach the fixed frame layer, whose
-       rails are positioned against the viewport, so the rails jump outward
-       while the content stays put and the two fall out of alignment. Reserving
-       the track means nothing changes width when the scrollbar goes. */
+    /* Hold the scrollbar's track open at all times, so locking scroll for a
+       dialog never shifts the page sideways. */
     scrollbar-gutter: stable;
+    /* Lets <details> animate to its natural height where supported. */
+    interpolate-size: allow-keywords;
   }
 
   body {
-    /* Section rules are drawn as 200vw bars so they run past the column and
-       out through the margins; clipping here keeps that off the scrollbar. */
-    @apply bg-surface text-foreground overflow-x-clip font-sans antialiased;
+    @apply bg-paper text-ink-soft font-sans antialiased;
     font-feature-settings:
       "kern" 1,
-      "liga" 1;
+      "liga" 1,
+      "ss01" 1;
+    text-rendering: optimizeLegibility;
   }
 
-  /* Radix locks scrolling by hiding the body's overflow, and the library
-     behind it pads the body by the scrollbar's width to make up for the space
-     the scrollbar would have left behind.
-
-     That compensation is wrong here twice over. The scrollbar belongs to the
-     html element, which is its own scroll container because of the clipping
-     above, so it never goes away and there is no gap to fill. And the padding
-     only narrows the body: the reading column is centred inside it and slides
-     left, while the frame rails are fixed to the viewport and cannot follow,
-     so opening a dialog pulls the white column out from under its own rails.
-
-     The gap is applied as `margin-right`, not padding. react-remove-scroll
-     defaults to `gapMode: "margin"`, and it carries its own `!important`.
-     This rule still wins because an important declaration inside a cascade
-     layer outranks an important declaration outside every layer. Padding is
-     zeroed alongside it to cover the library's other gap mode; the body has no
-     spacing of its own for that to discard. */
+  /* Radix locks scrolling by hiding the body's overflow and padding it by the
+     scrollbar's width. The track is already reserved by `scrollbar-gutter`
+     above, so that compensation would only push the page left. */
   body[data-scroll-locked] {
     margin-right: 0 !important;
     padding-right: 0 !important;
@@ -411,17 +332,83 @@
   h4,
   h5,
   h6 {
-    @apply font-display font-semibold text-balance;
-    letter-spacing: -0.02em;
+    @apply font-display text-ink font-semibold text-balance;
+    letter-spacing: -0.015em;
   }
 
-  /* Anything that lands via a hash link clears the fixed nav. */
+  /* Anything that lands via a hash link clears the sticky nav. */
   :target {
-    scroll-margin-top: 7rem;
+    scroll-margin-top: 5.5rem;
   }
 
   ::selection {
     background-color: var(--brand);
     color: var(--brand-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+
+  /* Native disclosure: drop the default marker, and animate the open where
+     the browser can size to `auto`. */
+  summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  details::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition:
+      block-size 320ms var(--ease-out-soft),
+      content-visibility 320ms allow-discrete;
+  }
+  details[open]::details-content {
+    block-size: auto;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    details::details-content {
+      transition: none;
+    }
+  }
+}
+
+/* ==========================================================================
+   7. MOTION
+   ========================================================================== */
+
+/* Shared-element morph between a case study card and its page. The blur
+   hides interpolation artefacts mid-flight. */
+::view-transition-group(.morph) {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+@keyframes via-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+
+/* The theme switch. The new theme is uncovered by a circle that grows from
+   the toggle (see lib/theme-toggle.ts), so the default crossfade is turned
+   off for the duration: both snapshots sit still while the clip moves. */
+html.theme-transition::view-transition-old(root),
+html.theme-transition::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
