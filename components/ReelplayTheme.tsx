@@ -3,13 +3,60 @@
 import "media-chrome/react";
 import { MediaTheme } from "media-chrome/react/media-theme";
 import "media-chrome/react/menu";
-import type { ReactNode } from "react";
+import { PlayerLabelContext } from "@/components/PlayerLabel";
+import {
+  useContext,
+  useEffect,
+  useRef,
+  type ComponentRef,
+  type ReactNode,
+} from "react";
 
 type ReelplayThemeProps = {
   children?: ReactNode;
 };
 
 export default function ReelplayTheme({ children }: ReelplayThemeProps) {
+  const label = useContext(PlayerLabelContext);
+  const themeRef = useRef<ComponentRef<typeof MediaTheme>>(null);
+
+  // media-chrome names every player "video player", so a page of them is a
+  // page of identical regions. Once the controller exists inside the theme's
+  // shadow root, name it after its video, and put the name back if the
+  // library ever writes its default over it again.
+  useEffect(() => {
+    const theme = themeRef.current;
+    if (!theme) return;
+    const name = label ? `${label} player` : "Video player";
+    let observer: MutationObserver | undefined;
+    let frame = 0;
+
+    const attach = () => {
+      const controller = theme.shadowRoot?.querySelector("media-controller");
+      if (!controller) {
+        frame = requestAnimationFrame(attach);
+        return;
+      }
+      const apply = () => {
+        if (controller.getAttribute("aria-label") !== name) {
+          controller.setAttribute("aria-label", name);
+        }
+      };
+      apply();
+      observer = new MutationObserver(apply);
+      observer.observe(controller, {
+        attributes: true,
+        attributeFilter: ["aria-label"],
+      });
+    };
+    attach();
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
+  }, [label]);
+
   return (
     <>
       <template
@@ -370,7 +417,11 @@ export default function ReelplayTheme({ children }: ReelplayThemeProps) {
         }}
       />
 
-      <MediaTheme template="media-theme-reelplay" style={{ width: "100%" }}>
+      <MediaTheme
+        ref={themeRef}
+        template="media-theme-reelplay"
+        style={{ width: "100%" }}
+      >
         {children}
       </MediaTheme>
     </>

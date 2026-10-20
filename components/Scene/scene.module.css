@@ -1,0 +1,170 @@
+/*
+ * The beach in the masthead.
+ *
+ * Everything in it, the sky included, is a canvas of small dots that reads
+ * its colours from these properties. There are four sets: day and night,
+ * which are the light and dark themes, and golden hour and dusk, which the
+ * scene passes through as the sun sets on the way from one to the other (and
+ * rises on the way back). A colour golden hour or dusk leaves out is blended
+ * from its neighbours.
+ *
+ * The box's own background is the same sky as a plain gradient, for the
+ * moment before the canvas has drawn.
+ */
+
+.scene {
+  /* Day */
+  --day-sky-top: #b4cbe3;
+  --day-sky-mid: #ccdcea;
+  --day-sky-low: #dce8ef;
+  --day-sea-base: #a4c2d5;
+  --day-sun-core: #fff8de;
+  --day-sun-edge: #f5d27a;
+  --day-halo: #f3cd6a;
+  --day-moon: #efedde;
+  --day-cloud: #ffffff;
+  --day-star: #ffffff;
+  --day-sea-far: #bcd4e3;
+  --day-sea-near: #84a9c3;
+  --day-sparkle: #fff4cc;
+  --day-foam: #ffffff;
+  --day-sand: #e9d9b8;
+  --day-sand-shade: #d8c39b;
+  --day-silhouette: #46524c;
+  --day-leaf: #4f6b57;
+  --day-land: #7b9583;
+  --day-land-shade: #67826f;
+  --day-tower: #f6f3ec;
+  --day-lantern: #3e4549;
+  --day-boat: #6d4b37;
+  --day-dolphin: #607280;
+  --day-rock: #858c86;
+  --day-cloud-alpha: 0.9;
+  --day-star-alpha: 0;
+  --day-night: 0;
+
+  /* Golden hour: the light warms and the sun turns amber. */
+  --golden-sky-top: #9fb2d4;
+  --golden-sky-mid: #e6cdb6;
+  --golden-sky-low: #f6c58f;
+  --golden-sea-base: #a8b2c2;
+  --golden-sun-core: #fff0c4;
+  --golden-sun-edge: #f6ad5a;
+  --golden-halo: #f5b05c;
+  --golden-cloud: #fff0dc;
+  --golden-sea-far: #d6c7b6;
+  --golden-sparkle: #ffdf9c;
+  --golden-sand: #e8cfa4;
+  --golden-night: 0.15;
+
+  /* Dusk: the sun is down, the sky is coral at the water and violet above. */
+  --dusk-sky-top: #2e3060;
+  --dusk-sky-mid: #8a6189;
+  --dusk-sky-low: #ec9068;
+  --dusk-sea-base: #5a5378;
+  --dusk-sun-core: #ffd6a0;
+  --dusk-sun-edge: #ea7a4c;
+  --dusk-halo: #ee8a58;
+  --dusk-cloud: #f2a68e;
+  --dusk-sea-far: #8d7089;
+  --dusk-sea-near: #3f3c63;
+  --dusk-sparkle: #ffbe88;
+  --dusk-foam: #dcbcc6;
+  --dusk-sand: #8f7f86;
+  --dusk-sand-shade: #7d6e78;
+  --dusk-silhouette: #2a2a3a;
+  --dusk-leaf: #2c3343;
+  --dusk-land: #4b4f68;
+  --dusk-land-shade: #41455f;
+  --dusk-tower: #cdc2c8;
+  --dusk-boat: #3d2e34;
+  --dusk-dolphin: #4b4f6c;
+  --dusk-rock: #56566b;
+  --dusk-cloud-alpha: 0.7;
+  --dusk-star-alpha: 0.1;
+  --dusk-night: 0.55;
+
+  /* Night */
+  --night-sky-top: #090d21;
+  --night-sky-mid: #121833;
+  --night-sky-low: #18203f;
+  --night-sea-base: #161e3a;
+  --night-sun-core: #ffd6a0;
+  --night-sun-edge: #ea7a4c;
+  --night-halo: #b9c4ee;
+  --night-moon: #ecebdc;
+  --night-cloud: #8790b8;
+  --night-star: #ffffff;
+  --night-sea-far: #28335b;
+  --night-sea-near: #10172f;
+  --night-sparkle: #dfe4ff;
+  --night-foam: #9aa6d6;
+  --night-sand: #2d2e3a;
+  --night-sand-shade: #25262f;
+  --night-silhouette: #070a12;
+  --night-leaf: #0a0f19;
+  --night-land: #10172a;
+  --night-land-shade: #0c1222;
+  --night-tower: #3b4260;
+  --night-lantern: #ffe39a;
+  --night-boat: #0e111b;
+  --night-dolphin: #26304f;
+  --night-rock: #1b2132;
+  --night-cloud-alpha: 0.35;
+  --night-star-alpha: 1;
+  --night-night: 1;
+
+  position: relative;
+  background: linear-gradient(
+    to bottom,
+    var(--day-sky-top) 0%,
+    var(--day-sky-mid) 32.4%,
+    var(--day-sky-low) 54%,
+    var(--day-sea-base) 54%,
+    var(--day-sea-base) 100%
+  );
+}
+
+:global(.dark) .scene {
+  background: linear-gradient(
+    to bottom,
+    var(--night-sky-top) 0%,
+    var(--night-sky-mid) 32.4%,
+    var(--night-sky-low) 54%,
+    var(--night-sea-base) 54%,
+    var(--night-sea-base) 100%
+  );
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+
+.ready {
+  opacity: 1;
+}
+
+/* The sun or moon: a real button laid over the drawing. */
+.toggle {
+  position: absolute;
+  translate: -50% -50%;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas {
+    transition: none;
+  }
+}

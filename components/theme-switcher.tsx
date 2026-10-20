@@ -1,23 +1,30 @@
 "use client";
 
+import { centreOf, useThemeToggle } from "@/lib/theme-toggle";
+import { cn } from "@/lib/utils";
 import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
 
-import { Button } from "@/components/ui/button";
-
-export function ThemeSwitcher() {
-  const { setTheme, theme } = useTheme();
+/**
+ * Light ↔ dark. Shows what the page is now, the sun or the moon; the label
+ * says what pressing it will do. Both icons are drawn and the theme class
+ * picks one, so the right icon is there from the first paint.
+ */
+export function ThemeSwitcher({ className }: { className?: string }) {
+  const { isDark, toggle } = useThemeToggle();
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="text-secondary-foreground/70 hover:bg-secondary-foreground/10 hover:text-secondary-foreground dark:hover:bg-secondary-foreground/10 dark:hover:text-secondary-foreground shrink-0"
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+    <button
+      type="button"
+      onClick={(event) => toggle(centreOf(event.currentTarget))}
+      aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+      title={isDark ? "Light theme" : "Dark theme"}
+      className={cn(
+        "text-ink-soft hover:text-ink hover:bg-tint inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-colors",
+        className,
+      )}
     >
-      <Sun className="hidden size-5 dark:inline" />
-      <Moon className="inline size-5 dark:hidden" />
-      <span className="sr-only">Toggle theme</span>
-    </Button>
+      <Sun className="size-[18px] dark:hidden" aria-hidden="true" />
+      <Moon className="hidden size-[18px] dark:block" aria-hidden="true" />
+    </button>
   );
 }

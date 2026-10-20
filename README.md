@@ -18,9 +18,20 @@ This is the codebase behind my personal portfolio website: [https://dileepa.desi
 | Components      | [shadcn/ui](https://ui.shadcn.com/) on [Radix](https://www.radix-ui.com/) primitives                                                 |
 | Motion          | [Motion](https://motion.dev/)                                                                                                        |
 | Video           | [next-video](https://next-video.dev/) with [Mux](https://www.mux.com/), played through [media-chrome](https://www.media-chrome.org/) |
-| Theming         | [next-themes](https://github.com/pacocoursey/next-themes)                                                                            |
+| Theming         | [next-themes](https://github.com/pacocoursey/next-themes), light by default, with a View Transitions reveal on the light/dark toggle |
+| Illustration    | Canvas drawings on a 3px grid with ordered (Bayer) dithering, no image assets                                                       |
 | Analytics       | [Vercel Analytics](https://vercel.com/analytics) and Google Analytics                                                                |
 | Structured data | [schema-dts](https://github.com/google/schema-dts)                                                                                   |
+
+---
+
+## Design Notes
+
+- **One column.** The home page is a single column of sections with space between them: no boxes and no rules. Lists are built from one shared row (`components/ui/row.tsx`) whose hover tint reaches into the gutter while the text stays aligned.
+- **The beach.** The About section opens on the south coast of Sri Lanka, drawn in dots: palms, an oruwa, rocks, dolphins and the Galle lighthouse. It is a canvas on a 3px grid where every edge is ordered-dithered, redrawn at 12 frames a second and paused off screen. Day and night are the light and dark themes, and the sun (or moon) is the theme toggle: switching sets the sun behind the water and brings the moon up from the left, the sky passing through golden hour and dusk, and switching back brings the morning the same way.
+- **Light first.** The site always opens light, whatever the system setting. The toggle is a plain light/dark switch; the new theme spreads out as a circle from wherever it was pressed.
+- **404.** A pair of eyes in the same dotted style that step toward the pointer and blink now and then.
+- **Case studies.** Long reads get a pinned contents list in the margin that marks the chapter you are in.
 
 ---
 
@@ -117,8 +128,10 @@ app/
   sitemap.ts, robots.ts
 
 components/
+  AboutSection/        About section and its masthead
   Blog/                Blog cards, portable text renderer
-  CaseStudy/           Case study page building blocks
+  CaseStudy/           Case study page building blocks and chapter contents
+  Scene/               The dithered beach drawing (canvas)
   WorkSection/         Work section UI
   loading/             Route skeletons
   structured-data/     JSON-LD helpers
@@ -130,7 +143,7 @@ sanity/
   structure.ts         Studio desk structure
 
 scripts/               One-off migration and blog seed scripts
-lib/                   Layout constants, reading time, site helpers
+lib/                   Layout constants, theme toggle, reading time, site helpers
 public/                Static assets (profile image, resume PDF, …)
 videos/                next-video sources and Mux manifests
 ```
@@ -164,6 +177,15 @@ Content flows from Sanity → typed GROQ queries in `sanity/lib/queries.ts` → 
 4. Publish documents to make changes live on the public site.
 
 Blog posts support rich text, images, callouts, code blocks, and timeline blocks.
+
+---
+
+## Accessibility
+
+- Every animation (the beach, the 404 eyes, the theme reveal, page transitions) stops or simplifies under `prefers-reduced-motion`. The drawings are decorative and hidden from assistive tech.
+- Each video player is named after its video, so a page of players is a set of distinct regions to a screen reader.
+- Links inside running text are underlined, not marked by colour alone.
+- axe-core reports no violations on the home page, blog, posts, case studies or 404, in both themes and at phone width.
 
 ---
 

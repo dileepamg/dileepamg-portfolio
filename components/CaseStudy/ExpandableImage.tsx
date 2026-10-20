@@ -40,7 +40,7 @@ export default function ExpandableImage({
           type="button"
           aria-label={`View the full image: ${alt}`}
           className={cn(
-            "group border-rule hover:border-brand/50 relative w-full cursor-pointer overflow-hidden border transition-colors",
+            "border-rule border group bg-surface-2 rounded-frame relative w-full cursor-zoom-in overflow-hidden",
             !aspect && "aspect-video",
           )}
           style={aspect ? { aspectRatio: aspect } : undefined}
@@ -52,9 +52,12 @@ export default function ExpandableImage({
             sizes={sizes}
             priority={priority}
             placeholder="blur"
-            className="object-cover object-top"
+            className="ease-out-soft object-cover object-top transition-transform duration-500 group-hover:scale-[1.01] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           />
-          <span className="border-rule bg-paper text-ink-soft absolute right-2 bottom-2 flex items-center gap-1.5 border px-2 py-1 text-xs font-medium opacity-0 transition-opacity group-hover:opacity-100">
+          <span
+            aria-hidden="true"
+            className="bg-paper/90 text-ink-soft text-xs absolute right-2.5 bottom-2.5 flex items-center gap-1.5 rounded-md px-2 py-1 opacity-0 shadow-sm backdrop-blur transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+          >
             <LuMaximize2 />
             View full
           </span>
@@ -63,7 +66,7 @@ export default function ExpandableImage({
 
       <DialogContent
         className={cn(
-          "rounded-frame max-h-[90vh] w-full overflow-y-auto p-4",
+          "rounded-frame max-h-[90vh] w-full overflow-y-auto p-3",
           portrait ? "sm:max-w-[26rem]" : "sm:max-w-4xl",
         )}
       >

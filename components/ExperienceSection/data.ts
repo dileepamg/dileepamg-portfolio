@@ -24,7 +24,7 @@ export const experiences: readonly CareerPosition[] = [
     companyLogoDark: villvayLogoDark,
     company: "Villvay Systems (Pvt) Ltd.",
     link: "https://villvay.com",
-    year: "April 2024 - Present",
+    year: "April 2024 - August 2026",
     responsibility: [
       "Designed UI/UX for global B2B eCommerce websites and mobile apps.",
       "Created interactive prototypes and high-fidelity mockups using standard design systems and best practices.",
