@@ -63,7 +63,7 @@ async function CachedBlogPage({ perspective, stega }: DynamicFetchOptions) {
 
   return (
     <main id="main" className="page-grid flex-1">
-      <nav aria-label="Breadcrumb" className="pt-6 sm:pt-8">
+      <nav aria-label="Breadcrumb" className="pt-8 sm:pt-12">
         <Link
           href="/"
           className="text-brand-text inline-flex items-center gap-1.5 text-xs underline-offset-4 hover:underline"

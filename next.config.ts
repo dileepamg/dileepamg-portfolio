@@ -11,6 +11,15 @@ const nextConfig: NextConfig = {
   // The version banner tells a scanner which framework and release to look
   // up known issues for, and buys nothing in return.
   poweredByHeader: false,
+  experimental: {
+    // Turbopack keeps its build work in .next/cache, which Vercel restores
+    // between deploys. The v3.0.0 deploy came out of that cache with the
+    // previous release's globals.css compiled in (no page grid, so the whole
+    // site ran full width) while a clean build of the same commit was fine.
+    // A build here is quick enough that a cold one every time is the safer
+    // trade.
+    turbopackFileSystemCacheForBuild: false,
+  },
   images: {
     remotePatterns: [
       {
