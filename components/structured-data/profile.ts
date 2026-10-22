@@ -5,6 +5,7 @@ const PAGE_URL = `${SITE_URL}/`;
 const PERSON_ID = `${SITE_URL}#person`;
 const WEBSITE_ID = `${SITE_URL}#website`;
 const WEBPAGE_ID = `${PAGE_URL}#webpage`;
+const PORTRAIT_ID = `${SITE_URL}#portrait`;
 
 type ProfileStructuredDataInput = {
   fullName: string;
@@ -40,6 +41,7 @@ export function getProfileStructuredData(
     url: SITE_URL,
     image: {
       "@type": "ImageObject",
+      "@id": PORTRAIT_ID,
       url: profile.imageUrl,
       ...(profile.imageWidth
         ? { width: String(profile.imageWidth) }
@@ -69,6 +71,12 @@ export function getProfileStructuredData(
     url: PAGE_URL,
     isPartOf: { "@id": WEBSITE_ID },
     mainEntity: { "@id": PERSON_ID },
+    // The portrait is the page's own picture. Search engines choosing a
+    // thumbnail weigh this alongside og:image, which on this page is the
+    // branded share card; naming the portrait here is what tells them the
+    // photo, not the card, is what the page is about.
+    primaryImageOfPage: { "@id": PORTRAIT_ID },
+    image: { "@id": PORTRAIT_ID },
   };
 
   return [person, website, profilePage];
